@@ -282,5 +282,20 @@ public class FightService {
         private long losses;
         private long draws;
         private double winRate;
+
+        public FightStatistics(long totalFights, long wins, long losses, long draws, double winRate) {
+            this.totalFights = totalFights;
+            this.wins = wins;
+            this.losses = losses;
+            this.draws = draws;
+            this.winRate = winRate;
+        }
+
+        // Getters
+        public long getTotalFights() { return totalFights; }
+        public long getWins() { return wins; }
+        public long getLosses() { return losses; }
+        public long getDraws() { return draws; }
+        public double getWinRate() { return winRate; }
     }
 }

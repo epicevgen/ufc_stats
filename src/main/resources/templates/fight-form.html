@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${fight.id != null ? 'Редактирование боя' : 'Новый бой'} + ' - UFC Stats'">UFC Stats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">UFC Stats</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/fights">← Назад к списку боев</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 th:text="${fight.id != null ? 'Редактирование боя' : 'Новый бой'}">Новый бой</h2>
+                
+                <form th:action="${fight.id != null ? '/fights/' + fight.id + '/edit' : '/fights/new'}" 
+                      th:object="${fight}" method="post" class="needs-validation" novalidate>
+                    
+                    <!-- Общая информация о бое -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">🥊 Общая информация о бое</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fightDate" class="form-label">Дата и время боя *</label>
+                                    <input type="datetime-local" class="form-control" id="fightDate" 
+                                           th:field="*{fightDate}" required>
+                                    <div class="invalid-feedback">Укажите дату и время боя</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="mode" class="form-label">Режим боя *</label>
+                                    <select class="form-select" id="mode" th:field="*{fightMode}" required>
+                                        <option value="">Выберите режим</option>
+                                        <option th:each="mode : ${fightModes}" 
+                                                th:value="${mode}" 
+                                                th:text="${mode == 'STANCE' ? 'Стойка' : 'ММА'}"></option>
+                                    </select>
+                                    <div class="invalid-feedback">Выберите режим боя</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="season" class="form-label">Сезон *</label>
+                                    <input type="number" class="form-control" id="season" 
+                                           th:field="*{season}" min="1" required>
+                                    <div class="invalid-feedback">Укажите номер сезона</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="result" class="form-label">Результат *</label>
+                                    <select class="form-select" id="result" th:field="*{result}" required>
+                                        <option value="">Выберите результат</option>
+                                        <option th:each="result : ${fightResults}" 
+                                                th:value="${result}" 
+                                                th:text="${result == 'WIN' ? 'Победа' : (result == 'LOSS' ? 'Поражение' : 'Ничья')}"></option>
+                                    </select>
+                                    <div class="invalid-feedback">Выберите результат боя</div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="method" class="form-label">Метод *</label>
+                                    <select class="form-select" id="method" th:field="*{method}" required>
+                                        <option value="">Выберите метод</option>
+                                        <option th:each="method : ${fightMethods}" 
+                                                th:value="${method}" 
+                                                th:text="${method == 'DECISION' ? 'Решение' : (method == 'SUBMISSION' ? 'Сабмишен' : (method == 'KNOCKOUT' ? 'Нокаут' : 'Досрочный выход'))}"></option>
+                                    </select>
+                                    <div class="invalid-feedback">Выберите метод победы</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="roundsPlayed" class="form-label">Раундов *</label>
+                                    <input type="number" class="form-control" id="roundsPlayed" 
+                                           th:field="*{roundsPlayed}" min="1" max="5" required>
+                                    <div class="invalid-feedback">Укажите количество раундов (1-5)</div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="ratingPoints" class="form-label">Очки рейтинга</label>
+                                    <input type="number" class="form-control" id="ratingPoints" 
+                                           th:field="*{ratingPoints}" min="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="rankingPosition" class="form-label">Место в рейтинге</label>
+                                    <input type="number" class="form-control" id="rankingPosition" 
+                                           th:field="*{rankingPosition}" min="1">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="weightClass" class="form-label">Весовая категория *</label>
+                                    <select class="form-select" id="weightClass" th:field="*{weightClass}" required>
+                                        <option value="">Выберите категорию</option>
+                                        <option th:each="weight : ${weightClasses}" 
+                                                th:value="${weight}" 
+                                                th:text="${weight}"></option>
+                                    </select>
+                                    <div class="invalid-feedback">Выберите весовую категорию</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="myFighter" class="form-label">Мой боец *</label>
+                                    <input type="text" class="form-control" id="myFighter" 
+                                           th:field="*{myFighter}" required>
+                                    <div class="invalid-feedback">Укажите имя вашего бойца</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="opponent" class="form-label">Соперник *</label>
+                                    <input type="text" class="form-control" id="opponent" 
+                                           th:field="*{opponent}" required>
+                                    <div class="invalid-feedback">Укажите имя соперника</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Примечания -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">📝 Примечания</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Примечания о бое</label>
+                                <textarea class="form-control" id="notes" th:field="*{notes}" 
+                                          rows="3" placeholder="Дополнительная информация о бое..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Статистика по раундам -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">📊 Статистика по раундам</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="roundsContainer">
+                                <!-- Раунды будут добавлены динамически -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Судейские оценки -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">⚖️ Судейские оценки</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="judgesContainer">
+                                <!-- Судьи будут добавлены динамически -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="/fights" class="btn btn-secondary">Отмена</a>
+                        <button type="submit" class="btn btn-primary">
+                            <span th:text="${fight.id != null ? 'Сохранить изменения' : 'Создать бой'}">Создать бой</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/fight-form.js"></script>
+</body>
+</html>

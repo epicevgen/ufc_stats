@@ -1,5 +1,6 @@
 package com.ufcstats.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ufcstats.model.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -89,9 +90,11 @@ public class Fight {
     // Связи
     @OneToMany(mappedBy = "fight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("roundNumber ASC")
+    @JsonManagedReference
     private List<FightRound> rounds = new ArrayList<>();
 
     @OneToMany(mappedBy = "fight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<JudgeScore> judgeScores = new ArrayList<>();
 
     // Метаданные

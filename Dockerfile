@@ -19,7 +19,7 @@ COPY src/ src/
 RUN gradle build --no-daemon -x test
 
 # Runtime stage
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 

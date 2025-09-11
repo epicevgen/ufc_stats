@@ -1,6 +1,10 @@
 package com.ufcstats.controller;
 
 import com.ufcstats.model.Fight;
+import com.ufcstats.model.enums.FightMode;
+import com.ufcstats.model.enums.FightResult;
+import com.ufcstats.model.enums.FightMethod;
+import com.ufcstats.model.enums.WeightClass;
 import com.ufcstats.service.FightService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -60,7 +64,16 @@ public class WebController {
     @GetMapping("/fights/new")
     public String newFight(Model model) {
         model.addAttribute("title", "Новый бой");
-        model.addAttribute("fight", new Fight());
+        
+        Fight fight = new Fight();
+        fight.setRoundsPlayed(3); // По умолчанию 3 раунда
+        
+        model.addAttribute("fight", fight);
+        model.addAttribute("fightModes", FightMode.values());
+        model.addAttribute("fightResults", FightResult.values());
+        model.addAttribute("fightMethods", FightMethod.values());
+        model.addAttribute("weightClasses", WeightClass.values());
+        
         return "fight-form";
     }
 
@@ -79,6 +92,12 @@ public class WebController {
         fightService.getFightById(id).ifPresent(fight -> {
             model.addAttribute("fight", fight);
         });
+        
+        model.addAttribute("fightModes", FightMode.values());
+        model.addAttribute("fightResults", FightResult.values());
+        model.addAttribute("fightMethods", FightMethod.values());
+        model.addAttribute("weightClasses", WeightClass.values());
+        
         return "fight-form";
     }
 

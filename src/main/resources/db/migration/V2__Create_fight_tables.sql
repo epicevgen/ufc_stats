@@ -16,9 +16,8 @@ CREATE TABLE IF NOT EXISTS fights (
     opponent VARCHAR(100) NOT NULL,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    CONSTRAINT chk_fight_date CHECK (fight_date <= CURRENT_TIMESTAMP),
     CONSTRAINT chk_season CHECK (season >= 1),
     CONSTRAINT chk_rounds CHECK (rounds_played >= 1 AND rounds_played <= 5)
 );
@@ -40,7 +39,7 @@ CREATE TABLE IF NOT EXISTS fight_rounds (
     my_total_strikes_attempted INTEGER NOT NULL DEFAULT 0 CHECK (my_total_strikes_attempted >= 0),
     my_takedowns_successful INTEGER NOT NULL DEFAULT 0 CHECK (my_takedowns_successful >= 0),
     my_takedowns_attempted INTEGER NOT NULL DEFAULT 0 CHECK (my_takedowns_attempted >= 0),
-    my_control_time VARCHAR(8) DEFAULT '00:00' CHECK (my_control_time REGEXP '^([0-5]?[0-9]):([0-5][0-9])$'),
+    my_control_time VARCHAR(8) DEFAULT '00:00',
     
     -- Статистика соперника
     opponent_head_damage INTEGER NOT NULL DEFAULT 0 CHECK (opponent_head_damage >= 0),
@@ -53,10 +52,10 @@ CREATE TABLE IF NOT EXISTS fight_rounds (
     opponent_total_strikes_attempted INTEGER NOT NULL DEFAULT 0 CHECK (opponent_total_strikes_attempted >= 0),
     opponent_takedowns_successful INTEGER NOT NULL DEFAULT 0 CHECK (opponent_takedowns_successful >= 0),
     opponent_takedowns_attempted INTEGER NOT NULL DEFAULT 0 CHECK (opponent_takedowns_attempted >= 0),
-    opponent_control_time VARCHAR(8) DEFAULT '00:00' CHECK (opponent_control_time REGEXP '^([0-5]?[0-9]):([0-5][0-9])$'),
+    opponent_control_time VARCHAR(8) DEFAULT '00:00',
     
     FOREIGN KEY (fight_id) REFERENCES fights(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_fight_round (fight_id, round_number)
+    CONSTRAINT unique_fight_round UNIQUE (fight_id, round_number)
 );
 
 -- Таблица судейских оценок
@@ -80,7 +79,7 @@ CREATE TABLE IF NOT EXISTS judge_scores (
     round_5_opponent_score INTEGER DEFAULT 0 CHECK (round_5_opponent_score >= 0 AND round_5_opponent_score <= 10),
     
     FOREIGN KEY (fight_id) REFERENCES fights(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_fight_judge (fight_id, judge_number)
+    CONSTRAINT unique_fight_judge UNIQUE (fight_id, judge_number)
 );
 
 -- Создание индексов для оптимизации запросов

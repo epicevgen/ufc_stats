@@ -32,38 +32,14 @@ public interface JudgeScoreRepository extends JpaRepository<JudgeScore, Long> {
     long countJudgesByFightId(@Param("fightId") Long fightId);
 
     /**
-     * Найти бои с единогласным решением (все судьи за одного бойца)
+     * Найти все оценки для боев с решением судей
      */
-    @Query("SELECT js.fight.id FROM JudgeScore js " +
+    @Query("SELECT js FROM JudgeScore js " +
            "WHERE js.fight.id IN (" +
            "    SELECT f.id FROM Fight f WHERE f.method = 'DECISION'" +
            ") " +
-           "GROUP BY js.fight.id " +
-           "HAVING COUNT(DISTINCT js.winnerByJudge) = 1")
-    List<Long> findFightsWithUnanimousDecision();
-
-    /**
-     * Найти бои с разделенным решением (судьи разделились)
-     */
-    @Query("SELECT js.fight.id FROM JudgeScore js " +
-           "WHERE js.fight.id IN (" +
-           "    SELECT f.id FROM Fight f WHERE f.method = 'DECISION'" +
-           ") " +
-           "GROUP BY js.fight.id " +
-           "HAVING COUNT(DISTINCT js.winnerByJudge) > 1")
-    List<Long> findFightsWithSplitDecision();
-
-    /**
-     * Найти бои с большинством голосов (2 из 3 судей)
-     */
-    @Query("SELECT js.fight.id FROM JudgeScore js " +
-           "WHERE js.fight.id IN (" +
-           "    SELECT f.id FROM Fight f WHERE f.method = 'DECISION'" +
-           ") " +
-           "GROUP BY js.fight.id " +
-           "HAVING COUNT(CASE WHEN js.winnerByJudge = 'MY_FIGHTER' THEN 1 END) = 2 " +
-           "   OR COUNT(CASE WHEN js.winnerByJudge = 'OPPONENT' THEN 1 END) = 2")
-    List<Long> findFightsWithMajorityDecision();
+           "ORDER BY js.fight.id, js.judgeNumber")
+    List<JudgeScore> findJudgeScoresForDecisionFights();
 
     /**
      * Найти средние оценки по раундам (мой боец)
@@ -130,25 +106,8 @@ public interface JudgeScoreRepository extends JpaRepository<JudgeScore, Long> {
     List<JudgeScore> findTopScoresByOpponentTotal();
 
     /**
-     * Найти статистику по судьям (кто чаще голосует за победу моего бойца)
+     * Найти все оценки для статистики
      */
-    @Query("SELECT js.judgeNumber, " +
-           "COUNT(CASE WHEN js.winnerByJudge = 'MY_FIGHTER' THEN 1 END) as myWins, " +
-           "COUNT(CASE WHEN js.winnerByJudge = 'OPPONENT' THEN 1 END) as opponentWins, " +
-           "COUNT(CASE WHEN js.winnerByJudge = 'DRAW' THEN 1 END) as draws " +
-           "FROM JudgeScore js " +
-           "GROUP BY js.judgeNumber " +
-           "ORDER BY js.judgeNumber")
-    List<Object[]> getJudgeStatistics();
-
-    /**
-     * Найти бои с ничьими по судейским оценкам
-     */
-    @Query("SELECT js.fight.id FROM JudgeScore js " +
-           "WHERE js.fight.id IN (" +
-           "    SELECT f.id FROM Fight f WHERE f.method = 'DECISION'" +
-           ") " +
-           "GROUP BY js.fight.id " +
-           "HAVING COUNT(CASE WHEN js.winnerByJudge = 'DRAW' THEN 1 END) >= 2")
-    List<Long> findFightsWithDrawDecision();
+    @Query("SELECT js FROM JudgeScore js ORDER BY js.judgeNumber")
+    List<JudgeScore> findAllForStatistics();
 }

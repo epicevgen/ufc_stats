@@ -1,5 +1,6 @@
 package com.ufcstats.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class FightRound {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fight_id", nullable = false)
+    @JsonBackReference
     private Fight fight;
 
     @Column(name = "round_number", nullable = false)
