@@ -1,47 +1,69 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.6'
-    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
-    id 'application'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.flywaydb.flyway' version '9.22.3'
 }
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+group = 'com.ufcstats'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    // Spring Boot Starter
-    implementation 'org.springframework.boot:spring-boot-starter'
-
-    // Spring Data JPA для работы с БД через ORM
+    // Spring Boot Starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // SQLite JDBC драйвер
-    implementation 'org.xerial:sqlite-jdbc:3.49.1.0'
-
-    // Hibernate SQLite диалект
-    implementation 'org.hibernate.orm:hibernate-community-dialects:6.2.7.Final'
-
-    // JavaFX зависимости (укажите версии, соответствующие вашей JDK)
-    implementation 'org.openjfx:javafx-controls:20'
-    implementation 'org.openjfx:javafx-fxml:20'
-
-    // Тестовые зависимости
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    // Database
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.postgresql:postgresql'
+    
+    // Development tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    
+    // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
-application {
-    mainClass = 'com.example.Launcher' // Класс с методом main, запускающим JavaFX
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
-tasks.withType(JavaExec) {
-    // Параметры для JavaFX (если требуется)
-    jvmArgs = [
-            '--module-path', classpath.asPath,
-            '--add-modules', 'javafx.controls,javafx.fxml'
-    ]
+// Flyway configuration
+flyway {
+    url = 'jdbc:h2:file:./data/ufc_stats'
+    user = 'sa'
+    password = ''
+    locations = ['classpath:db/migration']
+}
+
+// Build info
+springBoot {
+    buildInfo()
 }
