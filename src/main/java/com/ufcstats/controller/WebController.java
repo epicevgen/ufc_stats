@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -99,6 +100,18 @@ public class WebController {
         model.addAttribute("weightClasses", WeightClass.values());
         
         return "fight-form";
+    }
+
+    @PostMapping("/fights/new")
+    public String createFight(Fight fight) {
+        fightService.createFight(fight);
+        return "redirect:/fights";
+    }
+
+    @PostMapping("/fights/{id}/edit")
+    public String updateFight(@PathVariable Long id, Fight fight) {
+        fightService.updateFight(id, fight);
+        return "redirect:/fights/" + id;
     }
 
     @GetMapping("/statistics")

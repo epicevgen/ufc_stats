@@ -95,9 +95,25 @@ ADMIN_PASSWORD=secure_password
 
 ## 🧪 Тестирование
 
+### Типы тестов
+
+- **Unit тесты** - тестирование отдельных компонентов
+- **Интеграционные тесты** - тестирование взаимодействия компонентов
+- **UI тесты** - автоматизированное тестирование пользовательского интерфейса с Selenium WebDriver
+- **API тесты** - тестирование REST API endpoints
+
 ```bash
-# Запуск всех тестов
+# Запуск unit и интеграционных тестов
 ./gradlew test
+
+# Запуск UI тестов
+./scripts/run-ui-tests.sh
+
+# Запуск конкретного UI теста
+./gradlew test --tests "SimpleUITest"
+
+# Запуск UI тестов с отображением браузера
+./gradlew test --tests "*UITest" -Dui.test.headless=false
 
 # Запуск с отчетом
 ./gradlew test jacocoTestReport
