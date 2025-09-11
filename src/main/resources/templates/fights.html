@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Список боев - UFC Stats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">UFC Stats</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Панель управления</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/fights">Бои</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/statistics">Статистика</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Выйти</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>Список боев</h1>
+                    <a href="/fights/new" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Добавить бой
+                    </a>
+                </div>
+
+                <!-- Статистика -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary" th:text="${totalElements}">0</h5>
+                                <p class="card-text">Всего боев</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-success">0</h5>
+                                <p class="card-text">Побед</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-danger">0</h5>
+                                <p class="card-text">Поражений</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-warning">0</h5>
+                                <p class="card-text">Ничьих</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Список боев -->
+                <div class="card">
+                    <div class="card-body">
+                        <div th:if="${fights.empty}" class="text-center py-5">
+                            <h4 class="text-muted">Бои не найдены</h4>
+                            <p class="text-muted">Добавьте первый бой, чтобы начать вести статистику</p>
+                            <a href="/fights/new" class="btn btn-primary">Добавить бой</a>
+                        </div>
+
+                        <div th:if="${!fights.empty}">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Дата</th>
+                                            <th>Мой боец</th>
+                                            <th>Соперник</th>
+                                            <th>Результат</th>
+                                            <th>Метод</th>
+                                            <th>Раунды</th>
+                                            <th>Весовая категория</th>
+                                            <th>Действия</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="fight : ${fights.content}">
+                                            <td th:text="${#temporals.format(fight.fightDate, 'dd.MM.yyyy HH:mm')}">01.01.2024 20:00</td>
+                                            <td th:text="${fight.myFighter}">Мой боец</td>
+                                            <td th:text="${fight.opponent}">Соперник</td>
+                                            <td>
+                                                <span th:class="'badge ' + ${fight.result.name() == 'WIN' ? 'bg-success' : fight.result.name() == 'LOSS' ? 'bg-danger' : 'bg-warning'}"
+                                                      th:text="${fight.result.displayName}">Победа</span>
+                                            </td>
+                                            <td th:text="${fight.method.displayName}">Решение</td>
+                                            <td th:text="${fight.roundsPlayed}">3</td>
+                                            <td th:text="${fight.weightClass.displayName}">Легкий</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a th:href="@{/fights/{id}(id=${fight.id})}" 
+                                                       class="btn btn-sm btn-outline-primary">Просмотр</a>
+                                                    <a th:href="@{/fights/{id}/edit(id=${fight.id})}" 
+                                                       class="btn btn-sm btn-outline-secondary">Редактировать</a>
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            th:onclick="'deleteFight(' + ${fight.id} + ')'">Удалить</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Пагинация -->
+                            <nav th:if="${totalPages > 1}">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                        <a class="page-link" th:href="@{/fights(page=${currentPage - 1})}">Предыдущая</a>
+                                    </li>
+                                    
+                                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                                        class="page-item" 
+                                        th:classappend="${i == currentPage} ? 'active'">
+                                        <a class="page-link" th:href="@{/fights(page=${i})}" th:text="${i + 1}">1</a>
+                                    </li>
+                                    
+                                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                        <a class="page-link" th:href="@{/fights(page=${currentPage + 1})}">Следующая</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        function deleteFight(fightId) {
+            if (confirm('Вы уверены, что хотите удалить этот бой?')) {
+                fetch('/api/fights/' + fightId, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Ошибка при удалении боя');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ошибка при удалении боя');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

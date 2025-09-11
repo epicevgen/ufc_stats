@@ -44,36 +44,65 @@
                         <h5>Быстрые действия</h5>
                     </div>
                     <div class="card-body">
-                        <p>Функции будут добавлены после создания бизнес-логики</p>
-                        <ul>
-                            <li>Добавить новый бой</li>
-                            <li>Просмотреть статистику</li>
-                            <li>Экспорт данных</li>
-                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="/fights/new" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Добавить новый бой
+                            </a>
+                            <a href="/fights" class="btn btn-outline-primary">
+                                <i class="bi bi-list"></i> Просмотреть все бои
+                            </a>
+                            <a href="/statistics" class="btn btn-outline-info">
+                                <i class="bi bi-graph-up"></i> Детальная статистика
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Статистика</h5>
+                        <h5>Общая статистика</h5>
                     </div>
                     <div class="card-body">
-                        <p>Здесь будет отображаться общая статистика</p>
                         <div class="row text-center">
                             <div class="col-4">
-                                <h3 class="text-primary">0</h3>
+                                <h3 class="text-primary" th:text="${statistics?.totalFights ?: 0}">0</h3>
                                 <small>Всего боев</small>
                             </div>
                             <div class="col-4">
-                                <h3 class="text-success">0</h3>
+                                <h3 class="text-success" th:text="${statistics?.wins ?: 0}">0</h3>
                                 <small>Побед</small>
                             </div>
                             <div class="col-4">
-                                <h3 class="text-danger">0</h3>
+                                <h3 class="text-danger" th:text="${statistics?.losses ?: 0}">0</h3>
                                 <small>Поражений</small>
                             </div>
                         </div>
+                        <hr>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <h4 class="text-warning" th:text="${statistics?.draws ?: 0}">0</h4>
+                                <small>Ничьих</small>
+                            </div>
+                            <div class="col-6">
+                                <h4 class="text-info" th:text="${#numbers.formatDecimal(statistics?.winRate ?: 0, 1, 1)} + '%'">0%</h4>
+                                <small>Процент побед</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Последние бои</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Здесь будут отображаться последние 5 боев</p>
+                        <a href="/fights" class="btn btn-outline-primary">Просмотреть все бои</a>
                     </div>
                 </div>
             </div>
