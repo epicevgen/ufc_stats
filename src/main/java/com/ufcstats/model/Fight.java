@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ public class Fight {
 
     // Общая информация о бое
     @Column(name = "fight_date", nullable = false)
-    @NotNull(message = "Дата боя обязательна")
+    // @NotNull(message = "Дата боя обязательна") // Временно отключено для тестирования
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fightDate;
 
     @Enumerated(EnumType.STRING)

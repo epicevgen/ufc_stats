@@ -38,7 +38,7 @@ public class DataInitializer implements CommandLineRunner {
     private void createSampleFights() {
         // Бой 1: Победа нокаутом
         Fight fight1 = new Fight();
-        fight1.setFightDate(LocalDateTime.now().minusDays(5));
+        fight1.setFightDate(LocalDateTime.of(2024, 1, 10, 20, 0));
         fight1.setFightMode(FightMode.MMA);
         fight1.setSeason(1);
         fight1.setResult(FightResult.WIN);
@@ -115,7 +115,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // Бой 2: Поражение решением судей
         Fight fight2 = new Fight();
-        fight2.setFightDate(LocalDateTime.now().minusDays(3));
+        fight2.setFightDate(LocalDateTime.of(2024, 1, 12, 20, 0));
         fight2.setFightMode(FightMode.STANCE);
         fight2.setSeason(1);
         fight2.setResult(FightResult.LOSS);
@@ -210,7 +210,7 @@ public class DataInitializer implements CommandLineRunner {
 
         // Бой 3: Победа сабмишеном
         Fight fight3 = new Fight();
-        fight3.setFightDate(LocalDateTime.now().minusDays(1));
+        fight3.setFightDate(LocalDateTime.of(2024, 1, 14, 20, 0));
         fight3.setFightMode(FightMode.MMA);
         fight3.setSeason(1);
         fight3.setResult(FightResult.WIN);

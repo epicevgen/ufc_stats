@@ -340,9 +340,10 @@ class FightFormUITest extends BaseUITest {
         driver.findElement(By.id("ratingPoints")).sendKeys("100");
         driver.findElement(By.id("rankingPosition")).sendKeys("5");
         
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-        driver.findElement(By.id("fightDate")).clear();
-        driver.findElement(By.id("fightDate")).sendKeys(currentDate);
+        String fightDate = "2024-01-15T20:00";
+        WebElement fightDateElement = driver.findElement(By.id("fightDate"));
+        fightDateElement.clear();
+        fightDateElement.sendKeys(fightDate);
     }
     
     /**
@@ -401,9 +402,10 @@ class FightFormUITest extends BaseUITest {
         driver.findElement(By.id("rankingPosition")).sendKeys("5");
         
         // Установка даты боя
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-        driver.findElement(By.id("fightDate")).clear();
-        driver.findElement(By.id("fightDate")).sendKeys(currentDate);
+        String fightDate = "2024-01-15T20:00";
+        WebElement fightDateElement = driver.findElement(By.id("fightDate"));
+        fightDateElement.clear();
+        fightDateElement.sendKeys(fightDate);
         
         // Выбор весовой категории
         WebElement weightClassElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("weightClass")));

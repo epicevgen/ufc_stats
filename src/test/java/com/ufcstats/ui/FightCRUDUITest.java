@@ -281,10 +281,11 @@ class FightCRUDUITest extends BaseUITest {
         driver.findElement(By.id("ratingPoints")).sendKeys("100");
         driver.findElement(By.id("rankingPosition")).sendKeys("5");
         
-        // Установка даты боя
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-        driver.findElement(By.id("fightDate")).clear();
-        driver.findElement(By.id("fightDate")).sendKeys(currentDate);
+        // Установка даты боя (используем фиксированную дату в прошлом)
+        String fightDate = "2024-01-15T20:00";
+        WebElement fightDateElement = driver.findElement(By.id("fightDate"));
+        fightDateElement.clear();
+        fightDateElement.sendKeys(fightDate);
         
         // Выбор весовой категории
         WebElement weightClassElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("weightClass")));

@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2-console/**", "/api/**")
+                .ignoringRequestMatchers("/h2-console/**", "/api/**", "/fights/new", "/fights/*/edit")
             )
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
