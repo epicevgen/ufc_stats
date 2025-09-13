@@ -33,9 +33,9 @@ public class WebController {
 
 
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("title", "UFC Stats - Статистика боев");
-        return "index";
+    public String index() {
+        // Перенаправляем на главную страницу - список боев
+        return "redirect:/fights";
     }
 
     @GetMapping("/login")
@@ -43,13 +43,6 @@ public class WebController {
         return "login";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("title", "Панель управления");
-        FightService.FightStatistics statistics = fightService.getFightStatistics();
-        model.addAttribute("statistics", statistics);
-        return "dashboard";
-    }
 
     @GetMapping("/fights")
     public String fights(Model model, 
