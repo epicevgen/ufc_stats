@@ -9,8 +9,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,127 +30,159 @@ class FightCRUDUITest extends BaseUITest {
         waitForPageLoad();
         
         // Проверка заголовка страницы
-        assertThat(getPageTitle()).contains("UFC Stats");
+        assertThat(getPageTitle()).contains("Список боев");
         
         // Проверка наличия таблицы боев
         WebElement fightsTable = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fights-table")));
         assertThat(fightsTable.isDisplayed()).isTrue();
         
-        // Проверка наличия кнопки "Новый бой"
-        WebElement newFightButton = driver.findElement(By.linkText("Новый бой"));
-        assertThat(newFightButton.isDisplayed()).isTrue();
+        // Проверка наличия кнопки "Добавить бой" для модального окна
+        WebElement addFightButton = wait.until(ExpectedConditions.presenceOfElementLocated(
+            By.cssSelector("button[data-bs-target='#newFightModal']")
+        ));
+        assertThat(addFightButton.isDisplayed()).isTrue();
         
-        log.info("✓ Список боев отображается корректно");
+        // Проверка наличия модальных окон
+        WebElement newFightModal = driver.findElement(By.id("newFightModal"));
+        assertThat(newFightModal.isDisplayed()).isFalse(); // Модальное окно должно быть скрыто
+        
+        WebElement editFightModal = driver.findElement(By.id("editFightModal"));
+        assertThat(editFightModal.isDisplayed()).isFalse(); // Модальное окно должно быть скрыто
+        
+        WebElement viewFightModal = driver.findElement(By.id("viewFightModal"));
+        assertThat(viewFightModal.isDisplayed()).isFalse(); // Модальное окно должно быть скрыто
+        
+        log.info("✓ Список боев отображается корректно с модальными окнами");
     }
 
     @Test
-    @DisplayName("Создание нового боя")
+    @DisplayName("Создание нового боя через модальное окно")
     void testCreateNewFight() {
-        log.info("Тест: Создание нового боя");
+        log.info("Тест: Создание нового боя через модальное окно");
         
-        // Переход на страницу создания боя
-        navigateTo("/fights/new");
+        // Переход на страницу списка боев
+        navigateTo("/fights");
         waitForPageLoad();
         
         // Проверка заголовка страницы
-        assertThat(getPageTitle()).contains("Новый бой");
+        assertThat(getPageTitle()).contains("Список боев");
         
-        // Заполнение формы
-        fillFightForm("Тестовый боец", "Тестовый соперник", "ММА", "Победа", "Нокаут");
+        // Клик по кнопке "Добавить бой" для открытия модального окна
+        WebElement addFightButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("button[data-bs-target='#newFightModal']")
+        ));
+        addFightButton.click();
+        
+        // Ждем, пока модальное окно откроется и форма загрузится
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newFightModal")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newFightFormContainer")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#newFightFormContainer form")));
+        
+        // Заполнение формы в модальном окне
+        fillFightFormInModal("Тестовый боец", "Тестовый соперник", "ММА", "Победа", "Нокаут");
         
         // Отправка формы
-        WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
-        // Прокручиваем к кнопке и ждем, пока она станет кликабельной
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", submitButton);
-        wait.until(ExpectedConditions.elementToBeClickable(submitButton));
-        // Используем JavaScript для клика, чтобы избежать ElementClickInterceptedException
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("#newFightFormContainer button[type='submit']")
+        ));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
         
-        // Проверка перенаправления на список боев
-        wait.until(ExpectedConditions.urlContains("/fights"));
+        // Ждем, пока модальное окно закроется
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("newFightModal")));
+        
+        // Ждем, пока страница обновится и таблица загрузится
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fights-table")));
         
         // Проверка, что новый бой появился в списке
-        WebElement fightsTable = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fights-table")));
+        WebElement fightsTable = driver.findElement(By.id("fights-table"));
         assertThat(fightsTable.getText()).contains("Тестовый боец");
         assertThat(fightsTable.getText()).contains("Тестовый соперник");
         
-        log.info("✓ Новый бой успешно создан");
+        log.info("✓ Новый бой успешно создан через модальное окно");
     }
 
     @Test
-    @DisplayName("Просмотр деталей боя")
+    @DisplayName("Просмотр деталей боя через модальное окно")
     void testViewFightDetails() {
-        log.info("Тест: Просмотр деталей боя");
+        log.info("Тест: Просмотр деталей боя через модальное окно");
         
         // Сначала создаем бой для просмотра
-        createTestFight();
+        createTestFightInModal();
         
         // Переход на страницу списка боев
         navigateTo("/fights");
         waitForPageLoad();
         
-        // Клик по ссылке "Просмотр" первого боя
-        WebElement viewLink = wait.until(ExpectedConditions.elementToBeClickable(
-            By.cssSelector("a[href*='/fights/'][href*='/view']")
+        // Клик по кнопке "Просмотр" первого боя (теперь это кнопка, а не ссылка)
+        WebElement viewButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("button[onclick*='viewFight']")
         ));
-        viewLink.click();
+        viewButton.click();
         
-        // Проверка, что мы на странице деталей боя
-        wait.until(ExpectedConditions.urlContains("/fights/"));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fight-details")));
+        // Ждем, пока модальное окно откроется и содержимое загрузится
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("viewFightModal")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("viewFightFormContainer")));
         
-        // Проверка отображения информации о бое
-        WebElement fightDetails = driver.findElement(By.id("fight-details"));
+        // Проверка отображения информации о бое в модальном окне
+        WebElement fightDetails = wait.until(ExpectedConditions.presenceOfElementLocated(
+            By.cssSelector("#viewFightFormContainer .fight-details, #viewFightFormContainer .card")
+        ));
         assertThat(fightDetails.isDisplayed()).isTrue();
         
-        // Проверка наличия кнопки редактирования
-        WebElement editButton = driver.findElement(By.linkText("Редактировать"));
-        assertThat(editButton.isDisplayed()).isTrue();
+        // Проверка наличия кнопки закрытия модального окна
+        WebElement closeButton = driver.findElement(By.cssSelector("#viewFightModal .btn-close"));
+        assertThat(closeButton.isDisplayed()).isTrue();
         
-        log.info("✓ Детали боя отображаются корректно");
+        // Закрываем модальное окно
+        closeButton.click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("viewFightModal")));
+        
+        log.info("✓ Детали боя отображаются корректно в модальном окне");
     }
 
     @Test
-    @DisplayName("Редактирование боя")
+    @DisplayName("Редактирование боя через модальное окно")
     void testEditFight() {
-        log.info("Тест: Редактирование боя");
+        log.info("Тест: Редактирование боя через модальное окно");
         
         // Сначала создаем бой для редактирования
-        createTestFight();
+        createTestFightInModal();
         
         // Переход на страницу списка боев
         navigateTo("/fights");
         waitForPageLoad();
         
-        // Клик по ссылке "Редактировать" первого боя
-        WebElement editLink = wait.until(ExpectedConditions.elementToBeClickable(
-            By.cssSelector("a[href*='/fights/'][href*='/edit']")
+        // Клик по кнопке "Редактировать" первого боя (теперь это кнопка, а не ссылка)
+        WebElement editButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("button[onclick*='editFight']")
         ));
-        editLink.click();
+        editButton.click();
         
-        // Проверка, что мы на странице редактирования
-        wait.until(ExpectedConditions.urlContains("/edit"));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fight-form")));
+        // Ждем, пока модальное окно откроется и форма загрузится
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editFightModal")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editFightFormContainer")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#editFightFormContainer form")));
         
         // Изменение данных в форме - заполняем все поля
-        fillFightForm("Обновленный боец", "Обновленный соперник", "ММА", "Победа", "Сабмишен");
+        fillFightFormInModal("Обновленный боец", "Обновленный соперник", "ММА", "Победа", "Сабмишен");
         
         // Отправка формы
-        WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
-        // Прокручиваем к кнопке и ждем, пока она станет кликабельной
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", submitButton);
-        wait.until(ExpectedConditions.elementToBeClickable(submitButton));
-        // Используем JavaScript для клика, чтобы избежать ElementClickInterceptedException
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("#editFightFormContainer button[type='submit']")
+        ));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
         
-        // Проверка перенаправления на список боев
-        wait.until(ExpectedConditions.urlContains("/fights"));
+        // Ждем, пока модальное окно закроется
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editFightModal")));
+        
+        // Ждем, пока страница обновится и таблица загрузится
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fights-table")));
         
         // Проверка, что изменения сохранились
-        WebElement fightsTable = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fights-table")));
+        WebElement fightsTable = driver.findElement(By.id("fights-table"));
         assertThat(fightsTable.getText()).contains("Обновленный боец");
         
-        log.info("✓ Бой успешно отредактирован");
+        log.info("✓ Бой успешно отредактирован через модальное окно");
     }
 
     @Test
@@ -188,17 +218,29 @@ class FightCRUDUITest extends BaseUITest {
     }
 
     @Test
-    @DisplayName("Валидация формы создания боя")
+    @DisplayName("Валидация формы создания боя в модальном окне")
     void testFightFormValidation() {
-        log.info("Тест: Валидация формы создания боя");
+        log.info("Тест: Валидация формы создания боя в модальном окне");
         
-        // Переход на страницу создания боя
-        navigateTo("/fights/new");
+        // Переход на страницу списка боев
+        navigateTo("/fights");
         waitForPageLoad();
         
+        // Клик по кнопке "Добавить бой" для открытия модального окна
+        WebElement addFightButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("button[data-bs-target='#newFightModal']")
+        ));
+        addFightButton.click();
+        
+        // Ждем, пока модальное окно откроется и форма загрузится
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newFightModal")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newFightFormContainer")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#newFightFormContainer form")));
+        
         // Попытка отправить пустую форму
-        WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
-        // Используем JavaScript для клика, чтобы избежать ElementClickInterceptedException
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("#newFightFormContainer button[type='submit']")
+        ));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
         
         // Проверка отображения ошибок валидации
@@ -208,19 +250,23 @@ class FightCRUDUITest extends BaseUITest {
         assertThat(errorMessages.size()).isGreaterThan(0);
         
         // Теперь заполняем все обязательные поля и проверяем, что валидация проходит
-        fillFightForm("Валидационный боец", "Валидационный соперник", "ММА", "Победа", "Нокаут");
+        fillFightFormInModal("Валидационный боец", "Валидационный соперник", "ММА", "Победа", "Нокаут");
         
         // Отправляем форму с заполненными полями
-        // Прокручиваем к кнопке и ждем, пока она станет кликабельной
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", submitButton);
         wait.until(ExpectedConditions.elementToBeClickable(submitButton));
-        // Используем JavaScript для клика, чтобы избежать ElementClickInterceptedException
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
         
-        // Проверяем, что мы перенаправлены на список боев (валидация прошла)
-        wait.until(ExpectedConditions.urlContains("/fights"));
+        // Ждем, пока модальное окно закроется (валидация прошла)
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("newFightModal")));
         
-        log.info("✓ Валидация формы работает корректно");
+        // Ждем, пока страница обновится и таблица загрузится
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fights-table")));
+        
+        // Проверяем, что новый бой появился в списке
+        WebElement fightsTable = driver.findElement(By.id("fights-table"));
+        assertThat(fightsTable.getText()).contains("Валидационный боец");
+        
+        log.info("✓ Валидация формы работает корректно в модальном окне");
     }
 
     /**
@@ -317,33 +363,19 @@ class FightCRUDUITest extends BaseUITest {
     private void fillRoundStatistics() {
         log.info("Заполнение статистики по раундам");
         
-        // Заполняем статистику для 3 раундов
+        // Заполняем статистику для 3 раундов (только существующие поля)
         for (int round = 1; round <= 3; round++) {
             // Статистика моего бойца
             fillRoundField(round, "my", "head_damage", "25");
             fillRoundField(round, "my", "body_damage", "15");
             fillRoundField(round, "my", "leg_damage", "10");
             fillRoundField(round, "my", "knockdowns", "1");
-            fillRoundField(round, "my", "significant_landed", "20");
-            fillRoundField(round, "my", "significant_attempted", "35");
-            fillRoundField(round, "my", "total_landed", "45");
-            fillRoundField(round, "my", "total_attempted", "60");
-            fillRoundField(round, "my", "takedowns_successful", "2");
-            fillRoundField(round, "my", "takedowns_attempted", "3");
-            fillRoundField(round, "my", "control_time", "02:30");
             
             // Статистика соперника
             fillRoundField(round, "opponent", "head_damage", "20");
             fillRoundField(round, "opponent", "body_damage", "12");
             fillRoundField(round, "opponent", "leg_damage", "8");
             fillRoundField(round, "opponent", "knockdowns", "0");
-            fillRoundField(round, "opponent", "significant_landed", "18");
-            fillRoundField(round, "opponent", "significant_attempted", "32");
-            fillRoundField(round, "opponent", "total_landed", "40");
-            fillRoundField(round, "opponent", "total_attempted", "55");
-            fillRoundField(round, "opponent", "takedowns_successful", "1");
-            fillRoundField(round, "opponent", "takedowns_attempted", "2");
-            fillRoundField(round, "opponent", "control_time", "01:45");
         }
     }
     
@@ -367,21 +399,17 @@ class FightCRUDUITest extends BaseUITest {
     private void fillJudgeScores() {
         log.info("Заполнение судейских оценок");
         
-        // Заполняем оценки для 3 судей
+        // Заполняем оценки для 3 судей (только для 3 раундов)
         for (int judge = 1; judge <= 3; judge++) {
             // Оценки моего бойца
             fillJudgeScore(judge, "my", 1, "10");
             fillJudgeScore(judge, "my", 2, "9");
             fillJudgeScore(judge, "my", 3, "10");
-            fillJudgeScore(judge, "my", 4, "0"); // 4-й раунд не игрался
-            fillJudgeScore(judge, "my", 5, "0"); // 5-й раунд не игрался
             
             // Оценки соперника
             fillJudgeScore(judge, "opponent", 1, "9");
             fillJudgeScore(judge, "opponent", 2, "10");
             fillJudgeScore(judge, "opponent", 3, "9");
-            fillJudgeScore(judge, "opponent", 4, "0"); // 4-й раунд не игрался
-            fillJudgeScore(judge, "opponent", 5, "0"); // 5-й раунд не игрался
         }
     }
     
@@ -400,6 +428,91 @@ class FightCRUDUITest extends BaseUITest {
     }
 
     /**
+     * Заполнение формы боя в модальном окне
+     */
+    private void fillFightFormInModal(String myFighter, String opponent, String mode, String result, String method) {
+        log.info("Заполнение формы боя в модальном окне: {} vs {}, режим: {}, результат: {}, метод: {}", 
+                myFighter, opponent, mode, result, method);
+        
+        // Заполнение основных полей
+        driver.findElement(By.id("myFighter")).sendKeys(myFighter);
+        driver.findElement(By.id("opponent")).sendKeys(opponent);
+        
+        // Выбор режима боя
+        WebElement modeElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("mode")));
+        Select modeSelect = new Select(modeElement);
+        if ("ММА".equals(mode)) {
+            modeSelect.selectByValue("MMA");
+        } else if ("Стойка".equals(mode)) {
+            modeSelect.selectByValue("STANCE");
+        } else {
+            modeSelect.selectByVisibleText(mode);
+        }
+        
+        // Выбор результата
+        WebElement resultElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("result")));
+        Select resultSelect = new Select(resultElement);
+        if ("Победа".equals(result)) {
+            resultSelect.selectByValue("WIN");
+        } else if ("Поражение".equals(result)) {
+            resultSelect.selectByValue("LOSS");
+        } else if ("Ничья".equals(result)) {
+            resultSelect.selectByValue("DRAW");
+        } else {
+            resultSelect.selectByVisibleText(result);
+        }
+        
+        // Выбор метода
+        WebElement methodElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("method")));
+        Select methodSelect = new Select(methodElement);
+        if ("Нокаут".equals(method)) {
+            methodSelect.selectByValue("KNOCKOUT");
+        } else if ("Сабмишен".equals(method)) {
+            methodSelect.selectByValue("SUBMISSION");
+        } else if ("Решение".equals(method)) {
+            methodSelect.selectByValue("DECISION");
+        } else if ("Досрочный выход".equals(method)) {
+            methodSelect.selectByValue("EARLY_EXIT");
+        } else {
+            methodSelect.selectByVisibleText(method);
+        }
+        
+        // Заполнение дополнительных полей
+        driver.findElement(By.id("season")).sendKeys("1");
+        driver.findElement(By.id("ratingPoints")).sendKeys("100");
+        driver.findElement(By.id("rankingPosition")).sendKeys("5");
+        
+        // Установка даты боя (используем фиксированную дату в прошлом)
+        String fightDate = "2024-01-15T20:00";
+        WebElement fightDateElement = driver.findElement(By.id("fightDate"));
+        fightDateElement.clear();
+        fightDateElement.sendKeys(fightDate);
+        
+        // Выбор весовой категории
+        WebElement weightClassElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("weightClass")));
+        Select weightClassSelect = new Select(weightClassElement);
+        weightClassSelect.selectByValue("MIDDLEWEIGHT");
+        
+        // Установка количества раундов (это вызовет обновление динамических полей)
+        WebElement roundsPlayedInput = driver.findElement(By.id("roundsPlayed"));
+        roundsPlayedInput.clear();
+        roundsPlayedInput.sendKeys("3");
+        
+        // Ждем, пока динамические поля загрузятся
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("round1_my_head_damage")));
+        
+        // Заполнение статистики по раундам
+        fillRoundStatistics();
+        
+        // Заполнение судейских оценок
+        fillJudgeScores();
+        
+        // Заполнение примечаний
+        WebElement notesField = driver.findElement(By.id("notes"));
+        notesField.sendKeys("Тестовые примечания к бою для UI тестирования");
+    }
+
+    /**
      * Создание тестового боя
      */
     private void createTestFight() {
@@ -415,5 +528,36 @@ class FightCRUDUITest extends BaseUITest {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
         
         wait.until(ExpectedConditions.urlContains("/fights"));
+    }
+
+    /**
+     * Создание тестового боя через модальное окно
+     */
+    private void createTestFightInModal() {
+        log.info("Создание тестового боя через модальное окно");
+        
+        navigateTo("/fights");
+        waitForPageLoad();
+        
+        // Клик по кнопке "Добавить бой" для открытия модального окна
+        WebElement addFightButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("button[data-bs-target='#newFightModal']")
+        ));
+        addFightButton.click();
+        
+        // Ждем, пока модальное окно откроется и форма загрузится
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newFightModal")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newFightFormContainer")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#newFightFormContainer form")));
+        
+        fillFightFormInModal("Тестовый боец", "Тестовый соперник", "ММА", "Победа", "Нокаут");
+        
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("#newFightFormContainer button[type='submit']")
+        ));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
+        
+        // Ждем, пока модальное окно закроется
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("newFightModal")));
     }
 }

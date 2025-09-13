@@ -91,7 +91,7 @@
 
                         <div th:if="${!fights.empty}">
                             <div class="table-responsive">
-                                <table class="table table-hover">
+                                <table id="fights-table" class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Дата</th>
@@ -232,6 +232,9 @@
                     // Заменяем содержимое контейнера
                     container.innerHTML = bodyContent;
                     
+                    // Инициализируем JavaScript для формы
+                    initializeFightForm();
+                    
                     // Показываем модальное окно
                     modal.show();
                 })
@@ -312,10 +315,10 @@
         // Обработчик для модального окна создания нового боя
         document.getElementById('newFightModal').addEventListener('show.bs.modal', function () {
             const container = document.getElementById('newFightFormContainer');
-            
+
             // Показываем спиннер
             container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
-            
+
             // Загружаем форму создания
             fetch('/fights/new')
                 .then(response => response.text())
@@ -324,15 +327,266 @@
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     const bodyContent = doc.body.innerHTML;
-                    
+
                     // Заменяем содержимое контейнера
                     container.innerHTML = bodyContent;
+                    
+                    // Инициализируем JavaScript для формы
+                    initializeFightForm();
                 })
                 .catch(error => {
                     console.error('Ошибка при загрузке формы создания:', error);
                     container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке формы создания</div>';
                 });
         });
+
+        // Функция для инициализации формы боя в модальном окне
+        function initializeFightForm() {
+            const roundsPlayedInput = document.getElementById('roundsPlayed');
+            const roundsContainer = document.getElementById('roundsContainer');
+            const judgesContainer = document.getElementById('judgesContainer');
+            
+            if (!roundsPlayedInput || !roundsContainer || !judgesContainer) {
+                console.log('Элементы формы не найдены, пропускаем инициализацию');
+                return;
+            }
+            
+            // Инициализируем форму
+            updateRounds();
+            updateJudges();
+            
+            // Добавляем обработчик для изменения количества раундов
+            roundsPlayedInput.addEventListener('input', updateRounds);
+            
+            // Валидация формы
+            const form = document.querySelector('.needs-validation');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            }
+        }
+
+        // Функции для работы с раундами и судьями (копируем из fight-form.js)
+        function updateRounds() {
+            const roundsPlayedInput = document.getElementById('roundsPlayed');
+            const roundsContainer = document.getElementById('roundsContainer');
+            
+            if (!roundsPlayedInput || !roundsContainer) return;
+            
+            const roundsCount = parseInt(roundsPlayedInput.value) || 1;
+            roundsContainer.innerHTML = '';
+            
+            for (let i = 1; i <= roundsCount; i++) {
+                const roundCard = createRoundCard(i);
+                roundsContainer.appendChild(roundCard);
+            }
+        }
+
+        function updateJudges() {
+            const judgesContainer = document.getElementById('judgesContainer');
+            if (!judgesContainer) return;
+            
+            judgesContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 3; i++) {
+                const judgeCard = createJudgeCard(i);
+                judgesContainer.appendChild(judgeCard);
+            }
+        }
+
+        function createRoundCard(roundNumber) {
+            const card = document.createElement('div');
+            card.className = 'card mb-3';
+            card.innerHTML = `
+                <div class="card-header">
+                    <h6 class="mb-0">Раунд ${roundNumber}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Мой боец</h6>
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <label class="form-label small">Повреждения головы</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_head_damage')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_head_damage" 
+                                               name="rounds[${roundNumber-1}].myHeadDamage" value="0" min="0" max="100">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_head_damage')">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small">Повреждения корпуса</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_body_damage')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_body_damage" 
+                                               name="rounds[${roundNumber-1}].myBodyDamage" value="0" min="0" max="100">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_body_damage')">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small">Повреждения ног</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_leg_damage')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_leg_damage" 
+                                               name="rounds[${roundNumber-1}].myLegDamage" value="0" min="0" max="100">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_leg_damage')">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-4">
+                                    <label class="form-label small">Нокдауны</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_knockdowns')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_knockdowns" 
+                                               name="rounds[${roundNumber-1}].myKnockdowns" value="0" min="0" max="10">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_knockdowns')">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-danger">Соперник</h6>
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <label class="form-label small">Повреждения головы</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_head_damage')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_head_damage" 
+                                               name="rounds[${roundNumber-1}].opponentHeadDamage" value="0" min="0" max="100">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_head_damage')">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small">Повреждения корпуса</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_body_damage')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_body_damage" 
+                                               name="rounds[${roundNumber-1}].opponentBodyDamage" value="0" min="0" max="100">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_body_damage')">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small">Повреждения ног</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_leg_damage')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_leg_damage" 
+                                               name="rounds[${roundNumber-1}].opponentLegDamage" value="0" min="0" max="100">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_leg_damage')">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-4">
+                                    <label class="form-label small">Нокдауны</label>
+                                    <div class="input-group input-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_knockdowns')">-</button>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_knockdowns" 
+                                               name="rounds[${roundNumber-1}].opponentKnockdowns" value="0" min="0" max="10">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_knockdowns')">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function createJudgeCard(judgeNumber) {
+            const card = document.createElement('div');
+            card.className = 'card mb-3';
+            card.innerHTML = `
+                <div class="card-header">
+                    <h6 class="mb-0">Судья ${judgeNumber}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-2">
+                            <label class="form-label small">Раунд 1</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round1" 
+                                       name="judgeScores[${judgeNumber-1}].myRound1" value="10" min="0" max="10">
+                                <span class="input-group-text">-</span>
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round1" 
+                                       name="judgeScores[${judgeNumber-1}].opponentRound1" value="9" min="0" max="10">
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label small">Раунд 2</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round2" 
+                                       name="judgeScores[${judgeNumber-1}].myRound2" value="10" min="0" max="10">
+                                <span class="input-group-text">-</span>
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round2" 
+                                       name="judgeScores[${judgeNumber-1}].opponentRound2" value="9" min="0" max="10">
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label small">Раунд 3</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round3" 
+                                       name="judgeScores[${judgeNumber-1}].myRound3" value="10" min="0" max="10">
+                                <span class="input-group-text">-</span>
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round3" 
+                                       name="judgeScores[${judgeNumber-1}].opponentRound3" value="9" min="0" max="10">
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label small">Раунд 4</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round4" 
+                                       name="judgeScores[${judgeNumber-1}].myRound4" value="10" min="0" max="10">
+                                <span class="input-group-text">-</span>
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round4" 
+                                       name="judgeScores[${judgeNumber-1}].opponentRound4" value="9" min="0" max="10">
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label small">Раунд 5</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round5" 
+                                       name="judgeScores[${judgeNumber-1}].myRound5" value="10" min="0" max="10">
+                                <span class="input-group-text">-</span>
+                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round5" 
+                                       name="judgeScores[${judgeNumber-1}].opponentRound5" value="9" min="0" max="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // Функции для увеличения/уменьшения значений
+        function incrementValue(inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                const currentValue = parseInt(input.value) || 0;
+                const maxValue = parseInt(input.getAttribute('max')) || 100;
+                if (currentValue < maxValue) {
+                    input.value = currentValue + 1;
+                }
+            }
+        }
+
+        function decrementValue(inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                const currentValue = parseInt(input.value) || 0;
+                const minValue = parseInt(input.getAttribute('min')) || 0;
+                if (currentValue > minValue) {
+                    input.value = currentValue - 1;
+                }
+            }
+        }
     </script>
 </body>
 </html>

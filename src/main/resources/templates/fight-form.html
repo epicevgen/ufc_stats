@@ -51,7 +51,7 @@
                                         <option value="">Выберите режим</option>
                                         <option th:each="mode : ${fightModes}" 
                                                 th:value="${mode}" 
-                                                th:text="${mode == 'STANCE' ? 'Стойка' : 'ММА'}"></option>
+                                                th:text="${mode.displayName}"></option>
                                     </select>
                                     <div class="invalid-feedback">Выберите режим боя</div>
                                 </div>
@@ -70,7 +70,7 @@
                                         <option value="">Выберите результат</option>
                                         <option th:each="result : ${fightResults}" 
                                                 th:value="${result}" 
-                                                th:text="${result == 'WIN' ? 'Победа' : (result == 'LOSS' ? 'Поражение' : 'Ничья')}"></option>
+                                                th:text="${result.displayName}"></option>
                                     </select>
                                     <div class="invalid-feedback">Выберите результат боя</div>
                                 </div>
@@ -80,7 +80,7 @@
                                         <option value="">Выберите метод</option>
                                         <option th:each="method : ${fightMethods}" 
                                                 th:value="${method}" 
-                                                th:text="${method == 'DECISION' ? 'Решение' : (method == 'SUBMISSION' ? 'Сабмишен' : (method == 'KNOCKOUT' ? 'Нокаут' : 'Досрочный выход'))}"></option>
+                                                th:text="${method.displayName}"></option>
                                     </select>
                                     <div class="invalid-feedback">Выберите метод победы</div>
                                 </div>
