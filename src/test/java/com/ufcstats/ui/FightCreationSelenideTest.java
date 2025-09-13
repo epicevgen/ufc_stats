@@ -24,12 +24,16 @@ public class FightCreationSelenideTest extends SelenideBaseTest {
     void testCreateFightWith5Rounds() {
         log.info("Начинаем тест создания боя с 5 раундами");
         
-        // Переходим на страницу создания боя
-        open(getBaseUrl() + "/fights/new");
+        // Открываем главную страницу (список боев)
+        open(getBaseUrl() + "/fights");
+        $("h1").shouldHave(text("Список боев"));
         
-        // Проверяем, что форма загрузилась
-        $("form").shouldBe(visible);
-        $("h2").shouldHave(text("Новый бой"));
+        // Открываем модальное окно для создания нового боя
+        $("button[data-bs-target='#newFightModal']").click();
+        
+        // Ждем загрузки формы в модальном окне
+        sleep(2000);
+        $("#newFightFormContainer form").shouldBe(visible);
         
         // Заполняем основную информацию о бое
         fillBasicFightInfo();
@@ -72,8 +76,16 @@ public class FightCreationSelenideTest extends SelenideBaseTest {
     void testCreateFightWith3Rounds() {
         log.info("Начинаем тест создания боя с 3 раундами");
         
-        open(getBaseUrl() + "/fights/new");
-        $("form").shouldBe(visible);
+        // Открываем главную страницу (список боев)
+        open(getBaseUrl() + "/fights");
+        $("h1").shouldHave(text("Список боев"));
+        
+        // Открываем модальное окно для создания нового боя
+        $("button[data-bs-target='#newFightModal']").click();
+        
+        // Ждем загрузки формы в модальном окне
+        sleep(2000);
+        $("#newFightFormContainer form").shouldBe(visible);
         
         fillBasicFightInfo();
         setRoundsCount(3);
@@ -112,8 +124,16 @@ public class FightCreationSelenideTest extends SelenideBaseTest {
     void testCreateFightWith1Round() {
         log.info("Начинаем тест создания боя с 1 раундом");
         
-        open(getBaseUrl() + "/fights/new");
-        $("form").shouldBe(visible);
+        // Открываем главную страницу (список боев)
+        open(getBaseUrl() + "/fights");
+        $("h1").shouldHave(text("Список боев"));
+        
+        // Открываем модальное окно для создания нового боя
+        $("button[data-bs-target='#newFightModal']").click();
+        
+        // Ждем загрузки формы в модальном окне
+        sleep(2000);
+        $("#newFightFormContainer form").shouldBe(visible);
         
         fillBasicFightInfo();
         setRoundsCount(1);
@@ -297,14 +317,17 @@ public class FightCreationSelenideTest extends SelenideBaseTest {
     private void verifyFightCreated() {
         log.info("Проверяем успешное создание боя");
         
-        // Ждем перенаправления и загрузки страницы
+        // Ждем закрытия модального окна и обновления списка
         sleep(3000);
         
         // Логируем текущий URL для отладки
         String currentUrl = com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl();
         log.info("Текущий URL после отправки формы: {}", currentUrl);
         
-        // Проверяем, что мы перенаправлены на страницу списка боев
+        // Проверяем, что модальное окно закрылось
+        $("#newFightModal").shouldNotBe(visible);
+        
+        // Проверяем, что мы на странице списка боев
         $("h1").shouldHave(text("Список боев"));
         
         // Проверяем, что в таблице есть созданный бой
