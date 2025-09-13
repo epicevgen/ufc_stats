@@ -74,6 +74,7 @@ public class WebController {
         
         Fight fight = new Fight();
         fight.setRoundsPlayed(3); // По умолчанию 3 раунда
+        fight.setFightDate(LocalDateTime.now()); // Устанавливаем текущую дату и время
         
         model.addAttribute("fight", fight);
         model.addAttribute("fightModes", FightMode.values());
@@ -142,10 +143,12 @@ public class WebController {
                 throw new IllegalArgumentException("Количество раундов должно быть от 1 до 5");
             }
             
-            // Временно устанавливаем дату по умолчанию, если она не задана
+            // Обрабатываем дату боя
             if (fight.getFightDate() == null) {
                 fight.setFightDate(LocalDateTime.of(2024, 1, 15, 20, 0));
                 log.warn("Дата боя не задана, установлена по умолчанию: {}", fight.getFightDate());
+            } else {
+                log.debug("Дата боя получена: {}", fight.getFightDate());
             }
             
             // Исправляем связи между Fight и FightRound/JudgeScore

@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const roundsCount = parseInt(roundsPlayedInput.value) || 1;
         updateRounds();
         updateJudges();
+        
+        // Проверяем, что поле даты заполнено (должно быть заполнено сервером)
+        const fightDateInput = document.getElementById('fightDate');
+        if (fightDateInput) {
+            console.log('Fight date input value:', fightDateInput.value);
+        }
     }
     
     function updateRounds() {

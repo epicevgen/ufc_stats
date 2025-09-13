@@ -40,9 +40,10 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="fightDate" class="form-label">Дата и время боя *</label>
-                                    <input type="text" class="form-control" id="fightDate" 
-                                           th:field="*{fightDate}" placeholder="2024-01-15T20:00" required>
+                                    <input type="datetime-local" class="form-control" id="fightDate" 
+                                           th:field="*{fightDate}" required>
                                     <div class="invalid-feedback">Укажите дату и время боя</div>
+                                    <div class="form-text">Выберите дату и время из календаря</div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="mode" class="form-label">Режим боя *</label>

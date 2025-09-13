@@ -47,27 +47,55 @@ class DateTimeControllerAdvice {
 }
 
 /**
- * Редактор для LocalDateTime
+ * Редактор для LocalDateTime с поддержкой различных форматов
  */
 class LocalDateTimeEditor extends PropertyEditorSupport {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+    private final DateTimeFormatter[] formatters = {
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"),     // datetime-local format
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"), // with seconds
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"),      // space instead of T
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),   // space with seconds
+        DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"),      // European format
+        DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")       // US format
+    };
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         if (text == null || text.trim().isEmpty()) {
             setValue(null);
-        } else {
+            return;
+        }
+        
+        // Очищаем текст от лишних символов
+        String cleanText = text.trim();
+        
+        // Пытаемся распарсить с помощью различных форматов
+        for (DateTimeFormatter formatter : formatters) {
             try {
-                setValue(LocalDateTime.parse(text, formatter));
+                setValue(LocalDateTime.parse(cleanText, formatter));
+                return;
             } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Неверный формат даты: " + text + ". Ожидается формат: yyyy-MM-dd'T'HH:mm", e);
+                // Продолжаем с следующим форматом
             }
         }
+        
+        // Если ни один формат не подошел, пробуем ISO формат
+        try {
+            setValue(LocalDateTime.parse(cleanText));
+            return;
+        } catch (DateTimeParseException e) {
+            // Последняя попытка
+        }
+        
+        throw new IllegalArgumentException("Неверный формат даты: " + text + 
+            ". Поддерживаемые форматы: yyyy-MM-dd'T'HH:mm, yyyy-MM-dd HH:mm, dd.MM.yyyy HH:mm", 
+            new DateTimeParseException("Не удалось распарсить дату", text, 0));
     }
 
     @Override
     public String getAsText() {
         LocalDateTime value = (LocalDateTime) getValue();
-        return value != null ? value.format(formatter) : "";
+        return value != null ? value.format(formatters[0]) : "";
     }
 }
+
