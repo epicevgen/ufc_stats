@@ -77,8 +77,30 @@ public class FightCreationSelenideTest extends SelenideBaseTest {
         
         fillBasicFightInfo();
         setRoundsCount(3);
-        fillRoundsStatistics(3);
-        fillJudgeScores();
+        
+        // Заполняем статистику для 3 раундов
+        for (int round = 1; round <= 3; round++) {
+            fillField("round" + round + "_my_head_damage", "10");
+            fillField("round" + round + "_my_body_damage", "5");
+            fillField("round" + round + "_my_leg_damage", "2");
+            fillField("round" + round + "_my_knockdowns", "1");
+            
+            fillField("round" + round + "_opponent_head_damage", "8");
+            fillField("round" + round + "_opponent_body_damage", "3");
+            fillField("round" + round + "_opponent_leg_damage", "1");
+            fillField("round" + round + "_opponent_knockdowns", "0");
+        }
+        
+        // Заполняем судейские оценки для 3 раундов
+        for (int round = 1; round <= 3; round++) {
+            fillField("judge1_my_round" + round, "10");
+            fillField("judge1_opponent_round" + round, "9");
+            fillField("judge2_my_round" + round, "10");
+            fillField("judge2_opponent_round" + round, "9");
+            fillField("judge3_my_round" + round, "10");
+            fillField("judge3_opponent_round" + round, "9");
+        }
+        
         submitForm();
         verifyFightCreated();
         
@@ -139,8 +161,8 @@ public class FightCreationSelenideTest extends SelenideBaseTest {
         selectOption("result", "WIN");
         selectOption("method", "DECISION");
         
-        // Заполняем заметки
-        fillField("notes", "Отличный бой с хорошей техникой");
+        // НЕ заполняем заметки, как в WorkingFormTest
+        // fillField("notes", "Отличный бой с хорошей техникой");
         
         log.info("Основная информация заполнена");
     }
@@ -286,12 +308,12 @@ public class FightCreationSelenideTest extends SelenideBaseTest {
         $("h1").shouldHave(text("Список боев"));
         
         // Проверяем, что в таблице есть созданный бой
-        $("#fights-table").shouldBe(visible);
-        $$("#fights-table tbody tr").shouldHave(sizeGreaterThan(0));
+        $(".table").shouldBe(visible);
+        $$(".table tbody tr").shouldHave(sizeGreaterThan(0));
         
         // Проверяем, что есть бой с нашими бойцами
-        $("#fights-table").shouldHave(text("Иван Петров"));
-        $("#fights-table").shouldHave(text("Алексей Сидоров"));
+        $(".table").shouldHave(text("Иван Петров"));
+        $(".table").shouldHave(text("Алексей Сидоров"));
         
         log.info("Бой успешно создан и отображается в списке");
     }

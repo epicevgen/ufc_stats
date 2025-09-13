@@ -37,11 +37,17 @@ public abstract class BaseUITest {
         WebDriverManager.chromedriver().setup();
         
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless"); // Запуск в headless режиме для CI/CD
+        // Проверяем системное свойство для headless режима
+        String headless = System.getProperty("selenide.headless", "false");
+        if ("true".equals(headless)) {
+            options.addArguments("--headless"); // Запуск в headless режиме для CI/CD
+        }
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
+        options.addArguments("--disable-web-security");
+        options.addArguments("--disable-features=VizDisplayCompositor");
         
         driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -54,7 +60,14 @@ public abstract class BaseUITest {
     void tearDown() {
         if (driver != null) {
             log.info("Закрытие WebDriver");
-            driver.quit();
+            try {
+                // Закрываем все окна браузера
+                driver.quit();
+            } catch (Exception e) {
+                log.warn("Ошибка при закрытии WebDriver: {}", e.getMessage());
+            } finally {
+                driver = null;
+            }
         }
     }
 

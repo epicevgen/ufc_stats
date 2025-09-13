@@ -1,12 +1,15 @@
 package com.ufcstats.controller;
 
 import com.ufcstats.model.Fight;
+import com.ufcstats.model.FightRound;
+import com.ufcstats.model.JudgeScore;
 import com.ufcstats.model.enums.FightMode;
 import com.ufcstats.model.enums.FightResult;
 import com.ufcstats.model.enums.FightMethod;
 import com.ufcstats.model.enums.WeightClass;
 import com.ufcstats.service.FightService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class WebController {
 
     private final FightService fightService;
@@ -107,13 +111,22 @@ public class WebController {
     @PostMapping("/fights/new")
     public String createFight(Fight fight, Model model) {
         try {
+            log.info("Создаем новый бой: {} vs {}", fight.getMyFighter(), fight.getOpponent());
+            
             // Временно устанавливаем дату по умолчанию, если она не задана
             if (fight.getFightDate() == null) {
                 fight.setFightDate(LocalDateTime.of(2024, 1, 15, 20, 0));
             }
+            
+            // Исправляем связи между Fight и FightRound/JudgeScore
+            fixCascadeRelationships(fight);
+            
+            log.info("Вызываем fightService.createFight");
             fightService.createFight(fight);
+            log.info("Бой успешно создан, перенаправляем на /fights");
             return "redirect:/fights";
         } catch (Exception e) {
+            log.error("Ошибка при создании боя: {}", e.getMessage(), e);
             // В случае ошибки возвращаемся на форму с сообщением об ошибке
             model.addAttribute("error", "Ошибка при создании боя: " + e.getMessage());
             model.addAttribute("fight", fight);
@@ -128,6 +141,9 @@ public class WebController {
     @PostMapping("/fights/{id}/edit")
     public String updateFight(@PathVariable Long id, Fight fight, Model model) {
         try {
+            // Исправляем связи между Fight и FightRound/JudgeScore
+            fixCascadeRelationships(fight);
+            
             fightService.updateFight(id, fight);
             return "redirect:/fights/" + id;
         } catch (Exception e) {
@@ -148,5 +164,38 @@ public class WebController {
         FightService.FightStatistics stats = fightService.getFightStatistics();
         model.addAttribute("statistics", stats);
         return "statistics";
+    }
+
+    /**
+     * Исправляет каскадные связи между Fight и связанными сущностями
+     */
+    private void fixCascadeRelationships(Fight fight) {
+        // Исправляем связи для раундов
+        if (fight.getRounds() != null) {
+            int roundNumber = 1;
+            for (FightRound round : fight.getRounds()) {
+                if (round.getFight() == null) {
+                    round.setFight(fight);
+                }
+                // Устанавливаем номер раунда (1, 2, 3, 4, 5)
+                if (round.getRoundNumber() == null) {
+                    round.setRoundNumber(roundNumber++);
+                }
+            }
+        }
+        
+        // Исправляем связи для судейских оценок
+        if (fight.getJudgeScores() != null) {
+            int judgeNumber = 1;
+            for (JudgeScore judgeScore : fight.getJudgeScores()) {
+                if (judgeScore.getFight() == null) {
+                    judgeScore.setFight(fight);
+                }
+                // Устанавливаем номер судьи (1, 2, 3)
+                if (judgeScore.getJudgeNumber() == null) {
+                    judgeScore.setJudgeNumber(judgeNumber++);
+                }
+            }
+        }
     }
 }

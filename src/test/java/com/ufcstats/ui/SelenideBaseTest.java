@@ -24,12 +24,17 @@ public abstract class SelenideBaseTest {
     void setUp() {
         // Настройка Selenide
         Configuration.browser = "chrome";
-        Configuration.headless = true;
+        
+        // Проверяем системное свойство для headless режима
+        String headless = System.getProperty("selenide.headless", "false");
+        Configuration.headless = "true".equals(headless);
+        
         Configuration.timeout = 10000;
         Configuration.pageLoadTimeout = 30000;
         Configuration.browserSize = "1920x1080";
         Configuration.screenshots = true;
         Configuration.savePageSource = true;
+        Configuration.holdBrowserOpen = false; // Всегда закрываем браузер после теста
         
         // Настройка логирования (без Allure)
         Configuration.reportsFolder = "build/reports/tests";
@@ -40,6 +45,7 @@ public abstract class SelenideBaseTest {
 
     @AfterEach
     void tearDown() {
+        // Закрываем браузер после каждого теста
         Selenide.closeWebDriver();
     }
 

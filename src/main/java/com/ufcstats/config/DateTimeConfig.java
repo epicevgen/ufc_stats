@@ -9,8 +9,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
 
+import java.beans.PropertyEditorSupport;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Конфигурация для форматирования дат и времени
@@ -40,7 +42,32 @@ class DateTimeControllerAdvice {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(LocalDateTime.class, new org.springframework.beans.propertyeditors.CustomDateEditor(
-                new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm"), true));
+        binder.registerCustomEditor(LocalDateTime.class, new LocalDateTimeEditor());
+    }
+}
+
+/**
+ * Редактор для LocalDateTime
+ */
+class LocalDateTimeEditor extends PropertyEditorSupport {
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+    @Override
+    public void setAsText(String text) throws IllegalArgumentException {
+        if (text == null || text.trim().isEmpty()) {
+            setValue(null);
+        } else {
+            try {
+                setValue(LocalDateTime.parse(text, formatter));
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Неверный формат даты: " + text + ". Ожидается формат: yyyy-MM-dd'T'HH:mm", e);
+            }
+        }
+    }
+
+    @Override
+    public String getAsText() {
+        LocalDateTime value = (LocalDateTime) getValue();
+        return value != null ? value.format(formatter) : "";
     }
 }
