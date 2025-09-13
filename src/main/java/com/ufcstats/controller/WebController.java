@@ -112,10 +112,40 @@ public class WebController {
     public String createFight(Fight fight, Model model) {
         try {
             log.info("Создаем новый бой: {} vs {}", fight.getMyFighter(), fight.getOpponent());
+            log.debug("Данные боя: fightDate={}, mode={}, result={}, method={}, roundsPlayed={}", 
+                     fight.getFightDate(), fight.getFightMode(), fight.getResult(), 
+                     fight.getMethod(), fight.getRoundsPlayed());
+            
+            // Валидация обязательных полей
+            if (fight.getMyFighter() == null || fight.getMyFighter().trim().isEmpty()) {
+                throw new IllegalArgumentException("Имя моего бойца обязательно");
+            }
+            if (fight.getOpponent() == null || fight.getOpponent().trim().isEmpty()) {
+                throw new IllegalArgumentException("Имя соперника обязательно");
+            }
+            if (fight.getFightMode() == null) {
+                throw new IllegalArgumentException("Режим боя обязателен");
+            }
+            if (fight.getResult() == null) {
+                throw new IllegalArgumentException("Результат боя обязателен");
+            }
+            if (fight.getMethod() == null) {
+                throw new IllegalArgumentException("Метод боя обязателен");
+            }
+            if (fight.getWeightClass() == null) {
+                throw new IllegalArgumentException("Весовая категория обязательна");
+            }
+            if (fight.getSeason() == null || fight.getSeason() <= 0) {
+                throw new IllegalArgumentException("Номер сезона должен быть положительным числом");
+            }
+            if (fight.getRoundsPlayed() == null || fight.getRoundsPlayed() < 1 || fight.getRoundsPlayed() > 5) {
+                throw new IllegalArgumentException("Количество раундов должно быть от 1 до 5");
+            }
             
             // Временно устанавливаем дату по умолчанию, если она не задана
             if (fight.getFightDate() == null) {
                 fight.setFightDate(LocalDateTime.of(2024, 1, 15, 20, 0));
+                log.warn("Дата боя не задана, установлена по умолчанию: {}", fight.getFightDate());
             }
             
             // Исправляем связи между Fight и FightRound/JudgeScore
@@ -125,10 +155,18 @@ public class WebController {
             fightService.createFight(fight);
             log.info("Бой успешно создан, перенаправляем на /fights");
             return "redirect:/fights";
+        } catch (IllegalArgumentException e) {
+            log.error("Ошибка валидации при создании боя: {}", e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("fight", fight);
+            model.addAttribute("fightModes", FightMode.values());
+            model.addAttribute("fightResults", FightResult.values());
+            model.addAttribute("fightMethods", FightMethod.values());
+            model.addAttribute("weightClasses", WeightClass.values());
+            return "fight-form";
         } catch (Exception e) {
-            log.error("Ошибка при создании боя: {}", e.getMessage(), e);
-            // В случае ошибки возвращаемся на форму с сообщением об ошибке
-            model.addAttribute("error", "Ошибка при создании боя: " + e.getMessage());
+            log.error("Неожиданная ошибка при создании боя: {}", e.getMessage(), e);
+            model.addAttribute("error", "Произошла неожиданная ошибка: " + e.getMessage());
             model.addAttribute("fight", fight);
             model.addAttribute("fightModes", FightMode.values());
             model.addAttribute("fightResults", FightResult.values());

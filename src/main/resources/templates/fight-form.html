@@ -22,6 +22,12 @@
             <div class="col-12">
                 <h2 th:text="${fight.id != null ? 'Редактирование боя' : 'Новый бой'}">Новый бой</h2>
                 
+                <!-- Отображение ошибок -->
+                <div th:if="${error}" class="alert alert-danger" role="alert">
+                    <h6 class="alert-heading">⚠️ Ошибка при сохранении боя</h6>
+                    <p th:text="${error}" class="mb-0"></p>
+                </div>
+                
                 <form th:action="${fight.id != null ? '/fights/' + fight.id + '/edit' : '/fights/new'}" 
                       th:object="${fight}" method="post" class="needs-validation" novalidate>
                     
