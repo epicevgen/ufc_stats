@@ -37,9 +37,9 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>Список боев</h1>
-                    <a href="/fights/new" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newFightModal">
                         <i class="bi bi-plus-circle"></i> Добавить бой
-                    </a>
+                    </button>
                 </div>
 
                 <!-- Статистика -->
@@ -84,7 +84,9 @@
                         <div th:if="${fights.empty}" class="text-center py-5">
                             <h4 class="text-muted">Бои не найдены</h4>
                             <p class="text-muted">Добавьте первый бой, чтобы начать вести статистику</p>
-                            <a href="/fights/new" class="btn btn-primary">Добавить бой</a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newFightModal">
+                                Добавить бой
+                            </button>
                         </div>
 
                         <div th:if="${!fights.empty}">
@@ -116,10 +118,12 @@
                                             <td th:text="${fight.weightClass.displayName}">Легкий</td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a th:href="@{/fights/{id}(id=${fight.id})}" 
-                                                       class="btn btn-sm btn-outline-primary">Просмотр</a>
-                                                    <a th:href="@{/fights/{id}/edit(id=${fight.id})}" 
-                                                       class="btn btn-sm btn-outline-secondary">Редактировать</a>
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-primary"
+                                                            th:onclick="'viewFight(' + ${fight.id} + ')'">Просмотр</button>
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-secondary"
+                                                            th:onclick="'editFight(' + ${fight.id} + ')'">Редактировать</button>
                                                     <button type="button" 
                                                             class="btn btn-sm btn-outline-danger"
                                                             th:onclick="'deleteFight(' + ${fight.id} + ')'">Удалить</button>
@@ -179,6 +183,156 @@
                 });
             }
         }
+
+        // Функции для работы с модальными окнами
+        function viewFight(fightId) {
+            const modal = new bootstrap.Modal(document.getElementById('viewFightModal'));
+            const container = document.getElementById('viewFightContainer');
+            
+            // Показываем спиннер
+            container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
+            
+            // Загружаем детали боя
+            fetch('/fights/' + fightId)
+                .then(response => response.text())
+                .then(html => {
+                    // Извлекаем только содержимое body из ответа
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const bodyContent = doc.body.innerHTML;
+                    
+                    // Заменяем содержимое контейнера
+                    container.innerHTML = bodyContent;
+                    
+                    // Показываем модальное окно
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке деталей боя:', error);
+                    container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке деталей боя</div>';
+                });
+        }
+
+        function editFight(fightId) {
+            const modal = new bootstrap.Modal(document.getElementById('editFightModal'));
+            const container = document.getElementById('editFightFormContainer');
+            
+            // Показываем спиннер
+            container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
+            
+            // Загружаем форму редактирования
+            fetch('/fights/' + fightId + '/edit')
+                .then(response => response.text())
+                .then(html => {
+                    // Извлекаем только содержимое body из ответа
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const bodyContent = doc.body.innerHTML;
+                    
+                    // Заменяем содержимое контейнера
+                    container.innerHTML = bodyContent;
+                    
+                    // Показываем модальное окно
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке формы редактирования:', error);
+                    container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке формы редактирования</div>';
+                });
+        }
+    </script>
+
+    <!-- Модальное окно для создания нового боя -->
+    <div class="modal fade" id="newFightModal" tabindex="-1" aria-labelledby="newFightModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newFightModalLabel">Новый бой</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="newFightFormContainer">
+                        <!-- Форма будет загружена через AJAX -->
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования боя -->
+    <div class="modal fade" id="editFightModal" tabindex="-1" aria-labelledby="editFightModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editFightModalLabel">Редактирование боя</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="editFightFormContainer">
+                        <!-- Форма будет загружена через AJAX -->
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для просмотра деталей боя -->
+    <div class="modal fade" id="viewFightModal" tabindex="-1" aria-labelledby="viewFightModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewFightModalLabel">Детали боя</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="viewFightContainer">
+                        <!-- Детали боя будут загружены через AJAX -->
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Обработчик для модального окна создания нового боя
+        document.getElementById('newFightModal').addEventListener('show.bs.modal', function () {
+            const container = document.getElementById('newFightFormContainer');
+            
+            // Показываем спиннер
+            container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
+            
+            // Загружаем форму создания
+            fetch('/fights/new')
+                .then(response => response.text())
+                .then(html => {
+                    // Извлекаем только содержимое body из ответа
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const bodyContent = doc.body.innerHTML;
+                    
+                    // Заменяем содержимое контейнера
+                    container.innerHTML = bodyContent;
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке формы создания:', error);
+                    container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке формы создания</div>';
+                });
+        });
     </script>
 </body>
 </html>
