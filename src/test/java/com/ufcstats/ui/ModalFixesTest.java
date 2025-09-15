@@ -102,17 +102,39 @@ public class ModalFixesTest {
         // Ждем обновления полей
         sleep(2000);
         
-        // Проверяем, что появились поля для раундов
+        // Проверяем, что появились поля для раундов (базовые поля)
         $("#round1_my_head_damage").shouldBe(visible);
         $("#round2_my_head_damage").shouldBe(visible);
         $("#round3_my_head_damage").shouldBe(visible);
+        
+        // Проверяем новые поля статистики по раундам
+        $("#round1_my_significant_landed").shouldBe(visible);
+        $("#round1_my_significant_attempted").shouldBe(visible);
+        $("#round1_my_total_landed").shouldBe(visible);
+        $("#round1_my_total_attempted").shouldBe(visible);
+        $("#round1_my_takedowns_successful").shouldBe(visible);
+        $("#round1_my_takedowns_attempted").shouldBe(visible);
+        $("#round1_my_control_time").shouldBe(visible);
+        
+        // Проверяем поля соперника
+        $("#round1_opponent_significant_landed").shouldBe(visible);
+        $("#round1_opponent_significant_attempted").shouldBe(visible);
+        $("#round1_opponent_total_landed").shouldBe(visible);
+        $("#round1_opponent_total_attempted").shouldBe(visible);
+        $("#round1_opponent_takedowns_successful").shouldBe(visible);
+        $("#round1_opponent_takedowns_attempted").shouldBe(visible);
+        $("#round1_opponent_control_time").shouldBe(visible);
         
         // Проверяем, что появились поля для судей
         $("#judge1_my_round1").shouldBe(visible);
         $("#judge2_my_round1").shouldBe(visible);
         $("#judge3_my_round1").shouldBe(visible);
         
-        log.info("Поля статистики по раундам и судейских оценок присутствуют");
+        // Проверяем, что судейские поля пустые (не предзаполнены)
+        $("#judge1_my_round1").shouldHave(value(""));
+        $("#judge1_opponent_round1").shouldHave(value(""));
+        
+        log.info("✓ Все поля статистики по раундам и судейских оценок присутствуют и корректно настроены");
     }
 
     @Test

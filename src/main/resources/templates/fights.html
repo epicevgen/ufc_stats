@@ -233,7 +233,7 @@
                     container.innerHTML = bodyContent;
                     
                     // Инициализируем JavaScript для формы
-                    initializeFightForm();
+                    initializeEditFightForm();
                     
                     // Показываем модальное окно
                     modal.show();
@@ -242,6 +242,82 @@
                     console.error('Ошибка при загрузке формы редактирования:', error);
                     container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке формы редактирования</div>';
                 });
+        }
+        
+        // Функция для инициализации формы редактирования боя в модальном окне
+        function initializeEditFightForm() {
+            const roundsPlayedInput = document.getElementById('roundsPlayed');
+            const roundsContainer = document.getElementById('roundsContainer');
+            const judgesContainer = document.getElementById('judgesContainer');
+            
+            if (!roundsPlayedInput || !roundsContainer || !judgesContainer) {
+                console.log('Элементы формы редактирования не найдены, пропускаем инициализацию');
+                return;
+            }
+            
+            // Инициализируем форму
+            updateRounds();
+            updateJudges();
+            
+            // Добавляем обработчик для изменения количества раундов
+            roundsPlayedInput.addEventListener('input', updateRounds);
+            
+            // Валидация формы и обработка отправки
+            const form = document.querySelector('.needs-validation');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else {
+                        // Если форма валидна, отправляем через AJAX
+                        event.preventDefault();
+                        submitEditFormViaAjax(form);
+                    }
+                    form.classList.add('was-validated');
+                });
+            }
+        }
+        
+        // Функция для отправки формы редактирования через AJAX
+        function submitEditFormViaAjax(form) {
+            const formData = new FormData(form);
+            const url = form.action;
+            
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Закрываем модальное окно
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editFightModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    // Перезагружаем страницу для обновления списка боев
+                    location.reload();
+                } else {
+                    // Если есть ошибки, показываем их
+                    return response.text().then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const errorDiv = doc.querySelector('.alert-danger');
+                        if (errorDiv) {
+                            const container = document.getElementById('editFightFormContainer');
+                            container.innerHTML = html;
+                            initializeEditFightForm();
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке формы редактирования:', error);
+                alert('Произошла ошибка при сохранении изменений боя');
+            });
         }
     </script>
 
@@ -358,17 +434,62 @@
             // Добавляем обработчик для изменения количества раундов
             roundsPlayedInput.addEventListener('input', updateRounds);
             
-            // Валидация формы
+            // Валидация формы и обработка отправки
             const form = document.querySelector('.needs-validation');
             if (form) {
                 form.addEventListener('submit', function(event) {
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
+                    } else {
+                        // Если форма валидна, отправляем через AJAX
+                        event.preventDefault();
+                        submitFormViaAjax(form);
                     }
                     form.classList.add('was-validated');
                 });
             }
+        }
+        
+        // Функция для отправки формы через AJAX
+        function submitFormViaAjax(form) {
+            const formData = new FormData(form);
+            const url = form.action;
+            
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Закрываем модальное окно
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('newFightModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    // Перезагружаем страницу для обновления списка боев
+                    location.reload();
+                } else {
+                    // Если есть ошибки, показываем их
+                    return response.text().then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const errorDiv = doc.querySelector('.alert-danger');
+                        if (errorDiv) {
+                            const container = document.getElementById('newFightFormContainer');
+                            container.innerHTML = html;
+                            initializeFightForm();
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке формы:', error);
+                alert('Произошла ошибка при сохранении боя');
+            });
         }
 
         // Функции для работы с раундами и судьями (копируем из fight-form.js)
@@ -450,6 +571,46 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-6">
+                                    <label class="form-label small">Значимые удары (попал/попытка)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_significant_landed" 
+                                               name="rounds[${roundNumber-1}].mySignificantStrikesLanded" value="0" min="0" max="200">
+                                        <span class="input-group-text">/</span>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_significant_attempted" 
+                                               name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" value="0" min="0" max="200">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">Все удары (попал/попытка)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_total_landed" 
+                                               name="rounds[${roundNumber-1}].myTotalStrikesLanded" value="0" min="0" max="300">
+                                        <span class="input-group-text">/</span>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_total_attempted" 
+                                               name="rounds[${roundNumber-1}].myTotalStrikesAttempted" value="0" min="0" max="300">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-6">
+                                    <label class="form-label small">Тейкдауны (успешный/попытка)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_takedowns_successful" 
+                                               name="rounds[${roundNumber-1}].myTakedownsSuccessful" value="0" min="0" max="10">
+                                        <span class="input-group-text">/</span>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_takedowns_attempted" 
+                                               name="rounds[${roundNumber-1}].myTakedownsAttempted" value="0" min="0" max="10">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">Время контроля (ММ:СС)</label>
+                                    <input type="text" class="form-control text-center" id="round${roundNumber}_my_control_time" 
+                                           name="rounds[${roundNumber-1}].myControlTime" value="00:00" 
+                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$" placeholder="00:00">
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-danger">Соперник</h6>
@@ -493,6 +654,46 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-6">
+                                    <label class="form-label small">Значимые удары (попал/попытка)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_significant_landed" 
+                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" value="0" min="0" max="200">
+                                        <span class="input-group-text">/</span>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_significant_attempted" 
+                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" value="0" min="0" max="200">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">Все удары (попал/попытка)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_total_landed" 
+                                               name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" value="0" min="0" max="300">
+                                        <span class="input-group-text">/</span>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_total_attempted" 
+                                               name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" value="0" min="0" max="300">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mt-1">
+                                <div class="col-6">
+                                    <label class="form-label small">Тейкдауны (успешный/попытка)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_takedowns_successful" 
+                                               name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" value="0" min="0" max="10">
+                                        <span class="input-group-text">/</span>
+                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_takedowns_attempted" 
+                                               name="rounds[${roundNumber-1}].opponentTakedownsAttempted" value="0" min="0" max="10">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">Время контроля (ММ:СС)</label>
+                                    <input type="text" class="form-control text-center" id="round${roundNumber}_opponent_control_time" 
+                                           name="rounds[${roundNumber-1}].opponentControlTime" value="00:00" 
+                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$" placeholder="00:00">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -513,50 +714,50 @@
                             <label class="form-label small">Раунд 1</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round1" 
-                                       name="judgeScores[${judgeNumber-1}].myRound1" value="10" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].myRound1" value="" min="0" max="10" placeholder="0">
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round1" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound1" value="9" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound1" value="" min="0" max="10" placeholder="0">
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 2</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round2" 
-                                       name="judgeScores[${judgeNumber-1}].myRound2" value="10" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].myRound2" value="" min="0" max="10" placeholder="0">
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round2" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound2" value="9" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound2" value="" min="0" max="10" placeholder="0">
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 3</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round3" 
-                                       name="judgeScores[${judgeNumber-1}].myRound3" value="10" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].myRound3" value="" min="0" max="10" placeholder="0">
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round3" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound3" value="9" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound3" value="" min="0" max="10" placeholder="0">
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 4</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round4" 
-                                       name="judgeScores[${judgeNumber-1}].myRound4" value="10" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].myRound4" value="" min="0" max="10" placeholder="0">
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round4" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound4" value="9" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound4" value="" min="0" max="10" placeholder="0">
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 5</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round5" 
-                                       name="judgeScores[${judgeNumber-1}].myRound5" value="10" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].myRound5" value="" min="0" max="10" placeholder="0">
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round5" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound5" value="9" min="0" max="10">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound5" value="" min="0" max="10" placeholder="0">
                             </div>
                         </div>
                     </div>
