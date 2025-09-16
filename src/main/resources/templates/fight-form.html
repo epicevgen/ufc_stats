@@ -46,8 +46,8 @@
                                     <div class="form-text">Выберите дату и время из календаря</div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="mode" class="form-label">Режим боя *</label>
-                                    <select class="form-select" id="mode" th:field="*{fightMode}" required>
+                                    <label for="fightMode" class="form-label">Режим боя *</label>
+                                    <select class="form-select" id="fightMode" th:field="*{fightMode}" required>
                                         <option value="">Выберите режим</option>
                                         <option th:each="mode : ${fightModes}" 
                                                 th:value="${mode}" 
@@ -65,8 +65,8 @@
                                     <div class="invalid-feedback">Укажите номер сезона</div>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="result" class="form-label">Результат *</label>
-                                    <select class="form-select" id="result" th:field="*{result}" required>
+                                    <label for="fightResult" class="form-label">Результат *</label>
+                                    <select class="form-select" id="fightResult" th:field="*{result}" required>
                                         <option value="">Выберите результат</option>
                                         <option th:each="result : ${fightResults}" 
                                                 th:value="${result}" 
@@ -75,8 +75,8 @@
                                     <div class="invalid-feedback">Выберите результат боя</div>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="method" class="form-label">Метод *</label>
-                                    <select class="form-select" id="method" th:field="*{method}" required>
+                                    <label for="fightMethod" class="form-label">Метод *</label>
+                                    <select class="form-select" id="fightMethod" th:field="*{method}" required>
                                         <option value="">Выберите метод</option>
                                         <option th:each="method : ${fightMethods}" 
                                                 th:value="${method}" 
@@ -109,7 +109,7 @@
                                         <option value="">Выберите категорию</option>
                                         <option th:each="weight : ${weightClasses}" 
                                                 th:value="${weight}" 
-                                                th:text="${weight}"></option>
+                                                th:text="${weight.displayName}"></option>
                                     </select>
                                     <div class="invalid-feedback">Выберите весовую категорию</div>
                                 </div>
