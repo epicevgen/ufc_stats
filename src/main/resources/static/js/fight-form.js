@@ -1,3 +1,53 @@
+// Глобальные функции для форматирования полей
+// Функция для автоматического добавления двоеточия в поля контроля времени
+function formatControlTime(input) {
+    console.log('formatControlTime called with value:', input.value);
+    
+    let value = input.value.replace(/\D/g, ''); // Убираем все нецифровые символы
+    console.log('Cleaned value:', value);
+    
+    if (value.length >= 2) {
+        // Если введено 2 или больше цифр, добавляем двоеточие
+        value = value.substring(0, 2) + ':' + value.substring(2, 4);
+        console.log('Formatted value:', value);
+    }
+    
+    input.value = value;
+    console.log('Final value set to:', input.value);
+}
+
+// Функция для обработки изменения режима боя
+function handleFightModeChange(select) {
+    const fightMode = select.value;
+    
+    if (fightMode === 'STANCE') {
+        // Если выбран режим "Стойка", заполняем поля тейкдаунов нулями
+        clearTakedownFields();
+    }
+}
+
+// Функция для очистки полей тейкдаунов
+function clearTakedownFields() {
+    const roundsPlayed = document.getElementById('roundsPlayed');
+    const roundsCount = parseInt(roundsPlayed.value) || 0;
+    
+    for (let round = 1; round <= roundsCount; round++) {
+        // Очищаем поля тейкдаунов для моего бойца
+        const mySuccessfulField = document.getElementById(`round${round}_my_takedowns_successful`);
+        const myAttemptedField = document.getElementById(`round${round}_my_takedowns_attempted`);
+        
+        if (mySuccessfulField) mySuccessfulField.value = '0';
+        if (myAttemptedField) myAttemptedField.value = '0';
+        
+        // Очищаем поля тейкдаунов для соперника
+        const opponentSuccessfulField = document.getElementById(`round${round}_opponent_takedowns_successful`);
+        const opponentAttemptedField = document.getElementById(`round${round}_opponent_takedowns_attempted`);
+        
+        if (opponentSuccessfulField) opponentSuccessfulField.value = '0';
+        if (opponentAttemptedField) opponentAttemptedField.value = '0';
+    }
+}
+
 // Управление формой создания/редактирования боя
 document.addEventListener('DOMContentLoaded', function() {
     const roundsPlayedInput = document.getElementById('roundsPlayed');
@@ -8,21 +58,27 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeForm();
     
     // Обработчики событий
-    roundsPlayedInput.addEventListener('input', updateRounds);
+    if (roundsPlayedInput) {
+        roundsPlayedInput.addEventListener('input', updateRounds);
+    }
     
     // Валидация формы
     const form = document.querySelector('.needs-validation');
-    form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-    });
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+    }
     
     function initializeForm() {
         // Не генерируем раунды автоматически, ждем когда пользователь выберет количество
-        updateJudges();
+        if (judgesContainer) {
+            updateJudges();
+        }
         
         // Проверяем, что поле даты заполнено (должно быть заполнено сервером)
         const fightDateInput = document.getElementById('fightDate');
@@ -33,23 +89,63 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updateRounds() {
         const roundsCount = parseInt(roundsPlayedInput.value);
+        console.log('updateRounds called with value:', roundsPlayedInput.value, 'parsed:', roundsCount);
         roundsContainer.innerHTML = '';
         
         // Генерируем раунды только если пользователь выбрал количество
         if (roundsCount && roundsCount > 0) {
+            console.log('Generating', roundsCount, 'rounds');
             for (let round = 1; round <= roundsCount; round++) {
                 const roundCard = createRoundCard(round);
                 roundsContainer.appendChild(roundCard);
             }
+            
+            // Добавляем обработчики событий для полей контроля времени
+            console.log('Calling addControlTimeEventListeners');
+            addControlTimeEventListeners(roundsCount);
         }
     }
     
     function updateJudges() {
+        if (!judgesContainer) {
+            console.log('judgesContainer not found, skipping judge generation');
+            return;
+        }
+        
         judgesContainer.innerHTML = '';
         
         for (let judge = 1; judge <= 3; judge++) {
             const judgeCard = createJudgeCard(judge);
             judgesContainer.appendChild(judgeCard);
+        }
+    }
+    
+    // Функция для добавления обработчиков событий к полям контроля времени
+    function addControlTimeEventListeners(roundsCount) {
+        console.log('addControlTimeEventListeners called with roundsCount:', roundsCount);
+        
+        for (let round = 1; round <= roundsCount; round++) {
+            const myControlField = document.getElementById(`round${round}_my_control_time`);
+            const opponentControlField = document.getElementById(`round${round}_opponent_control_time`);
+            
+            console.log(`Round ${round} - myControlField:`, myControlField);
+            console.log(`Round ${round} - opponentControlField:`, opponentControlField);
+            
+            if (myControlField) {
+                console.log(`Adding event listener to round${round}_my_control_time`);
+                myControlField.addEventListener('input', function() {
+                    console.log('Input event triggered on my control field');
+                    formatControlTime(this);
+                });
+            }
+            
+            if (opponentControlField) {
+                console.log(`Adding event listener to round${round}_opponent_control_time`);
+                opponentControlField.addEventListener('input', function() {
+                    console.log('Input event triggered on opponent control field');
+                    formatControlTime(this);
+                });
+            }
         }
     }
     
@@ -138,7 +234,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="col-3">
                                 <label class="form-label small">Контроль (мм:сс)</label>
                                 <input type="text" class="form-control form-control-sm" id="round${roundNumber}_my_control_time" 
-                                       name="rounds[${roundNumber-1}].myControlTime" pattern="[0-5][0-9]:[0-5][0-9]">
+                                       name="rounds[${roundNumber-1}].myControlTime" pattern="[0-5][0-9]:[0-5][0-9]"
+                                       maxlength="5">
                             </div>
                         </div>
                     </div>
@@ -218,7 +315,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="col-3">
                                 <label class="form-label small">Контроль (мм:сс)</label>
                                 <input type="text" class="form-control form-control-sm" id="round${roundNumber}_opponent_control_time" 
-                                       name="rounds[${roundNumber-1}].opponentControlTime" pattern="[0-5][0-9]:[0-5][0-9]">
+                                       name="rounds[${roundNumber-1}].opponentControlTime" pattern="[0-5][0-9]:[0-5][0-9]"
+                                       maxlength="5">
                             </div>
                         </div>
                     </div>

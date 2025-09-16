@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="fightMode" class="form-label">Режим боя *</label>
-                                    <select class="form-select" id="fightMode" th:field="*{fightMode}" required>
+                                    <select class="form-select" id="fightMode" th:field="*{fightMode}" required onchange="handleFightModeChange(this)">
                                         <option value="">Выберите режим</option>
                                         <option th:each="mode : ${fightModes}" 
                                                 th:value="${mode}" 
