@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_head_damage')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_my_head_damage" 
-                                           name="rounds[${roundNumber-1}].myHeadDamage" value="0" min="0" max="100">
+                                           name="rounds[${roundNumber-1}].myHeadDamage" min="0" max="100">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_head_damage')">+</button>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_body_damage')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_my_body_damage" 
-                                           name="rounds[${roundNumber-1}].myBodyDamage" value="0" min="0" max="100">
+                                           name="rounds[${roundNumber-1}].myBodyDamage" min="0" max="100">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_body_damage')">+</button>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_leg_damage')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_my_leg_damage" 
-                                           name="rounds[${roundNumber-1}].myLegDamage" value="0" min="0" max="100">
+                                           name="rounds[${roundNumber-1}].myLegDamage" min="0" max="100">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_leg_damage')">+</button>
                                 </div>
                             </div>
@@ -97,46 +97,46 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_knockdowns')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_my_knockdowns" 
-                                           name="rounds[${roundNumber-1}].myKnockdowns" value="0" min="0" max="10">
+                                           name="rounds[${roundNumber-1}].myKnockdowns" min="0" max="10">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_knockdowns')">+</button>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Значимые удары (попал)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_my_significant_landed" 
-                                       name="rounds[${roundNumber-1}].mySignificantStrikesLanded" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].mySignificantStrikesLanded" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Значимые удары (всего)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_my_significant_attempted" 
-                                       name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Все удары (попал)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_my_total_landed" 
-                                       name="rounds[${roundNumber-1}].myTotalStrikesLanded" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].myTotalStrikesLanded" min="0">
                             </div>
                         </div>
                         <div class="row g-2 mt-2">
                             <div class="col-3">
                                 <label class="form-label small">Все удары (всего)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_my_total_attempted" 
-                                       name="rounds[${roundNumber-1}].myTotalStrikesAttempted" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].myTotalStrikesAttempted" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Тейкдауны (успешные)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_my_takedowns_successful" 
-                                       name="rounds[${roundNumber-1}].myTakedownsSuccessful" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].myTakedownsSuccessful" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Тейкдауны (всего)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_my_takedowns_attempted" 
-                                       name="rounds[${roundNumber-1}].myTakedownsAttempted" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].myTakedownsAttempted" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Контроль (мм:сс)</label>
                                 <input type="text" class="form-control form-control-sm" id="round${roundNumber}_my_control_time" 
-                                       name="rounds[${roundNumber-1}].myControlTime" value="00:00" pattern="[0-5][0-9]:[0-5][0-9]">
+                                       name="rounds[${roundNumber-1}].myControlTime" pattern="[0-5][0-9]:[0-5][0-9]">
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_head_damage')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_head_damage" 
-                                           name="rounds[${roundNumber-1}].opponentHeadDamage" value="0" min="0" max="100">
+                                           name="rounds[${roundNumber-1}].opponentHeadDamage" min="0" max="100">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_head_damage')">+</button>
                                 </div>
                             </div>
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_body_damage')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_body_damage" 
-                                           name="rounds[${roundNumber-1}].opponentBodyDamage" value="0" min="0" max="100">
+                                           name="rounds[${roundNumber-1}].opponentBodyDamage" min="0" max="100">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_body_damage')">+</button>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_leg_damage')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_leg_damage" 
-                                           name="rounds[${roundNumber-1}].opponentLegDamage" value="0" min="0" max="100">
+                                           name="rounds[${roundNumber-1}].opponentLegDamage" min="0" max="100">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_leg_damage')">+</button>
                                 </div>
                             </div>
@@ -177,46 +177,46 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="input-group input-group-sm">
                                     <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_knockdowns')">-</button>
                                     <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_knockdowns" 
-                                           name="rounds[${roundNumber-1}].opponentKnockdowns" value="0" min="0" max="10">
+                                           name="rounds[${roundNumber-1}].opponentKnockdowns" min="0" max="10">
                                     <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_knockdowns')">+</button>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Значимые удары (попал)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_opponent_significant_landed" 
-                                       name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Значимые удары (всего)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_opponent_significant_attempted" 
-                                       name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Все удары (попал)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_opponent_total_landed" 
-                                       name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" min="0">
                             </div>
                         </div>
                         <div class="row g-2 mt-2">
                             <div class="col-3">
                                 <label class="form-label small">Все удары (всего)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_opponent_total_attempted" 
-                                       name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Тейкдауны (успешные)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_opponent_takedowns_successful" 
-                                       name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Тейкдауны (всего)</label>
                                 <input type="number" class="form-control form-control-sm" id="round${roundNumber}_opponent_takedowns_attempted" 
-                                       name="rounds[${roundNumber-1}].opponentTakedownsAttempted" value="0" min="0">
+                                       name="rounds[${roundNumber-1}].opponentTakedownsAttempted" min="0">
                             </div>
                             <div class="col-3">
                                 <label class="form-label small">Контроль (мм:сс)</label>
                                 <input type="text" class="form-control form-control-sm" id="round${roundNumber}_opponent_control_time" 
-                                       name="rounds[${roundNumber-1}].opponentControlTime" value="00:00" pattern="[0-5][0-9]:[0-5][0-9]">
+                                       name="rounds[${roundNumber-1}].opponentControlTime" pattern="[0-5][0-9]:[0-5][0-9]">
                             </div>
                         </div>
                     </div>
@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_my_round1')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round1" 
-                                               name="judgeScores[${judgeNumber-1}].round1MyScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round1MyScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_my_round1')">+</button>
                                     </div>
                                 </td>
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_my_round2')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round2" 
-                                               name="judgeScores[${judgeNumber-1}].round2MyScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round2MyScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_my_round2')">+</button>
                                     </div>
                                 </td>
@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_my_round3')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round3" 
-                                               name="judgeScores[${judgeNumber-1}].round3MyScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round3MyScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_my_round3')">+</button>
                                     </div>
                                 </td>
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_my_round4')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round4" 
-                                               name="judgeScores[${judgeNumber-1}].round4MyScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round4MyScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_my_round4')">+</button>
                                     </div>
                                 </td>
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_my_round5')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round5" 
-                                               name="judgeScores[${judgeNumber-1}].round5MyScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round5MyScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_my_round5')">+</button>
                                     </div>
                                 </td>
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_opponent_round1')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round1" 
-                                               name="judgeScores[${judgeNumber-1}].round1OpponentScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round1OpponentScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_opponent_round1')">+</button>
                                     </div>
                                 </td>
@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_opponent_round2')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round2" 
-                                               name="judgeScores[${judgeNumber-1}].round2OpponentScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round2OpponentScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_opponent_round2')">+</button>
                                     </div>
                                 </td>
@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_opponent_round3')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round3" 
-                                               name="judgeScores[${judgeNumber-1}].round3OpponentScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round3OpponentScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_opponent_round3')">+</button>
                                     </div>
                                 </td>
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_opponent_round4')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round4" 
-                                               name="judgeScores[${judgeNumber-1}].round4OpponentScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round4OpponentScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_opponent_round4')">+</button>
                                     </div>
                                 </td>
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-secondary" onclick="decrementJudgeScore('judge${judgeNumber}_opponent_round5')">-</button>
                                         <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round5" 
-                                               name="judgeScores[${judgeNumber-1}].round5OpponentScore" value="0" min="0" max="10">
+                                               name="judgeScores[${judgeNumber-1}].round5OpponentScore" min="0" max="10">
                                         <button type="button" class="btn btn-outline-secondary" onclick="incrementJudgeScore('judge${judgeNumber}_opponent_round5')">+</button>
                                     </div>
                                 </td>
