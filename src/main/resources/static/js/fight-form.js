@@ -21,8 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function initializeForm() {
-        const roundsCount = parseInt(roundsPlayedInput.value) || 1;
-        updateRounds();
+        // Не генерируем раунды автоматически, ждем когда пользователь выберет количество
         updateJudges();
         
         // Проверяем, что поле даты заполнено (должно быть заполнено сервером)
@@ -33,12 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateRounds() {
-        const roundsCount = parseInt(roundsPlayedInput.value) || 1;
+        const roundsCount = parseInt(roundsPlayedInput.value);
         roundsContainer.innerHTML = '';
         
-        for (let round = 1; round <= roundsCount; round++) {
-            const roundCard = createRoundCard(round);
-            roundsContainer.appendChild(roundCard);
+        // Генерируем раунды только если пользователь выбрал количество
+        if (roundsCount && roundsCount > 0) {
+            for (let round = 1; round <= roundsCount; round++) {
+                const roundCard = createRoundCard(round);
+                roundsContainer.appendChild(roundCard);
+            }
         }
     }
     

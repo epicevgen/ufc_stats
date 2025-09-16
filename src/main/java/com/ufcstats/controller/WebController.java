@@ -66,7 +66,6 @@ public class WebController {
         model.addAttribute("title", "Новый бой");
         
         Fight fight = new Fight();
-        fight.setRoundsPlayed(3); // По умолчанию 3 раунда
         fight.setFightDate(LocalDateTime.now()); // Устанавливаем текущую дату и время
         
         model.addAttribute("fight", fight);

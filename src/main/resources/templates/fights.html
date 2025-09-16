@@ -576,20 +576,20 @@
                                     <label class="form-label small">Значимые удары (попал/попытка)</label>
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_my_significant_landed" 
-                                               name="rounds[${roundNumber-1}].mySignificantStrikesLanded" value="" min="0" max="200" placeholder="0">
+                                               name="rounds[${roundNumber-1}].mySignificantStrikesLanded" value="" min="0" max="200" >
                                         <span class="input-group-text">/</span>
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_my_significant_attempted" 
-                                               name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" value="" min="0" max="200" placeholder="0">
+                                               name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" value="" min="0" max="200" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small">Все удары (попал/попытка)</label>
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_my_total_landed" 
-                                               name="rounds[${roundNumber-1}].myTotalStrikesLanded" value="" min="0" max="300" placeholder="0">
+                                               name="rounds[${roundNumber-1}].myTotalStrikesLanded" value="" min="0" max="300" >
                                         <span class="input-group-text">/</span>
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_my_total_attempted" 
-                                               name="rounds[${roundNumber-1}].myTotalStrikesAttempted" value="" min="0" max="300" placeholder="0">
+                                               name="rounds[${roundNumber-1}].myTotalStrikesAttempted" value="" min="0" max="300" >
                                     </div>
                                 </div>
                             </div>
@@ -598,17 +598,17 @@
                                     <label class="form-label small">Тейкдауны (успешный/попытка)</label>
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_my_takedowns_successful" 
-                                               name="rounds[${roundNumber-1}].myTakedownsSuccessful" value="" min="0" max="10" placeholder="0">
+                                               name="rounds[${roundNumber-1}].myTakedownsSuccessful" value="" min="0" max="10" >
                                         <span class="input-group-text">/</span>
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_my_takedowns_attempted" 
-                                               name="rounds[${roundNumber-1}].myTakedownsAttempted" value="" min="0" max="10" placeholder="0">
+                                               name="rounds[${roundNumber-1}].myTakedownsAttempted" value="" min="0" max="10" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small">Время контроля (ММ:СС)</label>
                                     <input type="text" class="form-control text-center" id="round${roundNumber}_my_control_time" 
-                                           name="rounds[${roundNumber-1}].myControlTime" value="00:00" 
-                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$" placeholder="00:00">
+                                           name="rounds[${roundNumber-1}].myControlTime" 
+                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$">
                                 </div>
                             </div>
                         </div>
@@ -659,20 +659,20 @@
                                     <label class="form-label small">Значимые удары (попал/попытка)</label>
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_significant_landed" 
-                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" value="" min="0" max="200" placeholder="0">
+                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" value="" min="0" max="200" >
                                         <span class="input-group-text">/</span>
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_significant_attempted" 
-                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" value="" min="0" max="200" placeholder="0">
+                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" value="" min="0" max="200" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small">Все удары (попал/попытка)</label>
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_total_landed" 
-                                               name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" value="" min="0" max="300" placeholder="0">
+                                               name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" value="" min="0" max="300" >
                                         <span class="input-group-text">/</span>
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_total_attempted" 
-                                               name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" value="" min="0" max="300" placeholder="0">
+                                               name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" value="" min="0" max="300" >
                                     </div>
                                 </div>
                             </div>
@@ -681,17 +681,17 @@
                                     <label class="form-label small">Тейкдауны (успешный/попытка)</label>
                                     <div class="input-group input-group-sm">
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_takedowns_successful" 
-                                               name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" value="" min="0" max="10" placeholder="0">
+                                               name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" value="" min="0" max="10" >
                                         <span class="input-group-text">/</span>
                                         <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_takedowns_attempted" 
-                                               name="rounds[${roundNumber-1}].opponentTakedownsAttempted" value="" min="0" max="10" placeholder="0">
+                                               name="rounds[${roundNumber-1}].opponentTakedownsAttempted" value="" min="0" max="10" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small">Время контроля (ММ:СС)</label>
                                     <input type="text" class="form-control text-center" id="round${roundNumber}_opponent_control_time" 
-                                           name="rounds[${roundNumber-1}].opponentControlTime" value="00:00" 
-                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$" placeholder="00:00">
+                                           name="rounds[${roundNumber-1}].opponentControlTime" 
+                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$">
                                 </div>
                             </div>
                         </div>
@@ -714,50 +714,50 @@
                             <label class="form-label small">Раунд 1</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round1" 
-                                       name="judgeScores[${judgeNumber-1}].myRound1" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].myRound1" value="" min="0" max="10" >
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round1" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound1" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound1" value="" min="0" max="10" >
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 2</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round2" 
-                                       name="judgeScores[${judgeNumber-1}].myRound2" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].myRound2" value="" min="0" max="10" >
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round2" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound2" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound2" value="" min="0" max="10" >
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 3</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round3" 
-                                       name="judgeScores[${judgeNumber-1}].myRound3" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].myRound3" value="" min="0" max="10" >
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round3" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound3" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound3" value="" min="0" max="10" >
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 4</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round4" 
-                                       name="judgeScores[${judgeNumber-1}].myRound4" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].myRound4" value="" min="0" max="10" >
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round4" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound4" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound4" value="" min="0" max="10" >
                             </div>
                         </div>
                         <div class="col-2">
                             <label class="form-label small">Раунд 5</label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round5" 
-                                       name="judgeScores[${judgeNumber-1}].myRound5" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].myRound5" value="" min="0" max="10" >
                                 <span class="input-group-text">-</span>
                                 <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round5" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound5" value="" min="0" max="10" placeholder="0">
+                                       name="judgeScores[${judgeNumber-1}].opponentRound5" value="" min="0" max="10" >
                             </div>
                         </div>
                     </div>

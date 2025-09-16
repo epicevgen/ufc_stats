@@ -36,52 +36,52 @@ public class JudgeScore {
     @Column(name = "round_1_my_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round1MyScore = 0;
+    private Integer round1MyScore;
 
     @Column(name = "round_1_opponent_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round1OpponentScore = 0;
+    private Integer round1OpponentScore;
 
     @Column(name = "round_2_my_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round2MyScore = 0;
+    private Integer round2MyScore;
 
     @Column(name = "round_2_opponent_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round2OpponentScore = 0;
+    private Integer round2OpponentScore;
 
     @Column(name = "round_3_my_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round3MyScore = 0;
+    private Integer round3MyScore;
 
     @Column(name = "round_3_opponent_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round3OpponentScore = 0;
+    private Integer round3OpponentScore;
 
     @Column(name = "round_4_my_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round4MyScore = 0;
+    private Integer round4MyScore;
 
     @Column(name = "round_4_opponent_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round4OpponentScore = 0;
+    private Integer round4OpponentScore;
 
     @Column(name = "round_5_my_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round5MyScore = 0;
+    private Integer round5MyScore;
 
     @Column(name = "round_5_opponent_score")
     @Min(value = 0, message = "Оценка не может быть отрицательной")
     @Max(value = 10, message = "Оценка не может быть больше 10")
-    private Integer round5OpponentScore = 0;
+    private Integer round5OpponentScore;
 
     // Вспомогательные методы для получения оценок по раундам
     public Integer getMyScoreForRound(int roundNumber) {
