@@ -153,11 +153,26 @@
                     <!-- Статистика по раундам -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0">📊 Статистика по раундам</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">📊 Статистика по раундам</h5>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-primary btn-sm global-fighter-position-btn" 
+                                            data-position="left" style="font-size: 0.6rem; padding: 2px 6px;">
+                                        Мой боец слева
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm global-fighter-position-btn" 
+                                            data-position="right" style="font-size: 0.6rem; padding: 2px 6px;">
+                                        Мой боец справа
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
-                            <div id="roundsContainer">
-                                <!-- Раунды будут добавлены динамически -->
+                            <div id="roundsContainer" style="overflow-x: auto; overflow-y: hidden;">
+                                <!-- ГОРИЗОНТАЛЬНАЯ СТРУКТУРА РАУНДОВ - ВСТРОЕНА В HTML -->
+                                <div class="d-flex gap-2" id="roundsWrapper" style="min-width: max-content; flex-wrap: nowrap;">
+                                    <!-- Раунды будут добавлены динамически -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,5 +202,411 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/fight-form.js"></script>
+    
+    <script>
+        console.log('🚀🚀🚀 FIGHT-FORM.HTML SCRIPT LOADED!');
+        
+        // Функция для создания колонки раунда с НОВОЙ структурой
+        function createRoundColumn(roundNumber) {
+            console.log('🚀🚀🚀 Creating round column for round:', roundNumber);
+            const column = document.createElement('div');
+            column.className = 'flex-shrink-0';
+            column.style.minWidth = '60px';
+            column.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-header text-center" style="padding: 1px 2px;">
+                        <h6 class="mb-0" style="font-size: 0.6rem;">Раунд ${roundNumber}</h6>
+                    </div>
+                    <div class="card-body" style="padding: 2px;">
+                        <!-- Горизонтальное расположение бойца и соперника -->
+                        <div class="row">
+                            <!-- Мой боец -->
+                            <div class="col-6">
+                                <h6 class="text-primary mb-0 text-center" style="font-size: 0.55rem;">Мой боец</h6>
+                                
+                                <!-- Вертикальное расположение полей -->
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Голова</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_head_damage" 
+                                           name="rounds[${roundNumber-1}].myHeadDamage" min="0" max="100">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Корпус</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_body_damage" 
+                                           name="rounds[${roundNumber-1}].myBodyDamage" min="0" max="100">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Ноги</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_leg_damage" 
+                                           name="rounds[${roundNumber-1}].myLegDamage" min="0" max="100">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Нокдауны</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_knockdowns" 
+                                           name="rounds[${roundNumber-1}].myKnockdowns" min="0" max="10">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Зн. удары</label>
+                                    <div class="row g-1">
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_significant_landed" 
+                                                   name="rounds[${roundNumber-1}].mySignificantStrikesLanded" min="0" placeholder="пп">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_significant_attempted" 
+                                                   name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" min="0" placeholder="вс">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Всего ударов</label>
+                                    <div class="row g-1">
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_total_landed" 
+                                                   name="rounds[${roundNumber-1}].myTotalStrikesLanded" min="0" placeholder="пп">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_total_attempted" 
+                                                   name="rounds[${roundNumber-1}].myTotalStrikesAttempted" min="0" placeholder="вс">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Тейкдауны</label>
+                                    <div class="row g-1">
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_takedowns_successful" 
+                                                   name="rounds[${roundNumber-1}].myTakedownsSuccessful" min="0" placeholder="ус">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_takedowns_attempted" 
+                                                   name="rounds[${roundNumber-1}].myTakedownsAttempted" min="0" placeholder="вс">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Контроль</label>
+                                    <input type="text" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_control_time" 
+                                           name="rounds[${roundNumber-1}].myControlTime" pattern="[0-5][0-9]:[0-5][0-9]"
+                                           maxlength="5" placeholder="мм:сс">
+                                </div>
+                            </div>
+                            
+                            <!-- Соперник -->
+                            <div class="col-6">
+                                <h6 class="text-danger mb-0 text-center" style="font-size: 0.55rem;">Соперник</h6>
+                                
+                                <!-- Вертикальное расположение полей -->
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Голова</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_head_damage" 
+                                           name="rounds[${roundNumber-1}].opponentHeadDamage" min="0" max="100">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Корпус</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_body_damage" 
+                                           name="rounds[${roundNumber-1}].opponentBodyDamage" min="0" max="100">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Ноги</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_leg_damage" 
+                                           name="rounds[${roundNumber-1}].opponentLegDamage" min="0" max="100">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Нокдауны</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_knockdowns" 
+                                           name="rounds[${roundNumber-1}].opponentKnockdowns" min="0" max="10">
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Зн. удары</label>
+                                    <div class="row g-1">
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_significant_landed" 
+                                                   name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" min="0" placeholder="пп">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_significant_attempted" 
+                                                   name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" min="0" placeholder="вс">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Всего ударов</label>
+                                    <div class="row g-1">
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_total_landed" 
+                                                   name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" min="0" placeholder="пп">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_total_attempted" 
+                                                   name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" min="0" placeholder="вс">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Тейкдауны</label>
+                                    <div class="row g-1">
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_takedowns_successful" 
+                                                   name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" min="0" placeholder="ус">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_takedowns_attempted" 
+                                                   name="rounds[${roundNumber-1}].opponentTakedownsAttempted" min="0" placeholder="вс">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-0">
+                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Контроль</label>
+                                    <input type="text" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_control_time" 
+                                           name="rounds[${roundNumber-1}].opponentControlTime" pattern="[0-5][0-9]:[0-5][0-9]"
+                                           maxlength="5" placeholder="мм:сс">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return column;
+        }
+        
+        // Функция для обновления судейских оценок
+        function updateJudges() {
+            const judgesContainer = document.getElementById('judgesContainer');
+            if (!judgesContainer) {
+                console.log('❌ Judges container not found');
+                return;
+            }
+            
+            const roundsCount = parseInt(document.getElementById('roundsPlayed')?.value || 0);
+            console.log('🔄 Updating judges for', roundsCount, 'rounds');
+            
+            if (roundsCount <= 0) {
+                judgesContainer.innerHTML = '';
+                return;
+            }
+            
+            // Очищаем контейнер
+            judgesContainer.innerHTML = '';
+            
+            // Создаем судейские оценки для 3 судей
+            for (let judge = 1; judge <= 3; judge++) {
+                const judgeCard = document.createElement('div');
+                judgeCard.className = 'card mb-3';
+                judgeCard.innerHTML = `
+                    <div class="card-header">
+                        <h6 class="mb-0">Судья ${judge}</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-primary">Мой боец</h6>
+                                ${Array.from({length: roundsCount}, (_, i) => `
+                                    <div class="mb-2">
+                                        <label class="form-label small">Раунд ${i + 1}</label>
+                                        <input type="number" class="form-control form-control-sm" 
+                                               id="judge${judge}_my_round${i + 1}" 
+                                               name="judgeScores[${judge-1}].myRound${i + 1}" 
+                                               min="0" max="10" value="10">
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                ${Array.from({length: roundsCount}, (_, i) => `
+                                    <div class="mb-2">
+                                        <label class="form-label small">Раунд ${i + 1}</label>
+                                        <input type="number" class="form-control form-control-sm" 
+                                               id="judge${judge}_opponent_round${i + 1}" 
+                                               name="judgeScores[${judge-1}].opponentRound${i + 1}" 
+                                               min="0" max="10" value="9">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                judgesContainer.appendChild(judgeCard);
+            }
+        }
+        
+        // Функция для обновления раундов с НОВОЙ структурой
+        function updateRounds() {
+            const roundsPlayedInput = document.getElementById('roundsPlayed');
+            const roundsWrapper = document.getElementById('roundsWrapper');
+            
+            if (!roundsPlayedInput || !roundsWrapper) {
+                console.log('🚀🚀🚀 Elements not found, skipping updateRounds');
+                return;
+            }
+            
+            const roundsCount = parseInt(roundsPlayedInput.value);
+            console.log('🚀🚀🚀 updateRounds called with value:', roundsPlayedInput.value, 'parsed:', roundsCount);
+            console.log('🚀🚀🚀 Using EXISTING HORIZONTAL LAYOUT from HTML!');
+            console.log('🚀🚀🚀 This should show horizontal layout!');
+            roundsWrapper.innerHTML = '';
+            
+            // Генерируем раунды только если пользователь выбрал количество
+            if (roundsCount && roundsCount > 0) {
+                console.log('🚀🚀🚀 Generating', roundsCount, 'rounds with HORIZONTAL layout');
+                console.log('🚀🚀🚀 Using existing roundsWrapper with d-flex flex-wrap gap-3');
+                
+                for (let round = 1; round <= roundsCount; round++) {
+                    const roundColumn = createRoundColumn(round);
+                    roundsWrapper.appendChild(roundColumn);
+                }
+                
+                console.log('🚀🚀🚀 Added', roundsCount, 'rounds to existing wrapper');
+                
+                // Инициализируем глобальные кнопки переключения позиции
+                setTimeout(() => {
+                    addGlobalFighterPositionListeners();
+                }, 50);
+                
+                // Обновляем судейские оценки
+                updateJudges();
+            }
+        }
+        
+        // Инициализация сразу (без DOMContentLoaded для AJAX контента)
+        console.log('🚀🚀🚀 INITIALIZING FIGHT-FORM SCRIPT IMMEDIATELY!');
+        
+        // Выполняем сразу без задержки
+        console.log('🚀🚀🚀 Setting up event listeners immediately');
+        
+        const roundsPlayedInput = document.getElementById('roundsPlayed');
+        if (roundsPlayedInput) {
+            console.log('🚀🚀🚀 Adding event listener to roundsPlayed input');
+            roundsPlayedInput.addEventListener('input', updateRounds);
+        } else {
+            console.log('🚀🚀🚀 roundsPlayedInput not found!');
+        }
+        
+        // Также попробуем через MutationObserver для отслеживания изменений DOM
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    const roundsPlayedInput = document.getElementById('roundsPlayed');
+                    if (roundsPlayedInput && !roundsPlayedInput.hasAttribute('data-listener-added')) {
+                        console.log('🚀🚀🚀 Adding event listener via MutationObserver');
+                        roundsPlayedInput.addEventListener('input', updateRounds);
+                        roundsPlayedInput.setAttribute('data-listener-added', 'true');
+                    }
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        // Функция для переключения позиции бойца во всех раундах
+        function toggleGlobalFighterPosition(position) {
+            console.log('🔄 Toggling global fighter position to', position);
+            
+            // Находим все раунды
+            const allRounds = document.querySelectorAll('#roundsWrapper .card');
+            console.log('📊 Found rounds:', allRounds.length);
+            
+            allRounds.forEach((roundCard, index) => {
+                // Ищем секции по их содержимому (заголовкам)
+                const allCol6 = roundCard.querySelectorAll('.col-6');
+                let fighterSection = null;
+                let opponentSection = null;
+                
+                // Ищем секции по тексту заголовков
+                allCol6.forEach(col => {
+                    const h6 = col.querySelector('h6');
+                    if (h6 && h6.textContent.includes('Мой боец')) {
+                        fighterSection = col;
+                    } else if (h6 && h6.textContent.includes('Соперник')) {
+                        opponentSection = col;
+                    }
+                });
+                
+                // Если не нашли по тексту, используем порядок
+                if (!fighterSection || !opponentSection) {
+                    fighterSection = allCol6[0];
+                    opponentSection = allCol6[1];
+                }
+                
+                console.log(`🎯 Round ${index + 1}:`, {
+                    fighterSection: fighterSection ? 'found' : 'not found',
+                    opponentSection: opponentSection ? 'found' : 'not found',
+                    totalCol6: allCol6.length
+                });
+                
+                if (fighterSection && opponentSection) {
+                    if (position === 'right') {
+                        // Мой боец справа, соперник слева
+                        fighterSection.className = 'col-6 order-2';
+                        opponentSection.className = 'col-6 order-1';
+                        console.log(`✅ Round ${index + 1}: Fighter moved to right`);
+                    } else {
+                        // Мой боец слева, соперник справа (по умолчанию)
+                        fighterSection.className = 'col-6 order-1';
+                        opponentSection.className = 'col-6 order-2';
+                        console.log(`✅ Round ${index + 1}: Fighter moved to left`);
+                    }
+                }
+            });
+            
+            // Обновляем активные глобальные кнопки
+            const globalButtons = document.querySelectorAll('.global-fighter-position-btn');
+            globalButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.position === position) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            console.log('✅ Position switched to:', position);
+        }
+
+        // Добавляем обработчики для глобальных кнопок переключения позиции
+        function addGlobalFighterPositionListeners() {
+            // Удаляем старые обработчики, чтобы избежать дублирования
+            document.querySelectorAll('.global-fighter-position-btn').forEach(btn => {
+                btn.removeEventListener('click', handleGlobalPositionClick);
+            });
+            
+            // Добавляем новые обработчики
+            document.querySelectorAll('.global-fighter-position-btn').forEach(btn => {
+                btn.addEventListener('click', handleGlobalPositionClick);
+            });
+            
+            // Устанавливаем активную кнопку "Слева" по умолчанию
+            document.querySelectorAll('.global-fighter-position-btn[data-position="left"]').forEach(btn => {
+                btn.classList.add('active');
+            });
+        }
+        
+        // Обработчик клика для глобальных кнопок позиции
+        function handleGlobalPositionClick(event) {
+            const position = event.target.dataset.position;
+            console.log('🎯 Global position button clicked:', position);
+            toggleGlobalFighterPosition(position);
+        }
+
+        // Вызываем инициализацию глобальных кнопок
+        setTimeout(() => {
+            addGlobalFighterPositionListeners();
+        }, 200);
+    </script>
 </body>
 </html>

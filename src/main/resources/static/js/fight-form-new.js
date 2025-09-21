@@ -89,18 +89,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updateRounds() {
         const roundsCount = parseInt(roundsPlayedInput.value);
-        console.log('updateRounds called with value:', roundsPlayedInput.value, 'parsed:', roundsCount);
-        console.log('Using NEW HORIZONTAL LAYOUT v4');
+        console.log('🚀🚀🚀 updateRounds called with value:', roundsPlayedInput.value, 'parsed:', roundsCount);
+        console.log('🚀🚀🚀 Using NEW HORIZONTAL LAYOUT v4 - NEW FILE!');
+        console.log('🚀🚀🚀 This should show horizontal layout!');
         roundsContainer.innerHTML = '';
         
         // Генерируем раунды только если пользователь выбрал количество
         if (roundsCount && roundsCount > 0) {
-            console.log('Generating', roundsCount, 'rounds with HORIZONTAL layout');
+            console.log('🚀🚀🚀 Generating', roundsCount, 'rounds with HORIZONTAL layout');
             
             // Создаем общую структуру для всех раундов - горизонтально в одном блоке
             const roundsWrapper = document.createElement('div');
             roundsWrapper.className = 'd-flex flex-wrap gap-3';
-            console.log('Created roundsWrapper with d-flex flex-wrap gap-3');
+            console.log('🚀🚀🚀 Created roundsWrapper with d-flex flex-wrap gap-3');
             
             for (let round = 1; round <= roundsCount; round++) {
                 const roundColumn = createRoundColumn(round);
