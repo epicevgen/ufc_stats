@@ -201,7 +201,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/fight-form.js"></script>
+    <script src="/js/fight-form-new.js"></script>
     
     <script>
         console.log('🚀🚀🚀 FIGHT-FORM.HTML SCRIPT LOADED!');
@@ -479,6 +479,10 @@
                 
                 // Обновляем судейские оценки
                 updateJudges();
+                
+                // Добавляем обработчики событий для полей контроля времени
+                console.log('Calling addControlTimeEventListeners');
+                addControlTimeEventListeners(roundsCount);
             }
         }
         
@@ -601,6 +605,52 @@
             const position = event.target.dataset.position;
             console.log('🎯 Global position button clicked:', position);
             toggleGlobalFighterPosition(position);
+        }
+
+        // Функция для автоматического добавления двоеточия в поля контроля времени
+        function formatControlTime(input) {
+            console.log('formatControlTime called with value:', input.value);
+            
+            let value = input.value.replace(/\D/g, ''); // Убираем все нецифровые символы
+            console.log('Cleaned value:', value);
+            
+            if (value.length >= 2) {
+                // Если введено 2 или больше цифр, добавляем двоеточие
+                value = value.substring(0, 2) + ':' + value.substring(2, 4);
+                console.log('Formatted value:', value);
+            }
+            
+            input.value = value;
+            console.log('Final value set to:', input.value);
+        }
+
+        // Функция для добавления обработчиков событий к полям контроля времени
+        function addControlTimeEventListeners(roundsCount) {
+            console.log('addControlTimeEventListeners called with roundsCount:', roundsCount);
+            
+            for (let round = 1; round <= roundsCount; round++) {
+                const myControlField = document.getElementById(`round${round}_my_control_time`);
+                const opponentControlField = document.getElementById(`round${round}_opponent_control_time`);
+                
+                console.log(`Round ${round} - myControlField:`, myControlField);
+                console.log(`Round ${round} - opponentControlField:`, opponentControlField);
+                
+                if (myControlField) {
+                    console.log(`Adding event listener to round${round}_my_control_time`);
+                    myControlField.addEventListener('input', function() {
+                        console.log('Input event triggered on my control field');
+                        formatControlTime(this);
+                    });
+                }
+                
+                if (opponentControlField) {
+                    console.log(`Adding event listener to round${round}_opponent_control_time`);
+                    opponentControlField.addEventListener('input', function() {
+                        console.log('Input event triggered on opponent control field');
+                        formatControlTime(this);
+                    });
+                }
+            }
         }
 
         // Вызываем инициализацию глобальных кнопок
