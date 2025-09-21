@@ -211,89 +211,89 @@
             console.log('🚀🚀🚀 Creating round column for round:', roundNumber);
             const column = document.createElement('div');
             column.className = 'flex-shrink-0';
-            column.style.minWidth = '60px';
+            column.style.minWidth = '270px';
             column.innerHTML = `
                 <div class="card h-100">
-                    <div class="card-header text-center" style="padding: 1px 2px;">
-                        <h6 class="mb-0" style="font-size: 0.6rem;">Раунд ${roundNumber}</h6>
+                    <div class="card-header text-center" style="padding: 4px 8px;">
+                        <h6 class="mb-0" style="font-size: 1.1rem;">Раунд ${roundNumber}</h6>
                     </div>
-                    <div class="card-body" style="padding: 2px;">
+                    <div class="card-body" style="padding: 8px;">
                         <!-- Горизонтальное расположение бойца и соперника -->
                         <div class="row">
                             <!-- Мой боец -->
                             <div class="col-6">
-                                <h6 class="text-primary mb-0 text-center" style="font-size: 0.55rem;">Мой боец</h6>
+                                <h6 class="text-primary mb-0 text-center" style="font-size: 1rem;">Мой боец</h6>
                                 
                                 <!-- Вертикальное расположение полей -->
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Голова</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_head_damage" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Голова</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_my_head_damage" 
                                            name="rounds[${roundNumber-1}].myHeadDamage" min="0" max="100">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Корпус</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_body_damage" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Корпус</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_my_body_damage" 
                                            name="rounds[${roundNumber-1}].myBodyDamage" min="0" max="100">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Ноги</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_leg_damage" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Ноги</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_my_leg_damage" 
                                            name="rounds[${roundNumber-1}].myLegDamage" min="0" max="100">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Нокдауны</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_knockdowns" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Нокдауны</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_my_knockdowns" 
                                            name="rounds[${roundNumber-1}].myKnockdowns" min="0" max="10">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Зн. удары</label>
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Зн. удары</label>
                                     <div class="row g-1">
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_significant_landed" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_my_significant_landed" 
                                                    name="rounds[${roundNumber-1}].mySignificantStrikesLanded" min="0" placeholder="пп">
                                         </div>
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_significant_attempted" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_my_significant_attempted" 
                                                    name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" min="0" placeholder="вс">
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Всего ударов</label>
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Всего ударов</label>
                                     <div class="row g-1">
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_total_landed" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_my_total_landed" 
                                                    name="rounds[${roundNumber-1}].myTotalStrikesLanded" min="0" placeholder="пп">
                                         </div>
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_total_attempted" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_my_total_attempted" 
                                                    name="rounds[${roundNumber-1}].myTotalStrikesAttempted" min="0" placeholder="вс">
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Тейкдауны</label>
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Тейкдауны</label>
                                     <div class="row g-1">
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_takedowns_successful" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_my_takedowns_successful" 
                                                    name="rounds[${roundNumber-1}].myTakedownsSuccessful" min="0" placeholder="ус">
                                         </div>
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_takedowns_attempted" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_my_takedowns_attempted" 
                                                    name="rounds[${roundNumber-1}].myTakedownsAttempted" min="0" placeholder="вс">
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Контроль</label>
-                                    <input type="text" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_my_control_time" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Контроль</label>
+                                    <input type="text" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 70px; max-width: 70px;" id="round${roundNumber}_my_control_time" 
                                            name="rounds[${roundNumber-1}].myControlTime" pattern="[0-5][0-9]:[0-5][0-9]"
                                            maxlength="5" placeholder="мм:сс">
                                 </div>
@@ -301,78 +301,78 @@
                             
                             <!-- Соперник -->
                             <div class="col-6">
-                                <h6 class="text-danger mb-0 text-center" style="font-size: 0.55rem;">Соперник</h6>
+                                <h6 class="text-danger mb-0 text-center" style="font-size: 1rem;">Соперник</h6>
                                 
                                 <!-- Вертикальное расположение полей -->
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Голова</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_head_damage" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Голова</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_opponent_head_damage" 
                                            name="rounds[${roundNumber-1}].opponentHeadDamage" min="0" max="100">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Корпус</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_body_damage" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Корпус</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_opponent_body_damage" 
                                            name="rounds[${roundNumber-1}].opponentBodyDamage" min="0" max="100">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Ноги</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_leg_damage" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Ноги</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_opponent_leg_damage" 
                                            name="rounds[${roundNumber-1}].opponentLegDamage" min="0" max="100">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Нокдауны</label>
-                                    <input type="number" class="form-control form-control-sm text-center" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_knockdowns" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Нокдауны</label>
+                                    <input type="number" class="form-control form-control-sm text-center" style="height: 28px; font-size: 0.8rem; width: 50px; max-width: 50px;" id="round${roundNumber}_opponent_knockdowns" 
                                            name="rounds[${roundNumber-1}].opponentKnockdowns" min="0" max="10">
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Зн. удары</label>
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Зн. удары</label>
                                     <div class="row g-1">
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_significant_landed" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_opponent_significant_landed" 
                                                    name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" min="0" placeholder="пп">
                                         </div>
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_significant_attempted" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_opponent_significant_attempted" 
                                                    name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" min="0" placeholder="вс">
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Всего ударов</label>
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Всего ударов</label>
                                     <div class="row g-1">
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_total_landed" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_opponent_total_landed" 
                                                    name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" min="0" placeholder="пп">
                                         </div>
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_total_attempted" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_opponent_total_attempted" 
                                                    name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" min="0" placeholder="вс">
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Тейкдауны</label>
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Тейкдауны</label>
                                     <div class="row g-1">
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_takedowns_successful" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_opponent_takedowns_successful" 
                                                    name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" min="0" placeholder="ус">
                                         </div>
                                         <div class="col-6">
-                                            <input type="number" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_takedowns_attempted" 
+                                            <input type="number" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 45px; max-width: 45px;" id="round${roundNumber}_opponent_takedowns_attempted" 
                                                    name="rounds[${roundNumber-1}].opponentTakedownsAttempted" min="0" placeholder="вс">
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-0">
-                                    <label class="form-label small" style="font-size: 0.5rem; margin-bottom: 0px;">Контроль</label>
-                                    <input type="text" class="form-control form-control-sm" style="height: 14px; font-size: 0.4rem;" id="round${roundNumber}_opponent_control_time" 
+                                <div class="mb-1">
+                                    <label class="form-label small" style="font-size: 0.9rem; margin-bottom: 0px;">Контроль</label>
+                                    <input type="text" class="form-control form-control-sm" style="height: 28px; font-size: 0.8rem; width: 70px; max-width: 70px;" id="round${roundNumber}_opponent_control_time" 
                                            name="rounds[${roundNumber-1}].opponentControlTime" pattern="[0-5][0-9]:[0-5][0-9]"
                                            maxlength="5" placeholder="мм:сс">
                                 </div>

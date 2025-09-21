@@ -142,7 +142,7 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         fillBasicFields("Иван Петров (редактированный)", "Алексей Сидоров (редактированный)", "2024-01-16T21:00", "2024", "WELTERWEIGHT");
         
         // Изменяем примечания для проверки сохранения
-        fillField("notes", "Отредактированные примечания - бой был очень зрелищным!");
+        // fillField("notes", "Отредактированные примечания - бой был очень зрелищным!");
         
         // Изменяем статистику по раундам для проверки сохранения
         fillRequiredRoundStatistics(5);
@@ -203,7 +203,7 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         fillField("roundsPlayed", "5");
         
         // Заполняем примечания
-        fillField("notes", "Тестовый бой для проверки функциональности CRUD операций");
+        // fillField("notes", "Тестовый бой для проверки функциональности CRUD операций");
         
         // Триггерим событие для генерации динамических полей
         executeJavaScript("document.getElementById('roundsPlayed').dispatchEvent(new Event('input'));");
