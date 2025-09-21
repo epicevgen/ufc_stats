@@ -174,11 +174,11 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         // Выбираем метод
         selectOption("fightMethod", "DECISION");
         
+        // Заполняем количество раундов (это важно для генерации полей статистики)
+        fillField("roundsPlayed", "5");
+        
         // Заполняем примечания
         fillField("notes", "Тестовый бой для проверки функциональности CRUD операций");
-        
-        // Устанавливаем количество раундов
-        fillField("roundsPlayed", "5");
         
         // Триггерим событие для генерации динамических полей
         executeJavaScript("document.getElementById('roundsPlayed').dispatchEvent(new Event('input'));");
