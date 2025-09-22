@@ -155,13 +155,13 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">📊 Статистика по раундам</h5>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-primary btn-sm global-fighter-position-btn" 
-                                            data-position="left" style="font-size: 0.6rem; padding: 2px 6px;">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-primary global-fighter-position-btn" 
+                                            data-position="left">
                                         Мой боец слева
                                     </button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm global-fighter-position-btn" 
-                                            data-position="right" style="font-size: 0.6rem; padding: 2px 6px;">
+                                    <button type="button" class="btn btn-sm btn-outline-primary global-fighter-position-btn" 
+                                            data-position="right">
                                         Мой боец справа
                                     </button>
                                 </div>
@@ -179,11 +179,19 @@
 
                     <!-- Судейские оценки -->
                     <div class="card mb-4">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">⚖️ Судейские оценки</h5>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-primary active" id="judgesMyFighterLeft">
+                                    Мой боец слева
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="judgesMyFighterRight">
+                                    Мой боец справа
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
-                            <div id="judgesContainer">
+                            <div id="judgesContainer" class="d-flex gap-3">
                                 <!-- Судьи будут добавлены динамически -->
                             </div>
                         </div>
@@ -403,45 +411,52 @@
             // Очищаем контейнер
             judgesContainer.innerHTML = '';
             
-            // Создаем судейские оценки для 3 судей
+            // Создаем судейские оценки для 3 судей в виде таблиц
             for (let judge = 1; judge <= 3; judge++) {
-                const judgeCard = document.createElement('div');
-                judgeCard.className = 'card mb-3';
-                judgeCard.innerHTML = `
-                    <div class="card-header">
-                        <h6 class="mb-0">Судья ${judge}</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <h6 class="text-primary">Мой боец</h6>
-                                ${Array.from({length: roundsCount}, (_, i) => `
-                                    <div class="mb-2">
-                                        <label class="form-label small">Раунд ${i + 1}</label>
-                                        <input type="number" class="form-control form-control-sm" 
-                                               id="judge${judge}_my_round${i + 1}" 
-                                               name="judgeScores[${judge-1}].myRound${i + 1}" 
-                                               min="0" max="10" value="10">
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="col-6">
-                                <h6 class="text-danger">Соперник</h6>
-                                ${Array.from({length: roundsCount}, (_, i) => `
-                                    <div class="mb-2">
-                                        <label class="form-label small">Раунд ${i + 1}</label>
-                                        <input type="number" class="form-control form-control-sm" 
-                                               id="judge${judge}_opponent_round${i + 1}" 
-                                               name="judgeScores[${judge-1}].opponentRound${i + 1}" 
-                                               min="0" max="10" value="9">
-                                    </div>
-                                `).join('')}
-                            </div>
+                const judgeTable = document.createElement('div');
+                judgeTable.className = 'flex-fill';
+                judgeTable.innerHTML = `
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h6 class="mb-0">Судья ${judge}</h6>
+                        </div>
+                        <div class="card-body p-2">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="font-size: 0.8rem;">Раунд</th>
+                                        <th class="text-center text-primary order-1" style="font-size: 0.8rem;">Мой боец</th>
+                                        <th class="text-center text-danger order-2" style="font-size: 0.8rem;">Соперник</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Array.from({length: roundsCount}, (_, i) => `
+                                        <tr>
+                                            <td class="text-center" style="font-size: 0.8rem;">${i + 1}</td>
+                                            <td class="p-1 order-1">
+                                                <input type="number" class="form-control form-control-sm text-center" 
+                                                       id="judge${judge}_my_round${i + 1}" 
+                                                       name="judgeScores[${judge-1}].myRound${i + 1}" 
+                                                       min="0" max="10" value="10" style="font-size: 0.8rem; height: 28px;">
+                                            </td>
+                                            <td class="p-1 order-2">
+                                                <input type="number" class="form-control form-control-sm text-center" 
+                                                       id="judge${judge}_opponent_round${i + 1}" 
+                                                       name="judgeScores[${judge-1}].opponentRound${i + 1}" 
+                                                       min="0" max="10" value="9" style="font-size: 0.8rem; height: 28px;">
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 `;
-                judgesContainer.appendChild(judgeCard);
+                judgesContainer.appendChild(judgeTable);
             }
+            
+            // Добавляем обработчики для кнопок переключения позиции
+            addJudgesFighterPositionListeners();
         }
         
         // Функция для обновления раундов с НОВОЙ структурой
@@ -607,6 +622,144 @@
             toggleGlobalFighterPosition(position);
         }
 
+        // Функция для переключения позиции бойца в судейских оценках
+        function toggleJudgesFighterPosition(position) {
+            console.log('🔄 Toggling judges fighter position to:', position);
+            
+            // Находим все таблицы судей
+            const judgeTables = document.querySelectorAll('#judgesContainer .card table');
+            console.log('📊 Found judge tables:', judgeTables.length);
+            
+            judgeTables.forEach((table, index) => {
+                // Находим заголовки и ячейки в каждой таблице
+                const headers = table.querySelectorAll('thead th');
+                const rows = table.querySelectorAll('tbody tr');
+                
+                console.log(`🎯 Judge ${index + 1}:`, {
+                    headers: headers.length,
+                    rows: rows.length
+                });
+                
+                if (headers.length >= 3 && rows.length > 0) {
+                    if (position === 'right') {
+                        // Мой боец справа: меняем содержимое заголовков и ячеек
+                        // Меняем заголовки местами
+                        const fighterHeader = headers[1];
+                        const opponentHeader = headers[2];
+                        
+                        // Сохраняем оригинальное содержимое
+                        const fighterText = fighterHeader.textContent;
+                        const opponentText = opponentHeader.textContent;
+                        
+                        // Меняем содержимое
+                        fighterHeader.textContent = opponentText;
+                        opponentHeader.textContent = fighterText;
+                        
+                        // Меняем содержимое ячеек в каждой строке
+                        rows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            if (cells.length >= 3) {
+                                const fighterCell = cells[1];
+                                const opponentCell = cells[2];
+                                
+                                // Сохраняем оригинальное содержимое
+                                const fighterValue = fighterCell.querySelector('input')?.value || '';
+                                const opponentValue = opponentCell.querySelector('input')?.value || '';
+                                
+                                // Меняем значения
+                                if (fighterCell.querySelector('input')) {
+                                    fighterCell.querySelector('input').value = opponentValue;
+                                }
+                                if (opponentCell.querySelector('input')) {
+                                    opponentCell.querySelector('input').value = fighterValue;
+                                }
+                            }
+                        });
+                        
+                        console.log(`✅ Judge ${index + 1}: Fighter moved to right (content swapped)`);
+                    } else {
+                        // Мой боец слева: возвращаем исходное содержимое
+                        const fighterHeader = headers[1];
+                        const opponentHeader = headers[2];
+                        
+                        // Возвращаем исходное содержимое заголовков
+                        fighterHeader.textContent = 'Мой боец';
+                        opponentHeader.textContent = 'Соперник';
+                        
+                        // Возвращаем исходное содержимое ячеек в каждой строке
+                        rows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            if (cells.length >= 3) {
+                                const fighterCell = cells[1];
+                                const opponentCell = cells[2];
+                                
+                                // Очищаем значения (или можно сохранить оригинальные)
+                                if (fighterCell.querySelector('input')) {
+                                    fighterCell.querySelector('input').value = '';
+                                }
+                                if (opponentCell.querySelector('input')) {
+                                    opponentCell.querySelector('input').value = '';
+                                }
+                            }
+                        });
+                        
+                        console.log(`✅ Judge ${index + 1}: Fighter moved to left (content restored)`);
+                    }
+                }
+            });
+            
+            // Обновляем активные кнопки судейских оценок
+            const judgesButtons = document.querySelectorAll('#judgesMyFighterLeft, #judgesMyFighterRight');
+            judgesButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if ((btn.id === 'judgesMyFighterLeft' && position === 'left') ||
+                    (btn.id === 'judgesMyFighterRight' && position === 'right')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            console.log('✅ Judges position switched to:', position);
+        }
+
+        // Добавляем обработчики для кнопок переключения позиции в судейских оценках
+        function addJudgesFighterPositionListeners() {
+            console.log('🔧 Adding judges position listeners...');
+            const leftButton = document.getElementById('judgesMyFighterLeft');
+            const rightButton = document.getElementById('judgesMyFighterRight');
+            
+            console.log('🔧 Left button found:', !!leftButton);
+            console.log('🔧 Right button found:', !!rightButton);
+            
+            if (leftButton) {
+                // Удаляем старые обработчики, чтобы избежать дублирования
+                leftButton.removeEventListener('click', handleJudgesLeftClick);
+                leftButton.addEventListener('click', handleJudgesLeftClick);
+                console.log('✅ Left button listener added');
+            } else {
+                console.log('❌ Left button not found');
+            }
+            
+            if (rightButton) {
+                // Удаляем старые обработчики, чтобы избежать дублирования
+                rightButton.removeEventListener('click', handleJudgesRightClick);
+                rightButton.addEventListener('click', handleJudgesRightClick);
+                console.log('✅ Right button listener added');
+            } else {
+                console.log('❌ Right button not found');
+            }
+        }
+        
+        // Обработчики кликов для кнопок судейских оценок
+        function handleJudgesLeftClick() {
+            console.log('🎯 Judges left button clicked');
+            toggleJudgesFighterPosition('left');
+        }
+        
+        function handleJudgesRightClick() {
+            console.log('🎯 Judges right button clicked');
+            toggleJudgesFighterPosition('right');
+        }
+
         // Функция для автоматического добавления двоеточия в поля контроля времени
         function formatControlTime(input) {
             console.log('formatControlTime called with value:', input.value);
@@ -656,7 +809,14 @@
         // Вызываем инициализацию глобальных кнопок
         setTimeout(() => {
             addGlobalFighterPositionListeners();
+            addJudgesFighterPositionListeners();
         }, 200);
+        
+        // Дополнительная инициализация с большей задержкой для кнопок судейских оценок
+        setTimeout(() => {
+            console.log('🔧 Additional judges listeners initialization...');
+            addJudgesFighterPositionListeners();
+        }, 500);
     </script>
 </body>
 </html>
