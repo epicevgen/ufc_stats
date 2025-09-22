@@ -323,12 +323,19 @@
     </script>
 
     <!-- Модальное окно для создания нового боя -->
-    <div class="modal fade" id="newFightModal" tabindex="-1" aria-labelledby="newFightModalLabel" aria-hidden="true">
+    <div class="modal fade" id="newFightModal" tabindex="-1" aria-labelledby="newFightModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-fullscreen-lg-down" style="max-width: 95vw;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newFightModalLabel">Новый бой</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-success" id="saveNewFightBtn">
+                            <i class="bi bi-check-circle"></i> Сохранить
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Отмена
+                        </button>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div id="newFightFormContainer">
@@ -449,19 +456,27 @@
                 });
             }
             
+            // Обработчик для кнопки "Сохранить" в шапке модального окна
+            const saveBtn = document.getElementById('saveNewFightBtn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function() {
+                    const form = document.querySelector('.needs-validation');
+                    if (form) {
+                        if (form.checkValidity()) {
+                            submitFormViaAjax(form);
+                        } else {
+                            form.classList.add('was-validated');
+                        }
+                    }
+                });
+            }
             
             // Валидация формы и обработка отправки
             const form = document.querySelector('.needs-validation');
             if (form) {
                 form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    } else {
-                        // Если форма валидна, отправляем через AJAX
-                        event.preventDefault();
-                        submitFormViaAjax(form);
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
                     form.classList.add('was-validated');
                 });
             }

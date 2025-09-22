@@ -96,8 +96,8 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         // Заполняем судейские оценки
         fillJudgeScores(5);
         
-        // Отправляем форму через кнопку
-        $("#newFightModal button[type='submit']").click();
+        // Отправляем форму через кнопку "Сохранить" в шапке модального окна
+        $("#saveNewFightBtn").click();
         
         // Ждем закрытия модального окна и обновления страницы
         $("#newFightModal").shouldNotBe(visible);
