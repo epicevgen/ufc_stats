@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title th:text="${fight.id != null ? 'Редактирование боя' : 'Новый бой'} + ' - UFC Stats'">UFC Stats</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
@@ -173,6 +176,57 @@
                                 <div class="d-flex gap-2" id="roundsWrapper" style="min-width: max-content; flex-wrap: nowrap;">
                                     <!-- Раунды будут добавлены динамически -->
                                 </div>
+                                
+                                <!-- Скрытые поля с данными раундов для формы редактирования -->
+                                <div th:if="${fight != null and fight.rounds != null}" style="display: none;">
+                                    <div th:each="round, iterStat : ${fight.rounds}" th:data-round-number="${iterStat.index + 1}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_head_damage'" 
+                                               th:value="${round.myHeadDamage}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_body_damage'" 
+                                               th:value="${round.myBodyDamage}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_leg_damage'" 
+                                               th:value="${round.myLegDamage}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_knockdowns'" 
+                                               th:value="${round.myKnockdowns}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_significant_landed'" 
+                                               th:value="${round.mySignificantStrikesLanded}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_significant_attempted'" 
+                                               th:value="${round.mySignificantStrikesAttempted}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_total_landed'" 
+                                               th:value="${round.myTotalStrikesLanded}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_total_attempted'" 
+                                               th:value="${round.myTotalStrikesAttempted}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_takedowns_successful'" 
+                                               th:value="${round.myTakedownsSuccessful}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_takedowns_attempted'" 
+                                               th:value="${round.myTakedownsAttempted}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_my_control_time'" 
+                                               th:value="${round.myControlTime}">
+                                        
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_head_damage'" 
+                                               th:value="${round.opponentHeadDamage}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_body_damage'" 
+                                               th:value="${round.opponentBodyDamage}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_leg_damage'" 
+                                               th:value="${round.opponentLegDamage}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_knockdowns'" 
+                                               th:value="${round.opponentKnockdowns}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_significant_landed'" 
+                                               th:value="${round.opponentSignificantStrikesLanded}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_significant_attempted'" 
+                                               th:value="${round.opponentSignificantStrikesAttempted}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_total_landed'" 
+                                               th:value="${round.opponentTotalStrikesLanded}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_total_attempted'" 
+                                               th:value="${round.opponentTotalStrikesAttempted}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_takedowns_successful'" 
+                                               th:value="${round.opponentTakedownsSuccessful}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_takedowns_attempted'" 
+                                               th:value="${round.opponentTakedownsAttempted}">
+                                        <input type="hidden" th:id="'hidden_round' + ${iterStat.index + 1} + '_opponent_control_time'" 
+                                               th:value="${round.opponentControlTime}">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -193,6 +247,32 @@
                         <div class="card-body">
                             <div id="judgesContainer" class="d-flex gap-3">
                                 <!-- Судьи будут добавлены динамически -->
+                            </div>
+                            
+                            <!-- Скрытые поля с данными судейских оценок для формы редактирования -->
+                            <div th:if="${fight != null and fight.judgeScores != null}" style="display: none;">
+                                <div th:each="judgeScore, iterStat : ${fight.judgeScores}" th:data-judge-number="${judgeScore.judgeNumber}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_my_round1'" 
+                                           th:value="${judgeScore.round1MyScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_opponent_round1'" 
+                                           th:value="${judgeScore.round1OpponentScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_my_round2'" 
+                                           th:value="${judgeScore.round2MyScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_opponent_round2'" 
+                                           th:value="${judgeScore.round2OpponentScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_my_round3'" 
+                                           th:value="${judgeScore.round3MyScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_opponent_round3'" 
+                                           th:value="${judgeScore.round3OpponentScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_my_round4'" 
+                                           th:value="${judgeScore.round4MyScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_opponent_round4'" 
+                                           th:value="${judgeScore.round4OpponentScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_my_round5'" 
+                                           th:value="${judgeScore.round5MyScore}">
+                                    <input type="hidden" th:id="'hidden_judge' + ${judgeScore.judgeNumber} + '_opponent_round5'" 
+                                           th:value="${judgeScore.round5OpponentScore}">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -386,21 +466,62 @@
             return column;
         }
         
+        // Функция для сохранения данных судейских оценок
+        function saveExistingJudgeData() {
+            const savedData = {};
+            
+            // Сначала пытаемся сохранить данные из существующих полей судейских оценок
+            const judgesContainer = document.getElementById('judgesContainer');
+            if (judgesContainer) {
+                const inputs = judgesContainer.querySelectorAll('input');
+                inputs.forEach(input => {
+                    if (input.id) {
+                        savedData[input.id] = input.value || ''; // Сохраняем даже пустые значения
+                    }
+                });
+            }
+            
+            // Затем читаем данные из скрытых полей (для формы редактирования)
+            const hiddenInputs = document.querySelectorAll('input[id^="hidden_judge"]');
+            hiddenInputs.forEach(input => {
+                if (input.id) {
+                    // Преобразуем ID скрытого поля в ID обычного поля
+                    const fieldId = input.id.replace('hidden_', '');
+                    savedData[fieldId] = input.value || '';
+                }
+            });
+            
+            return savedData;
+        }
+        
+        // Функция для восстановления данных судейских оценок
+        function restoreJudgeData(savedData) {
+            if (!savedData) return;
+            
+            Object.keys(savedData).forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.value = savedData[fieldId];
+                }
+            });
+        }
+        
         // Функция для обновления судейских оценок
         function updateJudges() {
             const judgesContainer = document.getElementById('judgesContainer');
             if (!judgesContainer) {
-                console.log('❌ Judges container not found');
                 return;
             }
             
             const roundsCount = parseInt(document.getElementById('roundsPlayed')?.value || 0);
-            console.log('🔄 Updating judges for', roundsCount, 'rounds');
             
             if (roundsCount <= 0) {
                 judgesContainer.innerHTML = '';
                 return;
             }
+            
+            // Сохраняем существующие данные перед очисткой
+            const savedData = saveExistingJudgeData();
             
             // Очищаем контейнер
             judgesContainer.innerHTML = '';
@@ -449,8 +570,55 @@
                 judgesContainer.appendChild(judgeTable);
             }
             
+            // Восстанавливаем сохраненные данные
+            setTimeout(() => {
+                restoreJudgeData(savedData);
+            }, 10);
+            
             // Добавляем обработчики для кнопок переключения позиции
             addJudgesFighterPositionListeners();
+        }
+        
+        // Функция для сохранения данных из существующих полей
+        function saveExistingRoundData() {
+            const savedData = {};
+            
+            // Сначала пытаемся сохранить данные из существующих полей раундов
+            const roundsWrapper = document.getElementById('roundsWrapper');
+            if (roundsWrapper) {
+                const inputs = roundsWrapper.querySelectorAll('input');
+                inputs.forEach(input => {
+                    if (input.id) {
+                        savedData[input.id] = input.value || ''; // Сохраняем даже пустые значения
+                    }
+                });
+            }
+            
+            // Затем читаем данные из скрытых полей (для формы редактирования)
+            const hiddenInputs = document.querySelectorAll('input[id^="hidden_round"]');
+            hiddenInputs.forEach(input => {
+                if (input.id) {
+                    // Преобразуем ID скрытого поля в ID обычного поля
+                    const fieldId = input.id.replace('hidden_', '');
+                    savedData[fieldId] = input.value || '';
+                }
+            });
+            
+            console.log('🚀🚀🚀 Saved existing round data:', savedData);
+            return savedData;
+        }
+        
+        // Функция для восстановления данных в новые поля
+        function restoreRoundData(savedData) {
+            if (!savedData) return;
+            
+            Object.keys(savedData).forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.value = savedData[fieldId];
+                    console.log('🚀🚀🚀 Restored data for', fieldId, ':', savedData[fieldId]);
+                }
+            });
         }
         
         // Функция для обновления раундов с НОВОЙ структурой
@@ -467,6 +635,10 @@
             console.log('🚀🚀🚀 updateRounds called with value:', roundsPlayedInput.value, 'parsed:', roundsCount);
             console.log('🚀🚀🚀 Using EXISTING HORIZONTAL LAYOUT from HTML!');
             console.log('🚀🚀🚀 This should show horizontal layout!');
+            
+            // Сохраняем существующие данные перед очисткой
+            const savedData = saveExistingRoundData();
+            
             roundsWrapper.innerHTML = '';
             
             // Генерируем раунды только если пользователь выбрал количество
@@ -480,6 +652,11 @@
                 }
                 
                 console.log('🚀🚀🚀 Added', roundsCount, 'rounds to existing wrapper');
+                
+                // Восстанавливаем сохраненные данные
+                setTimeout(() => {
+                    restoreRoundData(savedData);
+                }, 10);
                 
                 // Инициализируем глобальные кнопки переключения позиции
                 setTimeout(() => {
@@ -501,22 +678,65 @@
         // Выполняем сразу без задержки
         console.log('🚀🚀🚀 Setting up event listeners immediately');
         
-        const roundsPlayedInput = document.getElementById('roundsPlayed');
+        // Используем var вместо const чтобы избежать ошибки повторного объявления
+        var roundsPlayedInput = document.getElementById('roundsPlayed');
         if (roundsPlayedInput) {
             console.log('🚀🚀🚀 Adding event listener to roundsPlayed input');
-            roundsPlayedInput.addEventListener('input', updateRounds);
+            
+            // Проверяем, является ли это формой редактирования
+            const isEditForm = document.getElementById('editFightFormContainer') !== null;
+            console.log('🚀🚀🚀 Is edit form:', isEditForm);
+            
+            if (isEditForm) {
+                console.log('🚀🚀🚀 Edit form detected - adding event listener but not calling updateRounds immediately');
+                // Для формы редактирования добавляем listener, но не вызываем updateRounds сразу
+                roundsPlayedInput.addEventListener('input', function() {
+                    console.log('🚀🚀🚀 roundsPlayed changed in edit form, calling updateRounds');
+                    updateRounds();
+                });
+                
+                // Для формы редактирования ждем загрузки данных, затем вызываем updateRounds
+                setTimeout(() => {
+                    console.log('🚀🚀🚀 Calling updateRounds for edit form after data load');
+                    updateRounds();
+                }, 500);
+            } else {
+                console.log('🚀🚀🚀 New form detected - adding event listener');
+                // Для формы создания добавляем обычный listener
+                roundsPlayedInput.addEventListener('input', updateRounds);
+            }
         } else {
             console.log('🚀🚀🚀 roundsPlayedInput not found!');
         }
         
         // Также попробуем через MutationObserver для отслеживания изменений DOM
-        const observer = new MutationObserver(function(mutations) {
+        var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'childList') {
-                    const roundsPlayedInput = document.getElementById('roundsPlayed');
+                    var roundsPlayedInput = document.getElementById('roundsPlayed');
                     if (roundsPlayedInput && !roundsPlayedInput.hasAttribute('data-listener-added')) {
                         console.log('🚀🚀🚀 Adding event listener via MutationObserver');
-                        roundsPlayedInput.addEventListener('input', updateRounds);
+                        
+                        // Проверяем, является ли это формой редактирования
+                        const isEditForm = document.getElementById('editFightFormContainer') !== null;
+                        
+                        if (isEditForm) {
+                            console.log('🚀🚀🚀 Edit form detected in MutationObserver');
+                            roundsPlayedInput.addEventListener('input', function() {
+                                console.log('🚀🚀🚀 roundsPlayed changed in edit form via MutationObserver');
+                                updateRounds();
+                            });
+                            
+                            // Для формы редактирования ждем загрузки данных, затем вызываем updateRounds
+                            setTimeout(() => {
+                                console.log('🚀🚀🚀 Calling updateRounds for edit form via MutationObserver after data load');
+                                updateRounds();
+                            }, 500);
+                        } else {
+                            console.log('🚀🚀🚀 New form detected in MutationObserver');
+                            roundsPlayedInput.addEventListener('input', updateRounds);
+                        }
+                        
                         roundsPlayedInput.setAttribute('data-listener-added', 'true');
                     }
                 }
@@ -527,6 +747,15 @@
             childList: true,
             subtree: true
         });
+        
+        // Дополнительная инициализация для формы редактирования
+        setTimeout(() => {
+            const isEditForm = document.getElementById('editFightFormContainer') !== null;
+            if (isEditForm) {
+                console.log('🚀🚀🚀 Additional initialization for edit form - calling updateJudges after data load');
+                updateJudges();
+            }
+        }, 600);
 
         // Функция для переключения позиции бойца во всех раундах
         function toggleGlobalFighterPosition(position) {
@@ -799,6 +1028,15 @@
                 }
             }
         }
+
+        // Автоматически удаляем любое желтое отладочное окно
+        setTimeout(() => {
+            const debugDiv = document.getElementById('debug-info');
+            if (debugDiv) {
+                console.log('Removing debug div from fight-form');
+                debugDiv.remove();
+            }
+        }, 50);
 
         // Вызываем инициализацию глобальных кнопок
         setTimeout(() => {

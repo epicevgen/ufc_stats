@@ -90,12 +90,12 @@ public class Fight {
     private String notes;
 
     // Связи
-    @OneToMany(mappedBy = "fight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fight", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("roundNumber ASC")
     @JsonManagedReference
     private List<FightRound> rounds = new ArrayList<>();
 
-    @OneToMany(mappedBy = "fight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fight", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<JudgeScore> judgeScores = new ArrayList<>();
 

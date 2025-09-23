@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title th:text="${title}">Список боев - UFC Stats</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
@@ -161,7 +164,19 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/app.js"></script>
-    <script src="/js/fight-form-new.js?v=1"></script>
+    <script src="/js/fight-form-new.js?v=3"></script>
+    <script>
+        // Автоматически удаляем любое желтое отладочное окно
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const debugDiv = document.getElementById('debug-info');
+                if (debugDiv) {
+                    console.log('Removing debug div');
+                    debugDiv.remove();
+                }
+            }, 100);
+        });
+    </script>
     <script>
         function deleteFight(fightId) {
             if (confirm('Вы уверены, что хотите удалить этот бой?')) {
@@ -247,6 +262,23 @@
         
         // Функция для инициализации формы редактирования боя в модальном окне
         function initializeEditFightForm() {
+            console.log('🚀🚀🚀 INITIALIZING EDIT FIGHT FORM FROM FIGHTS.HTML!');
+            
+            // Принудительно выполняем JavaScript из загруженного HTML
+            const scripts = document.querySelectorAll('#editFightFormContainer script');
+            scripts.forEach(script => {
+                console.log('🚀🚀🚀 Executing script from fight-form.html for edit form');
+                try {
+                    // Создаем новую функцию и выполняем код
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.textContent;
+                    document.head.appendChild(newScript);
+                    document.head.removeChild(newScript);
+                } catch (error) {
+                    console.error('Ошибка при выполнении скрипта:', error);
+                }
+            });
+            
             const roundsPlayedInput = document.getElementById('roundsPlayed');
             const roundsContainer = document.getElementById('roundsContainer');
             const judgesContainer = document.getElementById('judgesContainer');
@@ -256,25 +288,39 @@
                 return;
             }
             
-            // Инициализируем форму
-            updateRounds();
-            updateJudges();
+            // Дополнительная инициализация
+            if (roundsPlayedInput) {
+                console.log('🚀🚀🚀 Adding event listener to roundsPlayed from fights.html for edit form');
+                roundsPlayedInput.addEventListener('input', function() {
+                    console.log('🚀🚀🚀 roundsPlayed input event triggered from fights.html for edit form');
+                    // Вызываем updateRounds если она определена
+                    if (typeof updateRounds === 'function') {
+                        updateRounds();
+                    }
+                });
+            }
             
-            // Добавляем обработчик для изменения количества раундов
-            roundsPlayedInput.addEventListener('input', updateRounds);
+            // Обработчик для кнопки "Сохранить" в шапке модального окна
+            const saveBtn = document.getElementById('saveEditFightBtn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function() {
+                    const form = document.querySelector('.needs-validation');
+                    if (form) {
+                        if (form.checkValidity()) {
+                            submitEditFormViaAjax(form);
+                        } else {
+                            form.classList.add('was-validated');
+                        }
+                    }
+                });
+            }
             
             // Валидация формы и обработка отправки
             const form = document.querySelector('.needs-validation');
             if (form) {
                 form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    } else {
-                        // Если форма валидна, отправляем через AJAX
-                        event.preventDefault();
-                        submitEditFormViaAjax(form);
-                    }
+                    event.preventDefault();
+                    event.stopPropagation();
                     form.classList.add('was-validated');
                 });
             }
@@ -352,12 +398,19 @@
     </div>
 
     <!-- Модальное окно для редактирования боя -->
-    <div class="modal fade" id="editFightModal" tabindex="-1" aria-labelledby="editFightModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+    <div class="modal fade" id="editFightModal" tabindex="-1" aria-labelledby="editFightModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-fullscreen-lg-down" style="max-width: 95vw;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editFightModalLabel">Редактирование боя</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-success" id="saveEditFightBtn">
+                            <i class="bi bi-check-circle"></i> Сохранить
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Отмена
+                        </button>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div id="editFightFormContainer">
@@ -523,304 +576,13 @@
             });
         }
 
-        // Функции для работы с раундами и судьями (копируем из fight-form.js)
-        function updateRounds() {
-            const roundsPlayedInput = document.getElementById('roundsPlayed');
-            const roundsContainer = document.getElementById('roundsContainer');
-            
-            if (!roundsPlayedInput || !roundsContainer) return;
-            
-            const roundsCount = parseInt(roundsPlayedInput.value) || 1;
-            roundsContainer.innerHTML = '';
-            
-            for (let i = 1; i <= roundsCount; i++) {
-                const roundCard = createRoundCard(i);
-                roundsContainer.appendChild(roundCard);
-            }
-        }
+        // Старые функции удалены - теперь используются функции из fight-form.html
 
-        function updateJudges() {
-            const judgesContainer = document.getElementById('judgesContainer');
-            if (!judgesContainer) return;
-            
-            judgesContainer.innerHTML = '';
-            
-            for (let i = 1; i <= 3; i++) {
-                const judgeCard = createJudgeCard(i);
-                judgesContainer.appendChild(judgeCard);
-            }
-        }
+        // Функция createRoundCard удалена - используется из fight-form.html
 
-        function createRoundCard(roundNumber) {
-            const card = document.createElement('div');
-            card.className = 'card mb-3';
-            card.innerHTML = `
-                <div class="card-header">
-                    <h6 class="mb-0">Раунд ${roundNumber}</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6 class="text-primary">Мой боец</h6>
-                            <div class="row g-2">
-                                <div class="col-4">
-                                    <label class="form-label small">Повреждения головы</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_head_damage')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_head_damage" 
-                                               name="rounds[${roundNumber-1}].myHeadDamage" value="0" min="0" max="100">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_head_damage')">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small">Повреждения корпуса</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_body_damage')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_body_damage" 
-                                               name="rounds[${roundNumber-1}].myBodyDamage" value="0" min="0" max="100">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_body_damage')">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small">Повреждения ног</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_leg_damage')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_leg_damage" 
-                                               name="rounds[${roundNumber-1}].myLegDamage" value="0" min="0" max="100">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_leg_damage')">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mt-1">
-                                <div class="col-4">
-                                    <label class="form-label small">Нокдауны</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_my_knockdowns')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_knockdowns" 
-                                               name="rounds[${roundNumber-1}].myKnockdowns" value="0" min="0" max="10">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_my_knockdowns')">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mt-1">
-                                <div class="col-6">
-                                    <label class="form-label small">Значимые удары (попал/попытка)</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_significant_landed" 
-                                               name="rounds[${roundNumber-1}].mySignificantStrikesLanded" value="" min="0" max="200" >
-                                        <span class="input-group-text">/</span>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_significant_attempted" 
-                                               name="rounds[${roundNumber-1}].mySignificantStrikesAttempted" value="" min="0" max="200" >
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Все удары (попал/попытка)</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_total_landed" 
-                                               name="rounds[${roundNumber-1}].myTotalStrikesLanded" value="" min="0" max="300" >
-                                        <span class="input-group-text">/</span>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_total_attempted" 
-                                               name="rounds[${roundNumber-1}].myTotalStrikesAttempted" value="" min="0" max="300" >
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mt-1">
-                                <div class="col-6">
-                                    <label class="form-label small">Тейкдауны (успешный/попытка)</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_takedowns_successful" 
-                                               name="rounds[${roundNumber-1}].myTakedownsSuccessful" value="" min="0" max="10" >
-                                        <span class="input-group-text">/</span>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_my_takedowns_attempted" 
-                                               name="rounds[${roundNumber-1}].myTakedownsAttempted" value="" min="0" max="10" >
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Время контроля (ММ:СС)</label>
-                                    <input type="text" class="form-control text-center" id="round${roundNumber}_my_control_time" 
-                                           name="rounds[${roundNumber-1}].myControlTime" 
-                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$"
-                                           oninput="formatControlTime(this)" maxlength="5">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 class="text-danger">Соперник</h6>
-                            <div class="row g-2">
-                                <div class="col-4">
-                                    <label class="form-label small">Повреждения головы</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_head_damage')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_head_damage" 
-                                               name="rounds[${roundNumber-1}].opponentHeadDamage" value="0" min="0" max="100">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_head_damage')">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small">Повреждения корпуса</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_body_damage')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_body_damage" 
-                                               name="rounds[${roundNumber-1}].opponentBodyDamage" value="0" min="0" max="100">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_body_damage')">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small">Повреждения ног</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_leg_damage')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_leg_damage" 
-                                               name="rounds[${roundNumber-1}].opponentLegDamage" value="0" min="0" max="100">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_leg_damage')">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mt-1">
-                                <div class="col-4">
-                                    <label class="form-label small">Нокдауны</label>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="decrementValue('round${roundNumber}_opponent_knockdowns')">-</button>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_knockdowns" 
-                                               name="rounds[${roundNumber-1}].opponentKnockdowns" value="0" min="0" max="10">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="incrementValue('round${roundNumber}_opponent_knockdowns')">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mt-1">
-                                <div class="col-6">
-                                    <label class="form-label small">Значимые удары (попал/попытка)</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_significant_landed" 
-                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesLanded" value="" min="0" max="200" >
-                                        <span class="input-group-text">/</span>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_significant_attempted" 
-                                               name="rounds[${roundNumber-1}].opponentSignificantStrikesAttempted" value="" min="0" max="200" >
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Все удары (попал/попытка)</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_total_landed" 
-                                               name="rounds[${roundNumber-1}].opponentTotalStrikesLanded" value="" min="0" max="300" >
-                                        <span class="input-group-text">/</span>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_total_attempted" 
-                                               name="rounds[${roundNumber-1}].opponentTotalStrikesAttempted" value="" min="0" max="300" >
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mt-1">
-                                <div class="col-6">
-                                    <label class="form-label small">Тейкдауны (успешный/попытка)</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_takedowns_successful" 
-                                               name="rounds[${roundNumber-1}].opponentTakedownsSuccessful" value="" min="0" max="10" >
-                                        <span class="input-group-text">/</span>
-                                        <input type="number" class="form-control text-center" id="round${roundNumber}_opponent_takedowns_attempted" 
-                                               name="rounds[${roundNumber-1}].opponentTakedownsAttempted" value="" min="0" max="10" >
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Время контроля (ММ:СС)</label>
-                                    <input type="text" class="form-control text-center" id="round${roundNumber}_opponent_control_time" 
-                                           name="rounds[${roundNumber-1}].opponentControlTime" 
-                                           pattern="^([0-5]?[0-9]):([0-5][0-9])$"
-                                           oninput="formatControlTime(this)" maxlength="5">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
+        // Функция createJudgeCard удалена - используется из fight-form.html
 
-        function createJudgeCard(judgeNumber) {
-            const card = document.createElement('div');
-            card.className = 'card mb-3';
-            card.innerHTML = `
-                <div class="card-header">
-                    <h6 class="mb-0">Судья ${judgeNumber}</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-2">
-                            <label class="form-label small">Раунд 1</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round1" 
-                                       name="judgeScores[${judgeNumber-1}].myRound1" value="" min="0" max="10" >
-                                <span class="input-group-text">-</span>
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round1" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound1" value="" min="0" max="10" >
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <label class="form-label small">Раунд 2</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round2" 
-                                       name="judgeScores[${judgeNumber-1}].myRound2" value="" min="0" max="10" >
-                                <span class="input-group-text">-</span>
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round2" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound2" value="" min="0" max="10" >
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <label class="form-label small">Раунд 3</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round3" 
-                                       name="judgeScores[${judgeNumber-1}].myRound3" value="" min="0" max="10" >
-                                <span class="input-group-text">-</span>
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round3" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound3" value="" min="0" max="10" >
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <label class="form-label small">Раунд 4</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round4" 
-                                       name="judgeScores[${judgeNumber-1}].myRound4" value="" min="0" max="10" >
-                                <span class="input-group-text">-</span>
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round4" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound4" value="" min="0" max="10" >
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <label class="form-label small">Раунд 5</label>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_my_round5" 
-                                       name="judgeScores[${judgeNumber-1}].myRound5" value="" min="0" max="10" >
-                                <span class="input-group-text">-</span>
-                                <input type="number" class="form-control text-center" id="judge${judgeNumber}_opponent_round5" 
-                                       name="judgeScores[${judgeNumber-1}].opponentRound5" value="" min="0" max="10" >
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
-
-        // Функции для увеличения/уменьшения значений
-        function incrementValue(inputId) {
-            const input = document.getElementById(inputId);
-            if (input) {
-                const currentValue = parseInt(input.value) || 0;
-                const maxValue = parseInt(input.getAttribute('max')) || 100;
-                if (currentValue < maxValue) {
-                    input.value = currentValue + 1;
-                }
-            }
-        }
-
-        function decrementValue(inputId) {
-            const input = document.getElementById(inputId);
-            if (input) {
-                const currentValue = parseInt(input.value) || 0;
-                const minValue = parseInt(input.getAttribute('min')) || 0;
-                if (currentValue > minValue) {
-                    input.value = currentValue - 1;
-                }
-            }
-        }
+        // Функции incrementValue и decrementValue удалены - больше не используются
     </script>
 </body>
 </html>
