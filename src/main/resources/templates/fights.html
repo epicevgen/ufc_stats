@@ -331,6 +331,14 @@
                 });
             }
             
+            // Принудительно вызываем updateJudges для инициализации судейских оценок
+            setTimeout(() => {
+                console.log('🚀🚀🚀 Calling updateJudges from fights.html for edit form');
+                if (typeof updateJudges === 'function') {
+                    updateJudges();
+                }
+            }, 100);
+            
             // Обработчик для кнопки "Сохранить" теперь добавляется после загрузки формы
             
             // Валидация формы и обработка отправки

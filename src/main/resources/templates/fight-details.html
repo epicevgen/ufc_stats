@@ -387,6 +387,14 @@
                     }
                 });
             }
+            
+            // Принудительно вызываем updateJudges для инициализации судейских оценок
+            setTimeout(() => {
+                console.log('🚀🚀🚀 Calling updateJudges from fight-details.html for edit form');
+                if (typeof updateJudges === 'function') {
+                    updateJudges();
+                }
+            }, 100);
         }
         
         // Функция для отправки формы редактирования через AJAX
