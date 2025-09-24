@@ -192,7 +192,7 @@
                 </div>
 
                 <!-- Судейские оценки -->
-                <div class="card mb-4" th:if="${fight.judgeScores != null and !fight.judgeScores.empty}">
+                <div class="card mb-4" th:if="${fight.judgeScores != null and !fight.judgeScores.empty and T(com.ufcstats.util.JudgeScoreUtil).hasAnyScores(fight.judgeScores)}">
                     <div class="card-header">
                         <h5 class="mb-0">⚖️ Судейские оценки</h5>
                     </div>
@@ -202,23 +202,28 @@
                                 <thead>
                                     <tr>
                                         <th>Судья</th>
-                                        <th>Раунд 1</th>
-                                        <th>Раунд 2</th>
-                                        <th>Раунд 3</th>
-                                        <th>Раунд 4</th>
-                                        <th>Раунд 5</th>
+                                        <th th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 1)}">Раунд 1</th>
+                                        <th th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 2)}">Раунд 2</th>
+                                        <th th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 3)}">Раунд 3</th>
+                                        <th th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 4)}">Раунд 4</th>
+                                        <th th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 5)}">Раунд 5</th>
                                         <th>Итого</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="judge : ${fight.judgeScores}">
                                         <td class="fw-bold">Судья <span th:text="${judge.judgeNumber}"></span></td>
-                                        <td th:text="${judge.round1MyScore} + ' - ' + ${judge.round1OpponentScore}">0 - 0</td>
-                                        <td th:text="${judge.round2MyScore} + ' - ' + ${judge.round2OpponentScore}">0 - 0</td>
-                                        <td th:text="${judge.round3MyScore} + ' - ' + ${judge.round3OpponentScore}">0 - 0</td>
-                                        <td th:text="${judge.round4MyScore} + ' - ' + ${judge.round4OpponentScore}">0 - 0</td>
-                                        <td th:text="${judge.round5MyScore} + ' - ' + ${judge.round5OpponentScore}">0 - 0</td>
-                                        <td class="fw-bold" th:text="${judge.myTotalScore} + ' - ' + ${judge.opponentTotalScore}">0 - 0</td>
+                                        <td th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 1)}" 
+                                            th:text="${judge.round1MyScore != null and judge.round1OpponentScore != null ? judge.round1MyScore + ' - ' + judge.round1OpponentScore : '-'}">-</td>
+                                        <td th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 2)}" 
+                                            th:text="${judge.round2MyScore != null and judge.round2OpponentScore != null ? judge.round2MyScore + ' - ' + judge.round2OpponentScore : '-'}">-</td>
+                                        <td th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 3)}" 
+                                            th:text="${judge.round3MyScore != null and judge.round3OpponentScore != null ? judge.round3MyScore + ' - ' + judge.round3OpponentScore : '-'}">-</td>
+                                        <td th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 4)}" 
+                                            th:text="${judge.round4MyScore != null and judge.round4OpponentScore != null ? judge.round4MyScore + ' - ' + judge.round4OpponentScore : '-'}">-</td>
+                                        <td th:if="${T(com.ufcstats.util.JudgeScoreUtil).hasRoundScore(fight.judgeScores, 5)}" 
+                                            th:text="${judge.round5MyScore != null and judge.round5OpponentScore != null ? judge.round5MyScore + ' - ' + judge.round5OpponentScore : '-'}">-</td>
+                                        <td class="fw-bold" th:text="${judge.myTotalScore != null and judge.opponentTotalScore != null ? judge.myTotalScore + ' - ' + judge.opponentTotalScore : '-'}">-</td>
                                     </tr>
                                 </tbody>
                             </table>
