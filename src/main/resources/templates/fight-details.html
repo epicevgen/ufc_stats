@@ -26,9 +26,9 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h4 class="mb-0" th:text="'Бой #' + ${fight.id}"></h4>
                             <div>
-                                <a th:href="@{/fights/{id}/edit(id=${fight.id})}" class="btn btn-outline-primary btn-sm me-2">
+                                <button class="btn btn-outline-primary btn-sm me-2" th:onclick="'editFight(' + ${fight.id} + ')'">
                                     ✏️ Редактировать
-                                </a>
+                                </button>
                                 <button class="btn btn-outline-danger btn-sm" onclick="deleteFight()">
                                     🗑️ Удалить
                                 </button>
@@ -238,6 +238,35 @@
         </div>
     </div>
 
+    <!-- Модальное окно для редактирования боя -->
+    <div class="modal fade" id="editFightModal" tabindex="-1" aria-labelledby="editFightModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-fullscreen-lg-down" style="max-width: 95vw;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editFightModalLabel">Редактирование боя</h5>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-success" id="saveEditFightBtn">
+                            <i class="bi bi-check-circle"></i> Сохранить
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Отмена
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div id="editFightFormContainer">
+                        <!-- Форма будет загружена через AJAX -->
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
         // Данные для функций
@@ -255,6 +284,137 @@
                     }
                 });
             }
+        }
+
+        function editFight(fightId) {
+            // Сначала закрываем все открытые модальные окна
+            const openModals = document.querySelectorAll('.modal.show');
+            openModals.forEach(modalElement => {
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+            });
+            
+            // Ждем немного, чтобы модальные окна закрылись
+            setTimeout(() => {
+                const modal = new bootstrap.Modal(document.getElementById('editFightModal'));
+                const container = document.getElementById('editFightFormContainer');
+                
+                // Показываем спиннер
+                container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
+                
+                // Загружаем форму редактирования
+                fetch('/fights/' + fightId + '/edit')
+                    .then(response => response.text())
+                    .then(html => {
+                        // Извлекаем только содержимое body из ответа
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const bodyContent = doc.body.innerHTML;
+                        
+                        // Заменяем содержимое контейнера
+                        container.innerHTML = bodyContent;
+                        
+                        // Инициализируем JavaScript для формы
+                        initializeEditFightForm();
+                        
+                        // Добавляем обработчик для кнопки "Сохранить" после загрузки формы
+                        const saveBtn = document.getElementById('saveEditFightBtn');
+                        if (saveBtn) {
+                            // Удаляем старые обработчики
+                            saveBtn.replaceWith(saveBtn.cloneNode(true));
+                            const newSaveBtn = document.getElementById('saveEditFightBtn');
+                            
+                            newSaveBtn.addEventListener('click', function() {
+                                const form = document.querySelector('#editFightForm');
+                                if (form) {
+                                    if (form.checkValidity()) {
+                                        submitEditFormViaAjax(form);
+                                    } else {
+                                        form.classList.add('was-validated');
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Показываем модальное окно
+                        modal.show();
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при загрузке формы редактирования:', error);
+                        container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке формы редактирования</div>';
+                    });
+            }, 300); // Ждем 300ms для закрытия модальных окон
+        }
+        
+        // Функция для инициализации формы редактирования боя в модальном окне
+        function initializeEditFightForm() {
+            console.log('🚀🚀🚀 INITIALIZING EDIT FIGHT FORM FROM FIGHT-DETAILS.HTML!');
+            
+            // Принудительно выполняем JavaScript из загруженного HTML
+            const scripts = document.querySelectorAll('#editFightFormContainer script');
+            scripts.forEach(script => {
+                console.log('🚀🚀🚀 Executing script from fight-form.html for edit form');
+                try {
+                    // Создаем новую функцию и выполняем код
+                    const newScript = document.createElement('script');
+                    newScript.textContent = script.textContent;
+                    document.head.appendChild(newScript);
+                    document.head.removeChild(newScript);
+                } catch (error) {
+                    console.error('Ошибка при выполнении скрипта:', error);
+                }
+            });
+            
+            const roundsPlayedInput = document.getElementById('roundsPlayed');
+            const roundsContainer = document.getElementById('roundsContainer');
+            const judgesContainer = document.getElementById('judgesContainer');
+            
+            if (!roundsPlayedInput || !roundsContainer || !judgesContainer) {
+                console.log('Элементы формы редактирования не найдены, пропускаем инициализацию');
+                return;
+            }
+            
+            // Дополнительная инициализация
+            if (roundsPlayedInput) {
+                console.log('🚀🚀🚀 Adding event listener to roundsPlayed from fight-details.html for edit form');
+                roundsPlayedInput.addEventListener('input', function() {
+                    console.log('🚀🚀🚀 roundsPlayed input event triggered from fight-details.html for edit form');
+                    // Вызываем updateRounds если она определена
+                    if (typeof updateRounds === 'function') {
+                        updateRounds();
+                    }
+                });
+            }
+        }
+        
+        // Функция для отправки формы редактирования через AJAX
+        function submitEditFormViaAjax(form) {
+            const formData = new FormData(form);
+            const fightId = formData.get('id');
+            
+            fetch('/fights/' + fightId + '/edit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Закрываем модальное окно
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editFightModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    // Перезагружаем страницу для отображения обновленных данных
+                    window.location.reload();
+                } else {
+                    alert('Ошибка при сохранении изменений');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке формы:', error);
+                alert('Ошибка при сохранении изменений');
+            });
         }
     </script>
 </body>

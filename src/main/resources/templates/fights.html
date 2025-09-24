@@ -230,11 +230,22 @@
         }
 
         function editFight(fightId) {
-            const modal = new bootstrap.Modal(document.getElementById('editFightModal'));
-            const container = document.getElementById('editFightFormContainer');
+            // Сначала закрываем все открытые модальные окна
+            const openModals = document.querySelectorAll('.modal.show');
+            openModals.forEach(modalElement => {
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+            });
             
-            // Показываем спиннер
-            container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
+            // Ждем немного, чтобы модальные окна закрылись
+            setTimeout(() => {
+                const modal = new bootstrap.Modal(document.getElementById('editFightModal'));
+                const container = document.getElementById('editFightFormContainer');
+                
+                // Показываем спиннер
+                container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
             
             // Загружаем форму редактирования
             fetch('/fights/' + fightId + '/edit')
@@ -251,6 +262,25 @@
                     // Инициализируем JavaScript для формы
                     initializeEditFightForm();
                     
+                    // Добавляем обработчик для кнопки "Сохранить" после загрузки формы
+                    const saveBtn = document.getElementById('saveEditFightBtn');
+                    if (saveBtn) {
+                        // Удаляем старые обработчики
+                        saveBtn.replaceWith(saveBtn.cloneNode(true));
+                        const newSaveBtn = document.getElementById('saveEditFightBtn');
+                        
+                        newSaveBtn.addEventListener('click', function() {
+                            const form = document.querySelector('#editFightForm');
+                            if (form) {
+                                if (form.checkValidity()) {
+                                    submitEditFormViaAjax(form);
+                                } else {
+                                    form.classList.add('was-validated');
+                                }
+                            }
+                        });
+                    }
+                    
                     // Показываем модальное окно
                     modal.show();
                 })
@@ -258,6 +288,7 @@
                     console.error('Ошибка при загрузке формы редактирования:', error);
                     container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке формы редактирования</div>';
                 });
+            }, 300); // Ждем 300ms для закрытия модальных окон
         }
         
         // Функция для инициализации формы редактирования боя в модальном окне
@@ -300,20 +331,7 @@
                 });
             }
             
-            // Обработчик для кнопки "Сохранить" в шапке модального окна
-            const saveBtn = document.getElementById('saveEditFightBtn');
-            if (saveBtn) {
-                saveBtn.addEventListener('click', function() {
-                    const form = document.querySelector('.needs-validation');
-                    if (form) {
-                        if (form.checkValidity()) {
-                            submitEditFormViaAjax(form);
-                        } else {
-                            form.classList.add('was-validated');
-                        }
-                    }
-                });
-            }
+            // Обработчик для кнопки "Сохранить" теперь добавляется после загрузки формы
             
             // Валидация формы и обработка отправки
             const form = document.querySelector('.needs-validation');

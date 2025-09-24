@@ -245,7 +245,11 @@ public class FightService {
      * Обновление раундов
      */
     private void updateRounds(Fight fight, List<FightRound> newRounds) {
-        // Удаляем старые раунды
+        // Удаляем старые раунды из базы данных
+        List<FightRound> existingRounds = fight.getRounds();
+        for (FightRound round : existingRounds) {
+            fightRoundRepository.delete(round);
+        }
         fight.getRounds().clear();
         
         // Добавляем новые раунды
@@ -260,7 +264,11 @@ public class FightService {
      * Обновление судейских оценок
      */
     private void updateJudgeScores(Fight fight, List<JudgeScore> newJudgeScores) {
-        // Удаляем старые оценки
+        // Удаляем старые оценки из базы данных
+        List<JudgeScore> existingJudgeScores = fight.getJudgeScores();
+        for (JudgeScore judgeScore : existingJudgeScores) {
+            judgeScoreRepository.delete(judgeScore);
+        }
         fight.getJudgeScores().clear();
         
         // Добавляем новые оценки

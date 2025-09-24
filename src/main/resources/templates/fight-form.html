@@ -32,7 +32,8 @@
                 </div>
                 
                 <form th:action="${fight.id != null ? '/fights/' + fight.id + '/edit' : '/fights/new'}" 
-                      th:object="${fight}" method="post" class="needs-validation" novalidate>
+                      th:object="${fight}" method="post" class="needs-validation" novalidate
+                      th:id="${fight.id != null ? 'editFightForm' : 'newFightForm'}">
                     
                     <!-- Общая информация о бое и примечания -->
                     <div class="card mb-4">
