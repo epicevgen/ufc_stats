@@ -20,68 +20,194 @@
     <div class="container mt-4" th:if="${fight}">
         <div class="row">
             <div class="col-12">
-                <!-- Заголовок боя -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0" th:text="'Бой #' + ${fight.id}"></h4>
-                            <div>
-                                <button class="btn btn-outline-primary btn-sm me-2" th:onclick="'editFight(' + ${fight.id} + ')'">
-                                    ✏️ Редактировать
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteFight()">
-                                    🗑️ Удалить
-                                </button>
+                <!-- Основная информация о бое -->
+                <div class="row mb-4">
+                    <!-- Левая колонка - основная информация -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0" th:text="'Бой #' + ${fight.id}"></h4>
+                                    <div>
+                                        <button class="btn btn-outline-primary btn-sm me-2" th:onclick="'editFight(' + ${fight.id} + ')'">
+                                            ✏️ Редактировать
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteFight()">
+                                            🗑️ Удалить
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5 class="text-primary" th:text="${fight.myFighter}">Мой боец</h5>
-                                <p class="mb-1"><strong>Весовая категория:</strong> <span th:text="${fight.weightClass}"></span></p>
-                                <p class="mb-1"><strong>Режим:</strong> 
-                                    <span th:text="${fight.fightMode.displayName}"></span>
-                                </p>
-                                <p class="mb-1"><strong>Сезон:</strong> <span th:text="${fight.season}"></span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 class="text-danger" th:text="${fight.opponent}">Соперник</h5>
-                                <p class="mb-1"><strong>Дата боя:</strong> 
-                                    <span th:text="${#temporals.format(fight.fightDate, 'dd.MM.yyyy HH:mm')}"></span>
-                                </p>
-                                <p class="mb-1"><strong>Раундов:</strong> <span th:text="${fight.roundsPlayed}"></span></p>
-                                <p class="mb-1"><strong>Метод:</strong> 
-                                    <span th:text="${fight.method == 'DECISION' ? 'Решение' : (fight.method == 'SUBMISSION' ? 'Сабмишен' : (fight.method == 'KNOCKOUT' ? 'Нокаут' : 'Досрочный выход'))}"></span>
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <div class="alert" th:classappend="${fight.result == 'WIN' ? 'alert-success' : (fight.result == 'LOSS' ? 'alert-danger' : 'alert-warning')}">
-                                    <h5 class="alert-heading mb-0">
-                                        <span th:if="${fight.result == 'WIN'}" class="text-success">🏆 ПОБЕДА!</span>
-                                        <span th:if="${fight.result == 'LOSS'}" class="text-danger">❌ ПОРАЖЕНИЕ</span>
-                                        <span th:if="${fight.result == 'DRAW'}" class="text-warning">🤝 НИЧЬЯ</span>
-                                    </h5>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary" th:text="${fight.myFighter}">Мой боец</h5>
+                                        <p class="mb-1"><strong>Весовая категория:</strong> <span th:text="${fight.weightClass}"></span></p>
+                                        <p class="mb-1"><strong>Режим:</strong> 
+                                            <span th:text="${fight.fightMode.displayName}"></span>
+                                        </p>
+                                        <p class="mb-1"><strong>Сезон:</strong> <span th:text="${fight.season}"></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="text-danger" th:text="${fight.opponent}">Соперник</h5>
+                                        <p class="mb-1"><strong>Дата боя:</strong> 
+                                            <span th:text="${#temporals.format(fight.fightDate, 'dd.MM.yyyy HH:mm')}"></span>
+                                        </p>
+                                        <p class="mb-1"><strong>Раундов:</strong> <span th:text="${fight.roundsPlayed}"></span></p>
+                                        <p class="mb-1"><strong>Метод:</strong> 
+                                            <span th:text="${fight.method == 'DECISION' ? 'Решение' : (fight.method == 'SUBMISSION' ? 'Сабмишен' : (fight.method == 'KNOCKOUT' ? 'Нокаут' : 'Досрочный выход'))}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="alert" th:classappend="${fight.result == 'WIN' ? 'alert-success' : (fight.result == 'LOSS' ? 'alert-danger' : 'alert-warning')}">
+                                            <h5 class="alert-heading mb-0">
+                                                <span th:if="${fight.result == 'WIN'}" class="text-success">🏆 ПОБЕДА!</span>
+                                                <span th:if="${fight.result == 'LOSS'}" class="text-danger">❌ ПОРАЖЕНИЕ</span>
+                                                <span th:if="${fight.result == 'DRAW'}" class="text-warning">🤝 НИЧЬЯ</span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" th:if="${fight.ratingPoints != null or fight.rankingPosition != null}">
+                                    <div class="col-md-6" th:if="${fight.ratingPoints != null}">
+                                        <p class="mb-1"><strong>Очки рейтинга:</strong> <span th:text="${fight.ratingPoints}"></span></p>
+                                    </div>
+                                    <div class="col-md-6" th:if="${fight.rankingPosition != null}">
+                                        <p class="mb-1"><strong>Место в рейтинге:</strong> <span th:text="${fight.rankingPosition}"></span></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" th:if="${fight.notes}">
+                                    <div class="col-12">
+                                        <h6>Примечания:</h6>
+                                        <p class="text-muted" th:text="${fight.notes}"></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="row" th:if="${fight.ratingPoints != null or fight.rankingPosition != null}">
-                            <div class="col-md-6" th:if="${fight.ratingPoints != null}">
-                                <p class="mb-1"><strong>Очки рейтинга:</strong> <span th:text="${fight.ratingPoints}"></span></p>
+                    </div>
+                    
+                    <!-- Правая колонка - суммированная статистика -->
+                    <div class="col-md-6" th:if="${fight.rounds != null and !fight.rounds.empty}">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">📊 Суммированная статистика</h5>
                             </div>
-                            <div class="col-md-6" th:if="${fight.rankingPosition != null}">
-                                <p class="mb-1"><strong>Место в рейтинге:</strong> <span th:text="${fight.rankingPosition}"></span></p>
-                            </div>
-                        </div>
-                        
-                        <div class="row" th:if="${fight.notes}">
-                            <div class="col-12">
-                                <h6>Примечания:</h6>
-                                <p class="text-muted" th:text="${fight.notes}"></p>
+                            <div class="card-body">
+                                <!-- Подсчитываем общую статистику -->
+                                <div th:with="
+                                    totalMyHeadDamage=${#aggregates.sum(fight.rounds.![myHeadDamage])},
+                                    totalOpponentHeadDamage=${#aggregates.sum(fight.rounds.![opponentHeadDamage])},
+                                    totalMyBodyDamage=${#aggregates.sum(fight.rounds.![myBodyDamage])},
+                                    totalOpponentBodyDamage=${#aggregates.sum(fight.rounds.![opponentBodyDamage])},
+                                    totalMyLegDamage=${#aggregates.sum(fight.rounds.![myLegDamage])},
+                                    totalOpponentLegDamage=${#aggregates.sum(fight.rounds.![opponentLegDamage])},
+                                    totalMySignificantStrikesLanded=${#aggregates.sum(fight.rounds.![mySignificantStrikesLanded])},
+                                    totalOpponentSignificantStrikesLanded=${#aggregates.sum(fight.rounds.![opponentSignificantStrikesLanded])},
+                                    totalMyTotalStrikesLanded=${#aggregates.sum(fight.rounds.![myTotalStrikesLanded])},
+                                    totalOpponentTotalStrikesLanded=${#aggregates.sum(fight.rounds.![opponentTotalStrikesLanded])},
+                                    totalMyTakedownsSuccessful=${#aggregates.sum(fight.rounds.![myTakedownsSuccessful])},
+                                    totalOpponentTakedownsSuccessful=${#aggregates.sum(fight.rounds.![opponentTakedownsSuccessful])},
+                                    totalMyKnockdowns=${#aggregates.sum(fight.rounds.![myKnockdowns])},
+                                    totalOpponentKnockdowns=${#aggregates.sum(fight.rounds.![opponentKnockdowns])}
+                                ">
+                                    <div class="row g-3">
+                                        <!-- Повреждения -->
+                                        <div class="col-12">
+                                            <h6 class="text-muted mb-2">Повреждения</h6>
+                                            <div class="row g-2">
+                                                <div class="col-4">
+                                                    <small class="text-muted">Голова</small>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span th:classappend="${totalMyHeadDamage > totalOpponentHeadDamage ? 'text-success fw-bold' : (totalMyHeadDamage < totalOpponentHeadDamage ? 'text-danger' : '')}" 
+                                                              th:text="${totalMyHeadDamage}">0</span>
+                                                        <span class="text-muted">-</span>
+                                                        <span th:classappend="${totalOpponentHeadDamage > totalMyHeadDamage ? 'text-success fw-bold' : (totalOpponentHeadDamage < totalMyHeadDamage ? 'text-danger' : '')}" 
+                                                              th:text="${totalOpponentHeadDamage}">0</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <small class="text-muted">Корпус</small>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span th:classappend="${totalMyBodyDamage > totalOpponentBodyDamage ? 'text-success fw-bold' : (totalMyBodyDamage < totalOpponentBodyDamage ? 'text-danger' : '')}" 
+                                                              th:text="${totalMyBodyDamage}">0</span>
+                                                        <span class="text-muted">-</span>
+                                                        <span th:classappend="${totalOpponentBodyDamage > totalMyBodyDamage ? 'text-success fw-bold' : (totalOpponentBodyDamage < totalMyBodyDamage ? 'text-danger' : '')}" 
+                                                              th:text="${totalOpponentBodyDamage}">0</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <small class="text-muted">Ноги</small>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span th:classappend="${totalMyLegDamage > totalOpponentLegDamage ? 'text-success fw-bold' : (totalMyLegDamage < totalOpponentLegDamage ? 'text-danger' : '')}" 
+                                                              th:text="${totalMyLegDamage}">0</span>
+                                                        <span class="text-muted">-</span>
+                                                        <span th:classappend="${totalOpponentLegDamage > totalMyLegDamage ? 'text-success fw-bold' : (totalOpponentLegDamage < totalMyLegDamage ? 'text-danger' : '')}" 
+                                                              th:text="${totalOpponentLegDamage}">0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Удары -->
+                                        <div class="col-12">
+                                            <h6 class="text-muted mb-2">Удары</h6>
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <small class="text-muted">Значимые удары</small>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span th:classappend="${totalMySignificantStrikesLanded > totalOpponentSignificantStrikesLanded ? 'text-success fw-bold' : (totalMySignificantStrikesLanded < totalOpponentSignificantStrikesLanded ? 'text-danger' : '')}" 
+                                                              th:text="${totalMySignificantStrikesLanded}">0</span>
+                                                        <span class="text-muted">-</span>
+                                                        <span th:classappend="${totalOpponentSignificantStrikesLanded > totalMySignificantStrikesLanded ? 'text-success fw-bold' : (totalOpponentSignificantStrikesLanded < totalMySignificantStrikesLanded ? 'text-danger' : '')}" 
+                                                              th:text="${totalOpponentSignificantStrikesLanded}">0</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted">Всего ударов</small>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span th:classappend="${totalMyTotalStrikesLanded > totalOpponentTotalStrikesLanded ? 'text-success fw-bold' : (totalMyTotalStrikesLanded < totalOpponentTotalStrikesLanded ? 'text-danger' : '')}" 
+                                                              th:text="${totalMyTotalStrikesLanded}">0</span>
+                                                        <span class="text-muted">-</span>
+                                                        <span th:classappend="${totalOpponentTotalStrikesLanded > totalMyTotalStrikesLanded ? 'text-success fw-bold' : (totalOpponentTotalStrikesLanded < totalMyTotalStrikesLanded ? 'text-danger' : '')}" 
+                                                              th:text="${totalOpponentTotalStrikesLanded}">0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Тейкдауны и нокдауны -->
+                                        <div class="col-12">
+                                            <h6 class="text-muted mb-2">Тейкдауны и нокдауны</h6>
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <small class="text-muted">Тейкдауны</small>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span th:classappend="${totalMyTakedownsSuccessful > totalOpponentTakedownsSuccessful ? 'text-success fw-bold' : (totalMyTakedownsSuccessful < totalOpponentTakedownsSuccessful ? 'text-danger' : '')}" 
+                                                              th:text="${totalMyTakedownsSuccessful}">0</span>
+                                                        <span class="text-muted">-</span>
+                                                        <span th:classappend="${totalOpponentTakedownsSuccessful > totalMyTakedownsSuccessful ? 'text-success fw-bold' : (totalOpponentTakedownsSuccessful < totalMyTakedownsSuccessful ? 'text-danger' : '')}" 
+                                                              th:text="${totalOpponentTakedownsSuccessful}">0</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted">Нокдауны</small>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span th:classappend="${totalMyKnockdowns > totalOpponentKnockdowns ? 'text-success fw-bold' : (totalMyKnockdowns < totalOpponentKnockdowns ? 'text-danger' : '')}" 
+                                                              th:text="${totalMyKnockdowns}">0</span>
+                                                        <span class="text-muted">-</span>
+                                                        <span th:classappend="${totalOpponentKnockdowns > totalMyKnockdowns ? 'text-success fw-bold' : (totalOpponentKnockdowns < totalMyKnockdowns ? 'text-danger' : '')}" 
+                                                              th:text="${totalOpponentKnockdowns}">0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
