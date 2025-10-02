@@ -9,6 +9,26 @@
     <title th:text="${title}">Список боев - UFC Stats</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .fight-row:hover {
+            background-color: #f8f9fa !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .fight-row {
+            transition: all 0.2s ease;
+        }
+        
+        .fight-row td {
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .fight-row:hover td {
+            border-color: #adb5bd;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -93,6 +113,11 @@
                         </div>
 
                         <div th:if="${!fights.empty}">
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Подсказка:</strong> Кликните по любой строке для просмотра деталей боя.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
                             <div class="table-responsive">
                                 <table id="fights-table" class="table table-hover">
                                     <thead>
@@ -108,7 +133,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:each="fight : ${fights.content}">
+                                        <tr th:each="fight : ${fights.content}" 
+                                            class="fight-row" 
+                                            style="cursor: pointer;"
+                                            th:onclick="'viewFight(' + ${fight.id} + ')'"
+                                            th:data-fight-id="${fight.id}">
                                             <td th:text="${#temporals.format(fight.fightDate, 'dd.MM.yyyy HH:mm')}">01.01.2024 20:00</td>
                                             <td th:text="${fight.myFighter}">Мой боец</td>
                                             <td th:text="${fight.opponent}">Соперник</td>
@@ -120,7 +149,7 @@
                                             <td th:text="${fight.roundsPlayed}">3</td>
                                             <td th:text="${fight.weightClass.displayName}">Легкий</td>
                                             <td>
-                                                <div class="btn-group" role="group">
+                                                <div class="btn-group" role="group" onclick="event.stopPropagation();">
                                                     <button type="button" 
                                                             class="btn btn-sm btn-outline-primary"
                                                             th:onclick="'viewFight(' + ${fight.id} + ')'">Просмотр</button>
