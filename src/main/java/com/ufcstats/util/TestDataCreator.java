@@ -22,10 +22,10 @@ public class TestDataCreator implements CommandLineRunner {
     
     @Autowired
     private com.ufcstats.repository.FightRepository fightRepository;
-    
+
     @Autowired
     private com.ufcstats.repository.FightRoundRepository fightRoundRepository;
-    
+
     @Autowired
     private com.ufcstats.repository.JudgeScoreRepository judgeScoreRepository;
 
