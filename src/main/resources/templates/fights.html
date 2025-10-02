@@ -78,35 +78,43 @@
 
                 <!-- Статистика -->
                 <div class="row mb-4">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h5 class="card-title text-primary" th:text="${totalElements}">0</h5>
+                                <h5 class="card-title text-primary" th:text="${totalFights}">0</h5>
                                 <p class="card-text">Всего боев</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h5 class="card-title text-success">0</h5>
+                                <h5 class="card-title text-success" th:text="${wins}">0</h5>
                                 <p class="card-text">Побед</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h5 class="card-title text-danger">0</h5>
+                                <h5 class="card-title text-danger" th:text="${losses}">0</h5>
                                 <p class="card-text">Поражений</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h5 class="card-title text-warning">0</h5>
+                                <h5 class="card-title text-warning" th:text="${draws}">0</h5>
                                 <p class="card-text">Ничьих</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-info" th:text="${#numbers.formatDecimal(winRate, 1, 1)} + '%'">0.0%</h5>
+                                <p class="card-text">Процент побед</p>
                             </div>
                         </div>
                     </div>

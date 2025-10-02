@@ -55,10 +55,20 @@ public class WebController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Fight> fights = fightService.getAllFights(pageable);
         
+        // Получаем статистику боев
+        FightService.FightStatistics statistics = fightService.getFightStatistics();
+        
         model.addAttribute("fights", fights);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", fights.getTotalPages());
         model.addAttribute("totalElements", fights.getTotalElements());
+        
+        // Добавляем статистику
+        model.addAttribute("totalFights", statistics.getTotalFights());
+        model.addAttribute("wins", statistics.getWins());
+        model.addAttribute("losses", statistics.getLosses());
+        model.addAttribute("draws", statistics.getDraws());
+        model.addAttribute("winRate", statistics.getWinRate());
         
         return "fights";
     }
