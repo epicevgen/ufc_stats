@@ -31,8 +31,8 @@ public class TestDataCreator implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Создаем полностью заполненный 5-раундовый бой
-        createFullFight();
+        // Создаем несколько боев для тестирования пагинации
+        createMultipleFights();
     }
 
     private void createSimpleFight() {
@@ -288,5 +288,45 @@ public class TestDataCreator implements CommandLineRunner {
             e.printStackTrace();
             System.out.println("✅ Бой создан без судейских оценок с ID: " + savedFight.getId());
         }
+    }
+
+    private void createMultipleFights() {
+        System.out.println("🥊 Создание множественных тестовых боев для пагинации...");
+        
+        // Проверяем, есть ли уже бои в базе
+        long existingFights = fightRepository.count();
+        if (existingFights >= 15) {
+            System.out.println("✅ Достаточно боев уже существует: " + existingFights);
+            return;
+        }
+        
+        // Создаем 15 боев для тестирования пагинации
+        String[] fighters = {"Иван Петров", "Алексей Сидоров", "Дмитрий Волков", "Сергей Козлов", "Андрей Морозов"};
+        String[] opponents = {"Джон Смит", "Майк Джонсон", "Том Уилсон", "Джейк Браун", "Боб Дэвис"};
+        
+        for (int i = 0; i < 15; i++) {
+            try {
+                Fight fight = new Fight();
+                fight.setFightDate(LocalDate.of(2024, 1, 15 + i).atStartOfDay());
+                fight.setFightMode(i % 2 == 0 ? FightMode.STANCE : FightMode.MMA);
+                fight.setSeason(2024);
+                fight.setResult(i % 3 == 0 ? FightResult.WIN : (i % 3 == 1 ? FightResult.LOSS : FightResult.DRAW));
+                fight.setMethod(i % 4 == 0 ? FightMethod.DECISION : (i % 4 == 1 ? FightMethod.KNOCKOUT : (i % 4 == 2 ? FightMethod.SUBMISSION : FightMethod.EARLY_EXIT)));
+                fight.setRoundsPlayed((i % 5) + 1);
+                fight.setRatingPoints(1500 + (i * 10));
+                fight.setRankingPosition(i + 1);
+                fight.setWeightClass(WeightClass.values()[i % WeightClass.values().length]);
+                fight.setMyFighter(fighters[i % fighters.length]);
+                fight.setOpponent(opponents[i % opponents.length]);
+                fight.setNotes("Тестовый бой #" + (i + 1));
+                
+                fightService.createFight(fight);
+                System.out.println("✅ Бой #" + (i + 1) + " создан: " + fight.getMyFighter() + " vs " + fight.getOpponent());
+            } catch (Exception e) {
+                System.err.println("❌ Ошибка при создании боя #" + (i + 1) + ": " + e.getMessage());
+            }
+        }
+        
+        System.out.println("🎉 Создание тестовых боев завершено!");
     }
 }

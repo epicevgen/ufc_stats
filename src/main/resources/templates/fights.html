@@ -178,6 +178,12 @@
 
                 <!-- Список боев -->
                 <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Список боев</h5>
+                        <div class="text-muted" th:if="${!fights.empty}">
+                            <small th:text="'Страница ' + (${currentPage} + 1) + ' из ' + ${totalPages} + ' (' + ${totalElements} + ' боев всего)'">Страница 1 из 3 (25 боев всего)</small>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div th:if="${fights.empty}" class="text-center py-5">
                             <h4 class="text-muted">Бои не найдены</h4>
@@ -390,22 +396,49 @@
                             </div>
 
                             <!-- Пагинация -->
-                            <nav th:if="${totalPages > 1}">
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                        <a class="page-link" th:href="@{/fights(page=${currentPage - 1})}">Предыдущая</a>
-                                    </li>
+                            <nav th:if="${totalPages > 1}" class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- Информация о страницах -->
+                                    <div class="text-muted">
+                                        <span th:text="'Показано ' + ${fights.numberOfElements} + ' из ' + ${totalElements} + ' боев'">Показано 10 из 25 боев</span>
+                                    </div>
                                     
-                                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
-                                        class="page-item" 
-                                        th:classappend="${i == currentPage} ? 'active'">
-                                        <a class="page-link" th:href="@{/fights(page=${i})}" th:text="${i + 1}">1</a>
-                                    </li>
-                                    
-                                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                                        <a class="page-link" th:href="@{/fights(page=${currentPage + 1})}">Следующая</a>
-                                    </li>
-                                </ul>
+                                    <!-- Навигация по страницам -->
+                                    <ul class="pagination mb-0">
+                                        <!-- Предыдущая страница -->
+                                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                            <a class="page-link" 
+                                               th:href="@{/fights(page=${currentPage - 1}, search=${search}, sortBy=${sortBy}, sortDir=${sortDir}, resultFilter=${resultFilter}, fightModeFilter=${fightModeFilter}, methodFilter=${methodFilter})}"
+                                               th:if="${currentPage > 0}">
+                                                <i class="bi bi-chevron-left"></i> Предыдущая
+                                            </a>
+                                            <span class="page-link" th:if="${currentPage == 0}">
+                                                <i class="bi bi-chevron-left"></i> Предыдущая
+                                            </span>
+                                        </li>
+                                        
+                                        <!-- Номера страниц -->
+                                        <li th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, currentPage - 2), T(java.lang.Math).min(totalPages - 1, currentPage + 2))}" 
+                                            class="page-item" 
+                                            th:classappend="${i == currentPage} ? 'active'">
+                                            <a class="page-link" 
+                                               th:href="@{/fights(page=${i}, search=${search}, sortBy=${sortBy}, sortDir=${sortDir}, resultFilter=${resultFilter}, fightModeFilter=${fightModeFilter}, methodFilter=${methodFilter})}" 
+                                               th:text="${i + 1}">1</a>
+                                        </li>
+                                        
+                                        <!-- Следующая страница -->
+                                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                            <a class="page-link" 
+                                               th:href="@{/fights(page=${currentPage + 1}, search=${search}, sortBy=${sortBy}, sortDir=${sortDir}, resultFilter=${resultFilter}, fightModeFilter=${fightModeFilter}, methodFilter=${methodFilter})}"
+                                               th:if="${currentPage < totalPages - 1}">
+                                                Следующая <i class="bi bi-chevron-right"></i>
+                                            </a>
+                                            <span class="page-link" th:if="${currentPage == totalPages - 1}">
+                                                Следующая <i class="bi bi-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </nav>
                         </div>
                     </div>
