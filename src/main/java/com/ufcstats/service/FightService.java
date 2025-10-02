@@ -134,10 +134,10 @@ public class FightService {
     /**
      * Поиск боев с фильтрацией и пагинацией
      */
-    public Page<Fight> searchFights(String search, String resultFilter, String weightClassFilter, 
+    public Page<Fight> searchFights(String search, String resultFilter, String fightModeFilter, 
                                    String methodFilter, Pageable pageable) {
-        log.debug("Поиск боев с фильтрами: search={}, resultFilter={}, weightClassFilter={}, methodFilter={}", 
-                 search, resultFilter, weightClassFilter, methodFilter);
+        log.debug("Поиск боев с фильтрами: search={}, resultFilter={}, fightModeFilter={}, methodFilter={}", 
+                 search, resultFilter, fightModeFilter, methodFilter);
         
         // Преобразуем строки в enum
         FightResult resultEnum = null;
@@ -149,12 +149,12 @@ public class FightService {
             }
         }
         
-        WeightClass weightClassEnum = null;
-        if (weightClassFilter != null && !weightClassFilter.trim().isEmpty()) {
+        FightMode fightModeEnum = null;
+        if (fightModeFilter != null && !fightModeFilter.trim().isEmpty()) {
             try {
-                weightClassEnum = WeightClass.valueOf(weightClassFilter);
+                fightModeEnum = FightMode.valueOf(fightModeFilter);
             } catch (IllegalArgumentException e) {
-                log.warn("Неверное значение для weightClassFilter: {}", weightClassFilter);
+                log.warn("Неверное значение для fightModeFilter: {}", fightModeFilter);
             }
         }
         
@@ -167,7 +167,7 @@ public class FightService {
             }
         }
         
-        return fightRepository.searchFights(search, resultEnum, weightClassEnum, methodEnum, pageable);
+        return fightRepository.searchFights(search, resultEnum, fightModeEnum, methodEnum, pageable);
     }
 
     /**

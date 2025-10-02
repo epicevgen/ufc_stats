@@ -140,7 +140,7 @@
                             <input type="hidden" name="sortBy" th:value="${sortBy}">
                             <input type="hidden" name="sortDir" th:value="${sortDir}">
                             <input type="hidden" name="resultFilter" th:value="${resultFilter}">
-                            <input type="hidden" name="weightClassFilter" th:value="${weightClassFilter}">
+                            <input type="hidden" name="fightModeFilter" th:value="${fightModeFilter}">
                             <input type="hidden" name="methodFilter" th:value="${methodFilter}">
                         </form>
                     </div>
@@ -163,8 +163,8 @@
                                 <strong>Подсказка:</strong> Кликните по любой строке для просмотра деталей боя.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            <div class="table-responsive">
-                                <table id="fights-table" class="table table-hover">
+                            <div class="table-responsive" style="overflow-x: auto;">
+                                <table id="fights-table" class="table table-hover" style="min-width: 1200px;">
                                     <thead>
                                         <tr>
                                             <th>
@@ -255,25 +255,37 @@
                                                             <i class="bi bi-funnel"></i>
                                                         </button>
                                                         <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('')">Все</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('FLYWEIGHT')">Наилегчайший</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('BANTAMWEIGHT')">Легчайший</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('FEATHERWEIGHT')">Полулегкий</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('LIGHTWEIGHT')">Легкий</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('WELTERWEIGHT')">Полусредний</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('MIDDLEWEIGHT')">Средний</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('LIGHT_HEAVYWEIGHT')">Полутяжелый</a></li>
-                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('HEAVYWEIGHT')">Тяжелый</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByFightMode('')">Все</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByFightMode('STANCE')">Стойка</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByFightMode('MMA')">ММА</a></li>
                                                         </ul>
                                                     </div>
-                                                    <a href="#" onclick="sortTable('weightClass')" class="text-decoration-none text-dark">
-                                                        Весовая категория
-                                                        <i th:if="${sortBy == 'weightClass'}" 
+                                                    <a href="#" onclick="sortTable('fightMode')" class="text-decoration-none text-dark">
+                                                        Режим боя
+                                                        <i th:if="${sortBy == 'fightMode'}" 
                                                            th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
                                                            class="bi"></i>
-                                                        <i th:if="${sortBy != 'weightClass'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                        <i th:if="${sortBy != 'fightMode'}" class="bi bi-arrow-down-up text-muted"></i>
                                                     </a>
                                                 </div>
+                                            </th>
+                                            <th>
+                                                <a href="#" onclick="sortTable('ratingPoints')" class="text-decoration-none text-dark">
+                                                    Очки рейтинга
+                                                    <i th:if="${sortBy == 'ratingPoints'}" 
+                                                       th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                       class="bi"></i>
+                                                    <i th:if="${sortBy != 'ratingPoints'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="#" onclick="sortTable('rankingPosition')" class="text-decoration-none text-dark">
+                                                    Место в рейтинге
+                                                    <i th:if="${sortBy == 'rankingPosition'}" 
+                                                       th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                       class="bi"></i>
+                                                    <i th:if="${sortBy != 'rankingPosition'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                </a>
                                             </th>
                                             <th>Действия</th>
                                         </tr>
@@ -293,7 +305,9 @@
                                             </td>
                                             <td th:text="${fight.method.displayName}">Решение</td>
                                             <td th:text="${fight.roundsPlayed}">3</td>
-                                            <td th:text="${fight.weightClass.displayName}">Легкий</td>
+                                            <td th:text="${fight.fightMode.displayName}">Стойка</td>
+                                            <td th:text="${fight.ratingPoints != null ? fight.ratingPoints : '-'}">1500</td>
+                                            <td th:text="${fight.rankingPosition != null ? fight.rankingPosition : '-'}">5</td>
                                             <td>
                                                 <div class="btn-group" role="group" onclick="event.stopPropagation();">
                                                     <button type="button" 
@@ -839,7 +853,7 @@
             document.querySelector('input[name="sortBy"]').value = 'fightDate';
             document.querySelector('input[name="sortDir"]').value = 'desc';
             document.querySelector('input[name="resultFilter"]').value = '';
-            document.querySelector('input[name="weightClassFilter"]').value = '';
+            document.querySelector('input[name="fightModeFilter"]').value = '';
             document.querySelector('input[name="methodFilter"]').value = '';
             
             // Отправляем форму
@@ -859,8 +873,8 @@
             document.getElementById('searchForm').submit();
         }
 
-        function filterByWeightClass(value) {
-            document.querySelector('input[name="weightClassFilter"]').value = value;
+        function filterByFightMode(value) {
+            document.querySelector('input[name="fightModeFilter"]').value = value;
             document.querySelector('input[name="page"]').value = 0;
             document.getElementById('searchForm').submit();
         }

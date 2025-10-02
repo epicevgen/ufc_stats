@@ -55,7 +55,7 @@ public class WebController {
                         @RequestParam(defaultValue = "fightDate") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDir,
                         @RequestParam(defaultValue = "") String resultFilter,
-                        @RequestParam(defaultValue = "") String weightClassFilter,
+                        @RequestParam(defaultValue = "") String fightModeFilter,
                         @RequestParam(defaultValue = "") String methodFilter) {
         model.addAttribute("title", "Список боев");
         
@@ -64,7 +64,7 @@ public class WebController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         // Получаем бои с учетом фильтров и поиска
-        Page<Fight> fights = fightService.searchFights(search, resultFilter, weightClassFilter, methodFilter, pageable);
+        Page<Fight> fights = fightService.searchFights(search, resultFilter, fightModeFilter, methodFilter, pageable);
         
         // Получаем статистику боев
         FightService.FightStatistics statistics = fightService.getFightStatistics();
@@ -79,7 +79,7 @@ public class WebController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("resultFilter", resultFilter);
-        model.addAttribute("weightClassFilter", weightClassFilter);
+        model.addAttribute("fightModeFilter", fightModeFilter);
         model.addAttribute("methodFilter", methodFilter);
         
         // Добавляем статистику
@@ -91,7 +91,7 @@ public class WebController {
         
         // Добавляем enum значения для фильтров
         model.addAttribute("fightResults", FightResult.values());
-        model.addAttribute("weightClasses", WeightClass.values());
+        model.addAttribute("fightModes", FightMode.values());
         model.addAttribute("fightMethods", FightMethod.values());
         
         return "fights";

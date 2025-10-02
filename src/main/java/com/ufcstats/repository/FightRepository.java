@@ -171,11 +171,11 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
            "LOWER(f.opponent) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(f.notes) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
            "(:resultFilter IS NULL OR :resultFilter = '' OR f.result = :resultFilter) AND " +
-           "(:weightClassFilter IS NULL OR :weightClassFilter = '' OR f.weightClass = :weightClassFilter) AND " +
+           "(:fightModeFilter IS NULL OR :fightModeFilter = '' OR f.fightMode = :fightModeFilter) AND " +
            "(:methodFilter IS NULL OR :methodFilter = '' OR f.method = :methodFilter)")
     Page<Fight> searchFights(@Param("search") String search,
                             @Param("resultFilter") FightResult resultFilter,
-                            @Param("weightClassFilter") WeightClass weightClassFilter,
+                            @Param("fightModeFilter") FightMode fightModeFilter,
                             @Param("methodFilter") com.ufcstats.model.enums.FightMethod methodFilter,
                             Pageable pageable);
 }
