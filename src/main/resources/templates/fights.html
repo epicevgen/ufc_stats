@@ -149,7 +149,7 @@
                                             style="cursor: pointer;"
                                             th:onclick="'viewFight(' + ${fight.id} + ')'"
                                             th:data-fight-id="${fight.id}">
-                                            <td th:text="${#temporals.format(fight.fightDate, 'dd.MM.yyyy HH:mm')}">01.01.2024 20:00</td>
+                                            <td th:text="${#temporals.format(fight.fightDate, 'dd.MM.yyyy')}">01.01.2024</td>
                                             <td th:text="${fight.myFighter}">Мой боец</td>
                                             <td th:text="${fight.opponent}">Соперник</td>
                                             <td>
