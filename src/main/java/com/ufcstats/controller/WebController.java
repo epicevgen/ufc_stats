@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,9 +82,13 @@ public class WebController {
     @GetMapping("/fights/{id}")
     public String viewFight(@PathVariable Long id, Model model) {
         model.addAttribute("title", "Детали боя");
-        fightService.getFightById(id).ifPresent(fight -> {
-            model.addAttribute("fight", fight);
-        });
+        Optional<Fight> fightOpt = fightService.getFightById(id);
+        if (fightOpt.isPresent()) {
+            model.addAttribute("fight", fightOpt.get());
+        } else {
+            // Если бой не найден, возвращаем ошибку
+            throw new RuntimeException("Бой с ID " + id + " не найден");
+        }
         return "fight-details";
     }
 

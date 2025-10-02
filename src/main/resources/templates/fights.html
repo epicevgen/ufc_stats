@@ -8,6 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <title th:text="${title}">Список боев - UFC Stats</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <style>
         .fight-row:hover {
@@ -19,6 +20,16 @@
         
         .fight-row {
             transition: all 0.2s ease;
+        }
+        
+        /* Стили для компактных кнопок с иконками */
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+            min-width: 32px;
+        }
+        
+        .btn-group .btn i {
+            font-size: 0.9rem;
         }
         
         .fight-row td {
@@ -152,13 +163,22 @@
                                                 <div class="btn-group" role="group" onclick="event.stopPropagation();">
                                                     <button type="button" 
                                                             class="btn btn-sm btn-outline-primary"
-                                                            th:onclick="'viewFight(' + ${fight.id} + ')'">Просмотр</button>
+                                                            th:onclick="'viewFight(' + ${fight.id} + ')'"
+                                                            title="Просмотр">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
                                                     <button type="button" 
                                                             class="btn btn-sm btn-outline-secondary"
-                                                            th:onclick="'editFight(' + ${fight.id} + ')'">Редактировать</button>
+                                                            th:onclick="'editFight(' + ${fight.id} + ')'"
+                                                            title="Редактировать">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
                                                     <button type="button" 
                                                             class="btn btn-sm btn-outline-danger"
-                                                            th:onclick="'deleteFight(' + ${fight.id} + ')'">Удалить</button>
+                                                            th:onclick="'deleteFight(' + ${fight.id} + ')'"
+                                                            title="Удалить">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>

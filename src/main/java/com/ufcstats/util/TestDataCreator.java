@@ -35,6 +35,28 @@ public class TestDataCreator implements CommandLineRunner {
         createFullFight();
     }
 
+    private void createSimpleFight() {
+        System.out.println("🥊 Создание простого тестового боя...");
+        
+        Fight fight = new Fight();
+        fight.setFightDate(LocalDate.of(2024, 12, 15).atStartOfDay());
+        fight.setFightMode(FightMode.STANCE);
+        fight.setSeason(2024);
+        fight.setResult(FightResult.WIN);
+        fight.setMethod(FightMethod.DECISION);
+        fight.setRoundsPlayed(3);
+        fight.setRatingPoints(85);
+        fight.setRankingPosition(5);
+        fight.setWeightClass(WeightClass.LIGHTWEIGHT);
+        fight.setMyFighter("Тестовый Боец");
+        fight.setOpponent("Тестовый Соперник");
+        fight.setNotes("Простой тестовый бой для проверки функции просмотра");
+        
+        Fight savedFight = fightRepository.save(fight);
+        System.out.println("✅ Простой тестовый бой создан с ID: " + savedFight.getId());
+        System.out.println("🥊 Бой: " + savedFight.getMyFighter() + " vs " + savedFight.getOpponent());
+    }
+
     private void createFullFight() {
         System.out.println("🥊 Создание полностью заполненного 5-раундового боя...");
 
@@ -253,12 +275,18 @@ public class TestDataCreator implements CommandLineRunner {
         judgeScores.add(judge3);
 
         // Сохраняем судейские оценки с привязкой к бою
-        for (JudgeScore judgeScore : judgeScores) {
-            judgeScore.setFight(savedFight);
-            judgeScoreRepository.save(judgeScore);
+        try {
+            for (JudgeScore judgeScore : judgeScores) {
+                judgeScore.setFight(savedFight);
+                judgeScoreRepository.save(judgeScore);
+            }
+            System.out.println("✅ Полностью заполненный 5-раундовый бой создан с ID: " + savedFight.getId());
+            System.out.println("🥊 Бой: " + savedFight.getMyFighter() + " vs " + savedFight.getOpponent());
+            System.out.println("📊 Статистика: 5 раундов, 3 судьи, полная статистика по всем показателям");
+        } catch (Exception e) {
+            System.err.println("❌ Ошибка при сохранении судейских оценок: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("✅ Бой создан без судейских оценок с ID: " + savedFight.getId());
         }
-        System.out.println("✅ Полностью заполненный 5-раундовый бой создан с ID: " + savedFight.getId());
-        System.out.println("🥊 Бой: " + savedFight.getMyFighter() + " vs " + savedFight.getOpponent());
-        System.out.println("📊 Статистика: 5 раундов, 3 судьи, полная статистика по всем показателям");
     }
 }
