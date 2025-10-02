@@ -295,16 +295,16 @@ public class TestDataCreator implements CommandLineRunner {
         
         // Проверяем, есть ли уже бои в базе
         long existingFights = fightRepository.count();
-        if (existingFights >= 15) {
+        if (existingFights >= 25) {
             System.out.println("✅ Достаточно боев уже существует: " + existingFights);
             return;
         }
         
-        // Создаем 15 боев для тестирования пагинации
+        // Создаем 25 боев для тестирования пагинации
         String[] fighters = {"Иван Петров", "Алексей Сидоров", "Дмитрий Волков", "Сергей Козлов", "Андрей Морозов"};
         String[] opponents = {"Джон Смит", "Майк Джонсон", "Том Уилсон", "Джейк Браун", "Боб Дэвис"};
         
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 25; i++) {
             try {
                 Fight fight = new Fight();
                 fight.setFightDate(LocalDate.of(2024, 1, 15 + i).atStartOfDay());
