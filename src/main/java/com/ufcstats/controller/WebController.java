@@ -8,6 +8,7 @@ import com.ufcstats.model.enums.FightResult;
 import com.ufcstats.model.enums.FightMethod;
 import com.ufcstats.model.enums.WeightClass;
 import com.ufcstats.service.FightService;
+import com.ufcstats.service.RatingChangeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.Map;
 import java.util.Optional;
+import com.ufcstats.dto.RatingChangeDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class WebController {
 
     private final FightService fightService;
+    private final RatingChangeService ratingChangeService;
 
 
     @GetMapping("/")
@@ -69,6 +73,9 @@ public class WebController {
         // Получаем статистику боев
         FightService.FightStatistics statistics = fightService.getFightStatistics();
         
+        // Рассчитываем изменения рейтинга для отображения индикации
+        Map<Long, RatingChangeDto> ratingChanges = ratingChangeService.calculateRatingChanges(fights.getContent());
+        
         model.addAttribute("fights", fights);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", fights.getTotalPages());
@@ -93,6 +100,9 @@ public class WebController {
         model.addAttribute("fightResults", FightResult.values());
         model.addAttribute("fightModes", FightMode.values());
         model.addAttribute("fightMethods", FightMethod.values());
+        
+        // Добавляем данные об изменениях рейтинга
+        model.addAttribute("ratingChanges", ratingChanges);
         
         return "fights";
     }

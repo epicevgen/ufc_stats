@@ -178,4 +178,9 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
                             @Param("fightModeFilter") FightMode fightModeFilter,
                             @Param("methodFilter") com.ufcstats.model.enums.FightMethod methodFilter,
                             Pageable pageable);
+
+    /**
+     * Найти предыдущие бои того же режима, отсортированные по дате (новые сначала)
+     */
+    List<Fight> findByFightModeAndFightDateBeforeOrderByFightDateDesc(FightMode fightMode, LocalDateTime fightDate);
 }

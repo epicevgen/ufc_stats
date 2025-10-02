@@ -39,6 +39,36 @@
         .fight-row:hover td {
             border-color: #adb5bd;
         }
+        
+        /* Стили для индикации изменений рейтинга */
+        .rating-change-badge {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.1rem;
+            font-weight: 500;
+        }
+        
+        .rating-change-badge.text-success {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+        }
+        
+        .rating-change-badge.text-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .rating-change-badge.text-muted {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+        }
+        
+        .rating-change-badge i {
+            font-size: 0.6rem;
+        }
     </style>
 </head>
 <body>
@@ -306,8 +336,32 @@
                                             <td th:text="${fight.method.displayName}">Решение</td>
                                             <td th:text="${fight.roundsPlayed}">3</td>
                                             <td th:text="${fight.fightMode.displayName}">Стойка</td>
-                                            <td th:text="${fight.ratingPoints != null ? fight.ratingPoints : '-'}">1500</td>
-                                            <td th:text="${fight.rankingPosition != null ? fight.rankingPosition : '-'}">5</td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <span th:text="${fight.ratingPoints != null ? fight.ratingPoints : '-'}">1500</span>
+                                                    <th:block th:if="${ratingChanges != null and ratingChanges.containsKey(fight.id)}" th:with="ratingChange=${ratingChanges.get(fight.id)}">
+                                                        <span th:if="${ratingChange.ratingPointsChange != null and ratingChange.ratingPointsChange != 0}"
+                                                              th:class="'rating-change-badge text-' + ${ratingChange.ratingPointsColor}"
+                                                              th:title="'Изменение: ' + ${ratingChange.ratingPointsChange > 0 ? '+' : ''} + ${ratingChange.ratingPointsChange} + ' (предыдущий: ' + ${ratingChange.previousRatingPoints} + ')'">
+                                                            <i th:class="'bi ' + ${ratingChange.ratingPointsIcon}"></i>
+                                                            <span th:text="${ratingChange.ratingPointsChange > 0 ? '+' : ''} + ${ratingChange.ratingPointsChange}"></span>
+                                                        </span>
+                                                    </th:block>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <span th:text="${fight.rankingPosition != null ? fight.rankingPosition : '-'}">5</span>
+                                                    <th:block th:if="${ratingChanges != null and ratingChanges.containsKey(fight.id)}" th:with="ratingChange=${ratingChanges.get(fight.id)}">
+                                                        <span th:if="${ratingChange.rankingPositionChange != null and ratingChange.rankingPositionChange != 0}"
+                                                              th:class="'rating-change-badge text-' + ${ratingChange.rankingPositionColor}"
+                                                              th:title="'Изменение: ' + ${ratingChange.rankingPositionChange > 0 ? '+' : ''} + ${ratingChange.rankingPositionChange} + ' (предыдущий: ' + ${ratingChange.previousRankingPosition} + ')'">
+                                                            <i th:class="'bi ' + ${ratingChange.rankingPositionIcon}"></i>
+                                                            <span th:text="${ratingChange.rankingPositionChange > 0 ? '+' : ''} + ${ratingChange.rankingPositionChange}"></span>
+                                                        </span>
+                                                    </th:block>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div class="btn-group" role="group" onclick="event.stopPropagation();">
                                                     <button type="button" 
