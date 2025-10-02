@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
@@ -49,11 +50,21 @@ public class WebController {
     @GetMapping("/fights")
     public String fights(Model model, 
                         @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size) {
+                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(defaultValue = "") String search,
+                        @RequestParam(defaultValue = "fightDate") String sortBy,
+                        @RequestParam(defaultValue = "desc") String sortDir,
+                        @RequestParam(defaultValue = "") String resultFilter,
+                        @RequestParam(defaultValue = "") String weightClassFilter,
+                        @RequestParam(defaultValue = "") String methodFilter) {
         model.addAttribute("title", "Список боев");
         
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Fight> fights = fightService.getAllFights(pageable);
+        // Создаем объект сортировки
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        // Получаем бои с учетом фильтров и поиска
+        Page<Fight> fights = fightService.searchFights(search, resultFilter, weightClassFilter, methodFilter, pageable);
         
         // Получаем статистику боев
         FightService.FightStatistics statistics = fightService.getFightStatistics();
@@ -63,12 +74,25 @@ public class WebController {
         model.addAttribute("totalPages", fights.getTotalPages());
         model.addAttribute("totalElements", fights.getTotalElements());
         
+        // Добавляем параметры поиска и фильтрации
+        model.addAttribute("search", search);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("resultFilter", resultFilter);
+        model.addAttribute("weightClassFilter", weightClassFilter);
+        model.addAttribute("methodFilter", methodFilter);
+        
         // Добавляем статистику
         model.addAttribute("totalFights", statistics.getTotalFights());
         model.addAttribute("wins", statistics.getWins());
         model.addAttribute("losses", statistics.getLosses());
         model.addAttribute("draws", statistics.getDraws());
         model.addAttribute("winRate", statistics.getWinRate());
+        
+        // Добавляем enum значения для фильтров
+        model.addAttribute("fightResults", FightResult.values());
+        model.addAttribute("weightClasses", WeightClass.values());
+        model.addAttribute("fightMethods", FightMethod.values());
         
         return "fights";
     }

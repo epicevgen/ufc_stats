@@ -120,6 +120,32 @@
                     </div>
                 </div>
 
+                <!-- Поиск -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <form method="get" action="/fights" id="searchForm">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="search" name="search" 
+                                       th:value="${search}" placeholder="Поиск по бойцам, соперникам, заметкам...">
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Скрытые поля для пагинации и сортировки -->
+                            <input type="hidden" name="page" value="0">
+                            <input type="hidden" name="sortBy" th:value="${sortBy}">
+                            <input type="hidden" name="sortDir" th:value="${sortDir}">
+                            <input type="hidden" name="resultFilter" th:value="${resultFilter}">
+                            <input type="hidden" name="weightClassFilter" th:value="${weightClassFilter}">
+                            <input type="hidden" name="methodFilter" th:value="${methodFilter}">
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Список боев -->
                 <div class="card">
                     <div class="card-body">
@@ -141,13 +167,114 @@
                                 <table id="fights-table" class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Дата</th>
-                                            <th>Мой боец</th>
-                                            <th>Соперник</th>
-                                            <th>Результат</th>
-                                            <th>Метод</th>
-                                            <th>Раунды</th>
-                                            <th>Весовая категория</th>
+                                            <th>
+                                                <a href="#" onclick="sortTable('fightDate')" class="text-decoration-none text-dark">
+                                                    Дата
+                                                    <i th:if="${sortBy == 'fightDate'}" 
+                                                       th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                       class="bi"></i>
+                                                    <i th:if="${sortBy != 'fightDate'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="#" onclick="sortTable('myFighter')" class="text-decoration-none text-dark">
+                                                    Мой боец
+                                                    <i th:if="${sortBy == 'myFighter'}" 
+                                                       th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                       class="bi"></i>
+                                                    <i th:if="${sortBy != 'myFighter'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="#" onclick="sortTable('opponent')" class="text-decoration-none text-dark">
+                                                    Соперник
+                                                    <i th:if="${sortBy == 'opponent'}" 
+                                                       th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                       class="bi"></i>
+                                                    <i th:if="${sortBy != 'opponent'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <div class="d-flex flex-column">
+                                                    <div class="dropdown mb-1">
+                                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" style="font-size: 0.7rem; padding: 0.1rem 0.3rem;">
+                                                            <i class="bi bi-funnel"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByResult('')">Все</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByResult('WIN')">Победа</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByResult('LOSS')">Поражение</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByResult('DRAW')">Ничья</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <a href="#" onclick="sortTable('result')" class="text-decoration-none text-dark">
+                                                        Результат
+                                                        <i th:if="${sortBy == 'result'}" 
+                                                           th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                           class="bi"></i>
+                                                        <i th:if="${sortBy != 'result'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                    </a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="d-flex flex-column">
+                                                    <div class="dropdown mb-1">
+                                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" style="font-size: 0.7rem; padding: 0.1rem 0.3rem;">
+                                                            <i class="bi bi-funnel"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByMethod('')">Все</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByMethod('DECISION')">Решение</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByMethod('KNOCKOUT')">Нокаут</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByMethod('SUBMISSION')">Сабмишен</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByMethod('EARLY_EXIT')">Досрочный выход</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <a href="#" onclick="sortTable('method')" class="text-decoration-none text-dark">
+                                                        Метод
+                                                        <i th:if="${sortBy == 'method'}" 
+                                                           th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                           class="bi"></i>
+                                                        <i th:if="${sortBy != 'method'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                    </a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <a href="#" onclick="sortTable('roundsPlayed')" class="text-decoration-none text-dark">
+                                                    Раунды
+                                                    <i th:if="${sortBy == 'roundsPlayed'}" 
+                                                       th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                       class="bi"></i>
+                                                    <i th:if="${sortBy != 'roundsPlayed'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <div class="d-flex flex-column">
+                                                    <div class="dropdown mb-1">
+                                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" style="font-size: 0.7rem; padding: 0.1rem 0.3rem;">
+                                                            <i class="bi bi-funnel"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('')">Все</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('FLYWEIGHT')">Наилегчайший</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('BANTAMWEIGHT')">Легчайший</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('FEATHERWEIGHT')">Полулегкий</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('LIGHTWEIGHT')">Легкий</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('WELTERWEIGHT')">Полусредний</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('MIDDLEWEIGHT')">Средний</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('LIGHT_HEAVYWEIGHT')">Полутяжелый</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="filterByWeightClass('HEAVYWEIGHT')">Тяжелый</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <a href="#" onclick="sortTable('weightClass')" class="text-decoration-none text-dark">
+                                                        Весовая категория
+                                                        <i th:if="${sortBy == 'weightClass'}" 
+                                                           th:class="'bi bi-arrow-' + ${sortDir == 'asc' ? 'up' : 'down'}" 
+                                                           class="bi"></i>
+                                                        <i th:if="${sortBy != 'weightClass'}" class="bi bi-arrow-down-up text-muted"></i>
+                                                    </a>
+                                                </div>
+                                            </th>
                                             <th>Действия</th>
                                         </tr>
                                     </thead>
@@ -259,16 +386,34 @@
 
         // Функции для работы с модальными окнами
         function viewFight(fightId) {
-            const modal = new bootstrap.Modal(document.getElementById('viewFightModal'));
+            console.log('viewFight called with fightId:', fightId);
+            
+            const modalElement = document.getElementById('viewFightModal');
             const container = document.getElementById('viewFightContainer');
+            
+            if (!modalElement) {
+                console.error('Modal element not found');
+                return;
+            }
+            
+            if (!container) {
+                console.error('Container element not found');
+                return;
+            }
+            
+            const modal = new bootstrap.Modal(modalElement);
             
             // Показываем спиннер
             container.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
             
             // Загружаем детали боя
             fetch('/fights/' + fightId)
-                .then(response => response.text())
+                .then(response => {
+                    console.log('Response received:', response);
+                    return response.text();
+                })
                 .then(html => {
+                    console.log('HTML received, length:', html.length);
                     // Извлекаем только содержимое body из ответа
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
@@ -283,6 +428,7 @@
                 .catch(error => {
                     console.error('Ошибка при загрузке деталей боя:', error);
                     container.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке деталей боя</div>';
+                    modal.show();
                 });
         }
 
@@ -666,6 +812,74 @@
         // Функция createJudgeCard удалена - используется из fight-form.html
 
         // Функции incrementValue и decrementValue удалены - больше не используются
+
+        // Функция для сортировки таблицы
+        function sortTable(column) {
+            const currentSortBy = '[[${sortBy}]]';
+            const currentSortDir = '[[${sortDir}]]';
+            
+            let newSortDir = 'asc';
+            if (currentSortBy === column && currentSortDir === 'asc') {
+                newSortDir = 'desc';
+            }
+            
+            // Обновляем скрытые поля формы
+            document.querySelector('input[name="sortBy"]').value = column;
+            document.querySelector('input[name="sortDir"]').value = newSortDir;
+            document.querySelector('input[name="page"]').value = 0;
+            
+            // Отправляем форму
+            document.getElementById('searchForm').submit();
+        }
+
+        // Функция для очистки фильтров
+        function clearFilters() {
+            document.getElementById('search').value = '';
+            document.querySelector('input[name="page"]').value = 0;
+            document.querySelector('input[name="sortBy"]').value = 'fightDate';
+            document.querySelector('input[name="sortDir"]').value = 'desc';
+            document.querySelector('input[name="resultFilter"]').value = '';
+            document.querySelector('input[name="weightClassFilter"]').value = '';
+            document.querySelector('input[name="methodFilter"]').value = '';
+            
+            // Отправляем форму
+            document.getElementById('searchForm').submit();
+        }
+
+        // Функции для фильтрации
+        function filterByResult(value) {
+            document.querySelector('input[name="resultFilter"]').value = value;
+            document.querySelector('input[name="page"]').value = 0;
+            document.getElementById('searchForm').submit();
+        }
+
+        function filterByMethod(value) {
+            document.querySelector('input[name="methodFilter"]').value = value;
+            document.querySelector('input[name="page"]').value = 0;
+            document.getElementById('searchForm').submit();
+        }
+
+        function filterByWeightClass(value) {
+            document.querySelector('input[name="weightClassFilter"]').value = value;
+            document.querySelector('input[name="page"]').value = 0;
+            document.getElementById('searchForm').submit();
+        }
+
+        // Автоматический поиск при изменении поля поиска (с задержкой)
+        let searchTimeout;
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(function() {
+                        document.querySelector('input[name="page"]').value = 0;
+                        document.getElementById('searchForm').submit();
+                    }, 500); // Задержка 500мс
+                });
+            }
+        });
     </script>
 </body>
 </html>

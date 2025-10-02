@@ -132,7 +132,46 @@ public class FightService {
     }
 
     /**
-     * Поиск боев по различным критериям
+     * Поиск боев с фильтрацией и пагинацией
+     */
+    public Page<Fight> searchFights(String search, String resultFilter, String weightClassFilter, 
+                                   String methodFilter, Pageable pageable) {
+        log.debug("Поиск боев с фильтрами: search={}, resultFilter={}, weightClassFilter={}, methodFilter={}", 
+                 search, resultFilter, weightClassFilter, methodFilter);
+        
+        // Преобразуем строки в enum
+        FightResult resultEnum = null;
+        if (resultFilter != null && !resultFilter.trim().isEmpty()) {
+            try {
+                resultEnum = FightResult.valueOf(resultFilter);
+            } catch (IllegalArgumentException e) {
+                log.warn("Неверное значение для resultFilter: {}", resultFilter);
+            }
+        }
+        
+        WeightClass weightClassEnum = null;
+        if (weightClassFilter != null && !weightClassFilter.trim().isEmpty()) {
+            try {
+                weightClassEnum = WeightClass.valueOf(weightClassFilter);
+            } catch (IllegalArgumentException e) {
+                log.warn("Неверное значение для weightClassFilter: {}", weightClassFilter);
+            }
+        }
+        
+        com.ufcstats.model.enums.FightMethod methodEnum = null;
+        if (methodFilter != null && !methodFilter.trim().isEmpty()) {
+            try {
+                methodEnum = com.ufcstats.model.enums.FightMethod.valueOf(methodFilter);
+            } catch (IllegalArgumentException e) {
+                log.warn("Неверное значение для methodFilter: {}", methodFilter);
+            }
+        }
+        
+        return fightRepository.searchFights(search, resultEnum, weightClassEnum, methodEnum, pageable);
+    }
+
+    /**
+     * Поиск боев по различным критериям (старый метод для совместимости)
      */
     public List<Fight> searchFights(String myFighter, String opponent, FightResult result, 
                                    FightMode fightMode, WeightClass weightClass, Integer season) {

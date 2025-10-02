@@ -161,4 +161,21 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
      */
     @Query("SELECT f.method, COUNT(f) FROM Fight f GROUP BY f.method ORDER BY COUNT(f) DESC")
     List<Object[]> findFightCountByMethod();
+
+    /**
+     * Поиск боев с фильтрацией и пагинацией
+     */
+    @Query("SELECT f FROM Fight f WHERE " +
+           "(:search IS NULL OR :search = '' OR " +
+           "LOWER(f.myFighter) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(f.opponent) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(f.notes) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+           "(:resultFilter IS NULL OR :resultFilter = '' OR f.result = :resultFilter) AND " +
+           "(:weightClassFilter IS NULL OR :weightClassFilter = '' OR f.weightClass = :weightClassFilter) AND " +
+           "(:methodFilter IS NULL OR :methodFilter = '' OR f.method = :methodFilter)")
+    Page<Fight> searchFights(@Param("search") String search,
+                            @Param("resultFilter") FightResult resultFilter,
+                            @Param("weightClassFilter") WeightClass weightClassFilter,
+                            @Param("methodFilter") com.ufcstats.model.enums.FightMethod methodFilter,
+                            Pageable pageable);
 }
