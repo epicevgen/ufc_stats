@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали боя</title>
+</head>
+<body>
+    <div th:fragment="fight-details-modal" th:if="${fight}">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Основная информация</h5>
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Дата боя:</strong></td>
+                        <td th:text="${#temporals.format(fight.fightDate, 'dd.MM.yyyy HH:mm')}">01.01.2024</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Мой боец:</strong></td>
+                        <td th:text="${fight.myFighter}">Мой боец</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Соперник:</strong></td>
+                        <td th:text="${fight.opponent}">Соперник</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Результат:</strong></td>
+                        <td>
+                            <span th:text="${fight.result}" class="badge bg-primary">WIN</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Метод:</strong></td>
+                        <td th:text="${fight.method}">KNOCKOUT</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Раундов сыграно:</strong></td>
+                        <td th:text="${fight.roundsPlayed}">2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Весовая категория:</strong></td>
+                        <td th:text="${fight.weightClass}">LIGHTWEIGHT</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Режим боя:</strong></td>
+                        <td th:text="${fight.fightMode}">MMA</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Сезон:</strong></td>
+                        <td th:text="${fight.season}">1</td>
+                    </tr>
+                    <tr th:if="${fight.ratingPoints != null}">
+                        <td><strong>Очки рейтинга:</strong></td>
+                        <td th:text="${fight.ratingPoints}">150</td>
+                    </tr>
+                    <tr th:if="${fight.rankingPosition != null}">
+                        <td><strong>Место в рейтинге:</strong></td>
+                        <td th:text="${fight.rankingPosition}">5</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h5>Заметки</h5>
+                <div th:if="${fight.notes}" th:text="${fight.notes}" class="border p-3 rounded">Заметки о бое</div>
+                <div th:unless="${fight.notes}" class="text-muted">Заметки не добавлены</div>
+            </div>
+        </div>
+
+        <!-- Статистика по раундам -->
+        <div th:if="${fight.rounds != null && !fight.rounds.isEmpty()}" class="mt-4">
+            <h5>Статистика по раундам</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Раунд</th>
+                            <th>Повреждения головы</th>
+                            <th>Повреждения тела</th>
+                            <th>Повреждения ног</th>
+                            <th>Нокдауны</th>
+                            <th>Значимые удары</th>
+                            <th>Всего ударов</th>
+                            <th>Тейкдауны</th>
+                            <th>Время контроля</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="round : ${fight.rounds}">
+                            <td th:text="${round.roundNumber}">1</td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.myHeadDamage}">15</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentHeadDamage}">20</span></span>
+                            </td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.myBodyDamage}">8</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentBodyDamage}">12</span></span>
+                            </td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.myLegDamage}">3</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentLegDamage}">5</span></span>
+                            </td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.myKnockdowns}">0</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentKnockdowns}">0</span></span>
+                            </td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.mySignificantStrikesLanded}">25</span>/<span th:text="${round.mySignificantStrikesAttempted}">45</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentSignificantStrikesLanded}">30</span>/<span th:text="${round.opponentSignificantStrikesAttempted}">50</span></span>
+                            </td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.myTotalStrikesLanded}">35</span>/<span th:text="${round.myTotalStrikesAttempted}">60</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentTotalStrikesLanded}">40</span>/<span th:text="${round.opponentTotalStrikesAttempted}">65</span></span>
+                            </td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.myTakedownsSuccessful}">1</span>/<span th:text="${round.myTakedownsAttempted}">2</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentTakedownsSuccessful}">0</span>/<span th:text="${round.opponentTakedownsAttempted}">1</span></span>
+                            </td>
+                            <td>
+                                <span class="text-primary">Мой: <span th:text="${round.myControlTime}">02:30</span></span><br>
+                                <span class="text-danger">Соперник: <span th:text="${round.opponentControlTime}">01:45</span></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Судейские оценки -->
+        <div th:if="${fight.judgeScores != null && !fight.judgeScores.isEmpty()}" class="mt-4">
+            <h5>Судейские оценки</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Судья</th>
+                            <th>Раунд 1</th>
+                            <th>Раунд 2</th>
+                            <th>Раунд 3</th>
+                            <th>Раунд 4</th>
+                            <th>Раунд 5</th>
+                            <th>Итого</th>
+                            <th>Победитель</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="judge : ${fight.judgeScores}">
+                            <td th:text="'Судья ' + ${judge.judgeNumber}">Судья 1</td>
+                            <td>
+                                <span th:if="${judge.round1MyScore != null}">
+                                    <span class="text-primary">Мой: <span th:text="${judge.round1MyScore}">10</span></span><br>
+                                    <span class="text-danger">Соперник: <span th:text="${judge.round1OpponentScore}">9</span></span>
+                                </span>
+                                <span th:unless="${judge.round1MyScore != null}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <span th:if="${judge.round2MyScore != null}">
+                                    <span class="text-primary">Мой: <span th:text="${judge.round2MyScore}">10</span></span><br>
+                                    <span class="text-danger">Соперник: <span th:text="${judge.round2OpponentScore}">9</span></span>
+                                </span>
+                                <span th:unless="${judge.round2MyScore != null}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <span th:if="${judge.round3MyScore != null}">
+                                    <span class="text-primary">Мой: <span th:text="${judge.round3MyScore}">10</span></span><br>
+                                    <span class="text-danger">Соперник: <span th:text="${judge.round3OpponentScore}">9</span></span>
+                                </span>
+                                <span th:unless="${judge.round3MyScore != null}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <span th:if="${judge.round4MyScore != null}">
+                                    <span class="text-primary">Мой: <span th:text="${judge.round4MyScore}">10</span></span><br>
+                                    <span class="text-danger">Соперник: <span th:text="${judge.round4OpponentScore}">9</span></span>
+                                </span>
+                                <span th:unless="${judge.round4MyScore != null}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <span th:if="${judge.round5MyScore != null}">
+                                    <span class="text-primary">Мой: <span th:text="${judge.round5MyScore}">10</span></span><br>
+                                    <span class="text-danger">Соперник: <span th:text="${judge.round5OpponentScore}">9</span></span>
+                                </span>
+                                <span th:unless="${judge.round5MyScore != null}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <span th:if="${judge.myTotalScore != null}" class="text-primary">Мой: <span th:text="${judge.myTotalScore}">50</span></span>
+                                <span th:if="${judge.opponentTotalScore != null}" class="text-danger">Соперник: <span th:text="${judge.opponentTotalScore}">45</span></span>
+                                <span th:if="${judge.myTotalScore == null && judge.opponentTotalScore == null}" class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <span th:text="${judge.winnerByJudge}" class="badge bg-info">MY_FIGHTER</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div th:unless="${fight.judgeScores != null && !fight.judgeScores.isEmpty()}" class="mt-4">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Судейские оценки не добавлены
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
