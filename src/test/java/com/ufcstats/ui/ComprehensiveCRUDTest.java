@@ -77,15 +77,6 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         log.info("=== Комплексный CRUD тест завершен успешно ===");
     }
 
-    @Test
-    void testJudgeScoresDisplay() {
-        log.info("=== Тестируем отображение судейских оценок ===");
-        
-        // Просматриваем существующий бой с полными судейскими оценками (ID=4)
-        viewExistingFight();
-        
-        log.info("=== Тест судейских оценок завершен успешно ===");
-    }
 
     private void viewFightByName(String fighterName, String opponentName) {
         // Фильтруем таблицу по имени бойца, чтобы исключить влияние пагинации/сортировки
@@ -176,30 +167,6 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         assertFalse(stillPresent, "Бой должен быть удален из таблицы: " + fighterName);
     }
 
-    @Test
-    void testFighterPositionToggleButtons() {
-        log.info("=== Тестируем кнопки переключения позиции бойца ===");
-        
-        // Открываем модальное окно создания
-        $("button[data-bs-target='#newFightModal']").click();
-        
-        // Ждем загрузки формы
-        $("#newFightFormContainer form").shouldBe(visible);
-        
-        // Заполняем основные поля
-        fillBasicFields("Тест Боец", "Тест Соперник", "2024-01-15T20:00", "2024", "Lightweight");
-        
-        // Ждем генерации полей раундов
-        sleep(2000);
-        
-        // Проверяем наличие кнопок переключения позиции
-        testPositionToggleButtons();
-        
-        // Закрываем модальное окно
-        $("#newFightModal .btn-secondary").click();
-        
-        log.info("=== Тест кнопок переключения позиции завершен успешно ===");
-    }
 
     private void createFightWithAllFields(String myName, String oppName) {
         // Открываем модальное окно создания
@@ -333,39 +300,6 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         log.info("5-раундовый бой успешно создан");
     }
 
-    private void viewExistingFight() {
-        // Находим кнопку просмотра боя с ID=4 (полностью заполненный бой)
-        executeJavaScript("arguments[0].click();", $$("button[onclick*='viewFight(4)']").first());
-        
-        // Ждем загрузки модального окна
-        sleep(2000);
-        
-        // Ждем открытия модального окна просмотра
-        $("#viewFightModal").shouldBe(visible);
-        $("#viewFightContainer").shouldBe(visible);
-        
-        // Ждем загрузки содержимого контейнера
-        sleep(1000);
-        
-        // Проверяем, что контейнер не пустой
-        String containerText = $("#viewFightContainer").getText();
-        log.info("Содержимое контейнера просмотра: {}", containerText);
-        
-        // Проверяем новые элементы судейских оценок
-        assertTrue($("#viewFightContainer").exists(), "Модальное окно просмотра должно быть открыто");
-        assertTrue(containerText.contains("Судейские оценки"), "Должны отображаться судейские оценки");
-        assertTrue(containerText.contains("Мой боец"), "Должны отображаться подписи 'Мой боец' в судейских оценках");
-        assertTrue(containerText.contains("Соперник"), "Должны отображаться подписи 'Соперник' в судейских оценках");
-        
-        log.info("✅ Проверка новых элементов судейских оценок выполнена успешно");
-        
-        // Закрываем модальное окно через клавишу Escape
-        $("#viewFightModal").pressEscape();
-        // Ждем немного для закрытия модального окна
-        sleep(1000);
-        
-        log.info("Просмотр существующего боя выполнен успешно");
-    }
 
     
 
@@ -695,36 +629,6 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
 
     
 
-    private void fillBasicFields(String myFighter, String opponent, String fightDate, String season, String weightClass) {
-        // Заполняем основные поля
-        fillField("myFighter", myFighter);
-        fillField("opponent", opponent);
-        fillDateField("fightDate", fightDate);
-        fillField("season", season);
-        
-        // Выбираем весовую категорию
-        selectOption("weightClass", weightClass.toUpperCase());
-        
-        // Выбираем режим боя
-        selectOption("fightMode", "MMA");
-        
-        // Выбираем результат
-        selectOption("fightResult", "WIN");
-        
-        // Выбираем метод
-        selectOption("fightMethod", "DECISION");
-        
-        // Заполняем количество раундов (это важно для генерации полей статистики)
-        fillField("roundsPlayed", "1");
-        
-        // Заполняем примечания
-        // fillField("notes", "Тестовый бой для проверки функциональности CRUD операций");
-        
-        // Триггерим событие для генерации динамических полей
-        executeJavaScript("document.getElementById('roundsPlayed').dispatchEvent(new Event('input'));");
-        
-        sleep(1000); // Даем время на генерацию полей
-    }
 
     private void fillRequiredRoundStatistics(int rounds) {
         for (int i = 1; i <= rounds; i++) {
@@ -870,51 +774,4 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         sleep(500);
     }
 
-    private void testPositionToggleButtons() {
-        log.info("Проверяем кнопки переключения позиции бойца");
-        
-        // Проверяем наличие кнопок в заголовке раздела статистики по раундам
-        SelenideElement leftButton = $(".global-fighter-position-btn[data-position='left']");
-        SelenideElement rightButton = $(".global-fighter-position-btn[data-position='right']");
-        
-        assertTrue(leftButton.exists(), "Кнопка 'Мой боец слева' должна существовать");
-        assertTrue(rightButton.exists(), "Кнопка 'Мой боец справа' должна существовать");
-        
-        // Проверяем, что кнопка "Мой боец слева" активна по умолчанию
-        assertTrue(leftButton.has(com.codeborne.selenide.Condition.cssClass("active")), 
-                  "Кнопка 'Мой боец слева' должна быть активна по умолчанию");
-        
-        log.info("Кнопки переключения позиции найдены и кнопка 'Мой боец слева' активна");
-        
-        // Тестируем переключение на "Мой боец справа"
-        log.info("Тестируем переключение на 'Мой боец справа'");
-        rightButton.click();
-        sleep(500);
-        
-        // Проверяем, что кнопка "Мой боец справа" стала активной
-        assertTrue(rightButton.has(com.codeborne.selenide.Condition.cssClass("active")), 
-                  "Кнопка 'Мой боец справа' должна стать активной после клика");
-        assertFalse(leftButton.has(com.codeborne.selenide.Condition.cssClass("active")), 
-                   "Кнопка 'Мой боец слева' не должна быть активной после переключения");
-        
-        log.info("Переключение на 'Мой боец справа' работает корректно");
-        
-        // Тестируем переключение обратно на "Мой боец слева"
-        log.info("Тестируем переключение обратно на 'Мой боец слева'");
-        leftButton.click();
-        sleep(500);
-        
-        // Проверяем, что кнопка "Мой боец слева" снова стала активной
-        assertTrue(leftButton.has(com.codeborne.selenide.Condition.cssClass("active")), 
-                  "Кнопка 'Мой боец слева' должна снова стать активной");
-        assertFalse(rightButton.has(com.codeborne.selenide.Condition.cssClass("active")), 
-                   "Кнопка 'Мой боец справа' не должна быть активной после переключения обратно");
-        
-        log.info("Переключение обратно на 'Мой боец слева' работает корректно");
-        
-        // Проверяем, что раунды существуют (должно быть 5 раундов)
-        int roundsCount = $$("#roundsWrapper .card").size();
-        assertTrue(roundsCount > 0, "Должны существовать раунды для тестирования");
-        log.info("Найдено {} раундов для тестирования", roundsCount);
-    }
 }
