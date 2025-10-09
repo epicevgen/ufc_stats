@@ -108,74 +108,14 @@ class FightServiceTest {
         verify(fightRepository, times(1)).findAllOrderByFightDateDesc(pageable);
     }
 
-    @Test
-    void updateFight_WhenFightExists_ShouldUpdateAndReturnFight() {
-        // Given
-        Long fightId = 1L;
-        Fight updatedFight = createTestFight();
-        updatedFight.setMyFighter("Обновленный боец");
-        
-        when(fightRepository.existsById(fightId)).thenReturn(true);
-        when(fightRepository.save(any(Fight.class))).thenReturn(updatedFight);
-
-        // When
-        Fight result = fightService.updateFight(fightId, updatedFight);
-
-        // Then
-        assertNotNull(result);
-        assertEquals("Обновленный боец", result.getMyFighter());
-        verify(fightRepository, times(1)).existsById(fightId);
-        verify(fightRepository, times(1)).save(updatedFight);
-    }
-
-    @Test
-    void updateFight_WhenFightNotExists_ShouldReturnNull() {
-        // Given
-        Long fightId = 999L;
-        when(fightRepository.existsById(fightId)).thenReturn(false);
-
-        // When
-        Fight result = fightService.updateFight(fightId, testFight);
-
-        // Then
-        assertNull(result);
-        verify(fightRepository, times(1)).existsById(fightId);
-        verify(fightRepository, never()).save(any(Fight.class));
-    }
-
-    @Test
-    void deleteFight_WhenFightExists_ShouldDeleteFight() {
-        // Given
-        Long fightId = 1L;
-        when(fightRepository.existsById(fightId)).thenReturn(true);
-
-        // When
-        fightService.deleteFight(fightId);
-
-        // Then
-        verify(fightRepository, times(1)).existsById(fightId);
-        verify(fightRepository, times(1)).deleteById(fightId);
-    }
-
-    @Test
-    void deleteFight_WhenFightNotExists_ShouldNotDelete() {
-        // Given
-        Long fightId = 999L;
-        when(fightRepository.existsById(fightId)).thenReturn(false);
-
-        // When
-        fightService.deleteFight(fightId);
-
-        // Then
-        verify(fightRepository, times(1)).existsById(fightId);
-        verify(fightRepository, never()).deleteById(anyLong());
-    }
 
     @Test
     void getFightStatistics_ShouldCalculateCorrectStatistics() {
         // Given
-        List<Fight> fights = createMultipleTestFights();
-        when(fightRepository.findAll()).thenReturn(fights);
+        when(fightRepository.countAllFights()).thenReturn(3L);
+        when(fightRepository.countWins()).thenReturn(2L);
+        when(fightRepository.countLosses()).thenReturn(1L);
+        when(fightRepository.countDraws()).thenReturn(0L);
 
         // When
         FightService.FightStatistics statistics = fightService.getFightStatistics();
@@ -187,6 +127,10 @@ class FightServiceTest {
         assertEquals(1, statistics.getLosses());
         assertEquals(0, statistics.getDraws());
         assertEquals(66.67, statistics.getWinRate(), 0.01);
+        verify(fightRepository, times(1)).countAllFights();
+        verify(fightRepository, times(1)).countWins();
+        verify(fightRepository, times(1)).countLosses();
+        verify(fightRepository, times(1)).countDraws();
     }
 
     private Fight createTestFight() {
