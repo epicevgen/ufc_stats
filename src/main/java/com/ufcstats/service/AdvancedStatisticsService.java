@@ -128,7 +128,20 @@ public class AdvancedStatisticsService {
                 .collect(Collectors.toList());
         
         if (allRounds.isEmpty()) {
-            return AdvancedStatisticsDto.StrikeStatisticsDto.builder().build();
+            return AdvancedStatisticsDto.StrikeStatisticsDto.builder()
+                    .mySignificantStrikesAccuracy(0.0)
+                    .myTotalStrikesAccuracy(0.0)
+                    .mySignificantStrikesLanded(0.0)
+                    .myTotalStrikesLanded(0.0)
+                    .opponentSignificantStrikesAccuracy(0.0)
+                    .opponentTotalStrikesAccuracy(0.0)
+                    .opponentSignificantStrikesLanded(0.0)
+                    .opponentTotalStrikesLanded(0.0)
+                    .avgMySignificantStrikesPerFight(0.0)
+                    .avgOpponentSignificantStrikesPerFight(0.0)
+                    .avgMyTotalStrikesPerFight(0.0)
+                    .avgOpponentTotalStrikesPerFight(0.0)
+                    .build();
         }
         
         // Мои удары
@@ -168,7 +181,16 @@ public class AdvancedStatisticsService {
                 .collect(Collectors.toList());
         
         if (allRounds.isEmpty()) {
-            return AdvancedStatisticsDto.TakedownStatisticsDto.builder().build();
+            return AdvancedStatisticsDto.TakedownStatisticsDto.builder()
+                    .myTakedownAccuracy(0.0)
+                    .myTakedownsSuccessful(0.0)
+                    .myTakedownsAttempted(0.0)
+                    .opponentTakedownAccuracy(0.0)
+                    .opponentTakedownsSuccessful(0.0)
+                    .opponentTakedownsAttempted(0.0)
+                    .avgMyTakedownsPerFight(0.0)
+                    .avgOpponentTakedownsPerFight(0.0)
+                    .build();
         }
         
         // Мои тейкдауны
@@ -200,7 +222,14 @@ public class AdvancedStatisticsService {
                 .collect(Collectors.toList());
         
         if (allRounds.isEmpty()) {
-            return AdvancedStatisticsDto.ControlTimeStatisticsDto.builder().build();
+            return AdvancedStatisticsDto.ControlTimeStatisticsDto.builder()
+                    .avgMyControlTimeSeconds(0.0)
+                    .avgOpponentControlTimeSeconds(0.0)
+                    .totalMyControlTimeSeconds(0.0)
+                    .totalOpponentControlTimeSeconds(0.0)
+                    .avgMyControlTimeFormatted("00:00")
+                    .avgOpponentControlTimeFormatted("00:00")
+                    .build();
         }
         
         // Парсинг времени контроля
@@ -234,7 +263,15 @@ public class AdvancedStatisticsService {
                 .collect(Collectors.toList());
         
         if (allJudgeScores.isEmpty()) {
-            return AdvancedStatisticsDto.JudgeScoreStatisticsDto.builder().build();
+            return AdvancedStatisticsDto.JudgeScoreStatisticsDto.builder()
+                    .avgMyScore(0.0)
+                    .avgOpponentScore(0.0)
+                    .avgScoreDifference(0.0)
+                    .fightsWonByJudges(0L)
+                    .fightsLostByJudges(0L)
+                    .fightsDrawByJudges(0L)
+                    .judgeWinRate(0.0)
+                    .build();
         }
         
         double totalMyScore = allJudgeScores.stream().mapToDouble(JudgeScore::getMyTotalScore).sum();

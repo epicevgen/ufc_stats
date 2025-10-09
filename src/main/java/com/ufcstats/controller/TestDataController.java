@@ -191,9 +191,15 @@ public class TestDataController {
                 // Учитываем результат боя, но не превышаем 10
                 if (fight.getResult() == FightResult.WIN) {
                     myRound = Math.min(Math.max(myRound, opponentRound + 1), 10);
+                    opponentRound = Math.min(opponentRound, myRound - 1);
                 } else if (fight.getResult() == FightResult.LOSS) {
                     opponentRound = Math.min(Math.max(opponentRound, myRound + 1), 10);
+                    myRound = Math.min(myRound, opponentRound - 1);
                 }
+                
+                // Убеждаемся, что оценки не превышают 10
+                myRound = Math.min(myRound, 10);
+                opponentRound = Math.min(opponentRound, 10);
                 
                 setJudgeRoundScore(judgeScore, round, myRound, opponentRound);
                 myTotal += myRound;

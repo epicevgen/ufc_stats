@@ -84,13 +84,13 @@
                         <div class="row">
                             <div class="col-6">
                                 <h6 class="text-success">Мои удары</h6>
-                                <p class="mb-1">Значимые: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)}">0</span>%</p>
-                                <p class="mb-1">Общие: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)}">0</span>%</p>
+                                <p class="mb-1">Значимые: <span th:text="${advancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">Общие: <span th:text="${advancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%</p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Значимые: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1)}">0</span>%</p>
-                                <p class="mb-1">Общие: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1)}">0</span>%</p>
+                                <p class="mb-1">Значимые: <span th:text="${advancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">Общие: <span th:text="${advancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%</p>
                             </div>
                         </div>
                     </div>
@@ -107,13 +107,13 @@
                         <div class="row">
                             <div class="col-6">
                                 <h6 class="text-success">Мои тейкдауны</h6>
-                                <p class="mb-1">Точность: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)}">0</span>%</p>
-                                <p class="mb-1">За бой: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1)}">0</span></p>
+                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.myTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgMyTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Точность: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1)}">0</span>%</p>
-                                <p class="mb-1">За бой: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1)}">0</span></p>
+                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.opponentTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgOpponentTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
                             </div>
                         </div>
                     </div>
@@ -132,11 +132,11 @@
                         <div class="row">
                             <div class="col-6">
                                 <h6 class="text-success">Мое время</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime.avgMyControlTimeFormatted}">00:00</span></p>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'}">00:00</span></p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime.avgOpponentControlTimeFormatted}">00:00</span></p>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgOpponentControlTimeFormatted != null ? advancedStatistics.controlTime.avgOpponentControlTimeFormatted : '00:00'}">00:00</span></p>
                             </div>
                         </div>
                     </div>
@@ -153,11 +153,11 @@
                         <div class="row">
                             <div class="col-6">
                                 <h6 class="text-success">Мои оценки</h6>
-                                <p class="mb-1">Среднее: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1)}">0</span></p>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.judgeScores?.avgMyScore != null ? #numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1) : '0.0'}">0</span></p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Среднее: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1)}">0</span></p>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.judgeScores?.avgOpponentScore != null ? #numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1) : '0.0'}">0</span></p>
                             </div>
                         </div>
                     </div>
