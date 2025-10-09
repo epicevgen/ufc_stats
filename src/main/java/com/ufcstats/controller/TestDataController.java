@@ -51,14 +51,20 @@ public class TestDataController {
     private final FightResult[] results = FightResult.values();
     private final FightMethod[] methods = FightMethod.values();
 
+    @PostMapping("/clear")
+    public String clearAllData() {
+        log.info("Очистка всех данных...");
+        judgeScoreRepository.deleteAll();
+        fightRoundRepository.deleteAll();
+        fightRepository.deleteAll();
+        return "Все данные очищены";
+    }
+    
     @PostMapping("/generate")
     public String generateTestData(@RequestParam(defaultValue = "50") int count) {
         log.info("Начинаем генерацию {} боев с разнообразной статистикой...", count);
         
-        // Очищаем существующие данные
-        judgeScoreRepository.deleteAll();
-        fightRoundRepository.deleteAll();
-        fightRepository.deleteAll();
+        // НЕ очищаем существующие данные - добавляем новые бои к существующим
         
         List<Fight> fights = new ArrayList<>();
         
