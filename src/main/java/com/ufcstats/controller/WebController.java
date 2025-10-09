@@ -281,4 +281,9 @@ public class WebController {
             }
         }
     }
+
+    @GetMapping("/test-data")
+    public String testDataPage() {
+        return "test-data";
+    }
 }
