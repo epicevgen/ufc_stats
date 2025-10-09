@@ -85,8 +85,9 @@ public class TestDataController {
     private Fight createFight(int index) {
         Fight fight = new Fight();
         
-        // Базовая информация
-        fight.setFightDate(LocalDateTime.now().minusDays(365 - index * 7));
+        // Базовая информация - генерируем дату в прошлом
+        int daysAgo = Math.min(365 - index * 7, 365); // Не более 365 дней назад
+        fight.setFightDate(LocalDateTime.now().minusDays(daysAgo).minusHours(random.nextInt(24)));
         fight.setFightMode(fightModes[random.nextInt(fightModes.length)]);
         fight.setSeason(1);
         fight.setResult(results[random.nextInt(results.length)]);
@@ -140,7 +141,7 @@ public class TestDataController {
             
             // Статистика моего бойца (обычно лучше для побед)
             boolean isWin = fight.getResult() == FightResult.WIN;
-            int myMultiplier = isWin ? 1 : (random.nextBoolean() ? 1 : 0);
+            int myMultiplier = isWin ? 2 : 1; // Всегда минимум 1, для побед - 2
             
             fightRound.setMyHeadDamage(10 + random.nextInt(21) * myMultiplier);
             fightRound.setMyBodyDamage(5 + random.nextInt(11) * myMultiplier);
@@ -198,6 +199,8 @@ public class TestDataController {
                 myTotal += myRound;
                 opponentTotal += opponentRound;
             }
+            
+            // Остальные раунды оставляем null (не заполняем)
             
             // Общие оценки и победитель вычисляются автоматически в модели
             
