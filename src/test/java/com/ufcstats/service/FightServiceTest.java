@@ -96,7 +96,7 @@ class FightServiceTest {
         // Given
         Pageable pageable = PageRequest.of(0, 10);
         Page<Fight> expectedPage = new PageImpl<>(testFights, pageable, 1);
-        when(fightRepository.findAll(pageable)).thenReturn(expectedPage);
+        when(fightRepository.findAllOrderByFightDateDesc(pageable)).thenReturn(expectedPage);
 
         // When
         Page<Fight> result = fightService.getAllFights(pageable);
@@ -105,7 +105,7 @@ class FightServiceTest {
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(testFights, result.getContent());
-        verify(fightRepository, times(1)).findAll(pageable);
+        verify(fightRepository, times(1)).findAllOrderByFightDateDesc(pageable);
     }
 
     @Test

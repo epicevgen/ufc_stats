@@ -159,8 +159,11 @@ class ModelTest {
         assertNull(fight.getWeightClass());
         assertNull(fight.getNotes());
         assertNull(fight.getFightDate());
-        assertNull(fight.getRounds());
-        assertNull(fight.getJudgeScores());
+        // rounds и judgeScores инициализируются пустыми списками, а не null
+        assertNotNull(fight.getRounds());
+        assertTrue(fight.getRounds().isEmpty());
+        assertNotNull(fight.getJudgeScores());
+        assertTrue(fight.getJudgeScores().isEmpty());
     }
 
     @Test
