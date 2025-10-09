@@ -72,6 +72,123 @@
             </div>
         </div>
 
+        <!-- Расширенная статистика -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Статистика по ударам -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🥊 Статистика ударов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мои удары</h6>
+                                <p class="mb-1">Значимые: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)}">0</span>%</p>
+                                <p class="mb-1">Общие: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)}">0</span>%</p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Значимые: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1)}">0</span>%</p>
+                                <p class="mb-1">Общие: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1)}">0</span>%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Статистика по тейкдаунам -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🤼 Статистика тейкдаунов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мои тейкдауны</h6>
+                                <p class="mb-1">Точность: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)}">0</span>%</p>
+                                <p class="mb-1">За бой: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1)}">0</span></p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Точность: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1)}">0</span>%</p>
+                                <p class="mb-1">За бой: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1)}">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика по времени контроля -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⏱️ Время контроля</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мое время</h6>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime.avgMyControlTimeFormatted}">00:00</span></p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime.avgOpponentControlTimeFormatted}">00:00</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Статистика по судейским оценкам -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⚖️ Судейские оценки</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мои оценки</h6>
+                                <p class="mb-1">Среднее: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1)}">0</span></p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Среднее: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1)}">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Графики движения рейтинга -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📈 Движение рейтинга</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ratingChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🏆 Движение по рейтингу</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="rankingChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Детальная статистика -->
         <div class="row">
             <div class="col-md-6">
@@ -96,25 +213,188 @@
             </div>
         </div>
 
-        <!-- Статистика по весовым категориям -->
-        <div class="row mt-4">
+        <!-- Дополнительная аналитика -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Статистика по режимам боев -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">⚖️ Весовые категории</h5>
+                        <h5 class="mb-0">🎯 Статистика по режимам</h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="weightClassesChart" width="400" height="200"></canvas>
+                        <div th:each="mode : ${advancedStatistics.byFightMode}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span th:text="${mode.key}">Режим</span>
+                                <div>
+                                    <span class="badge bg-success" th:text="${mode.value.wins}">0</span>
+                                    <span class="badge bg-danger" th:text="${mode.value.losses}">0</span>
+                                    <span class="badge bg-warning" th:text="${mode.value.draws}">0</span>
+                                </div>
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${mode.value.winRate} + '%'"></div>
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${mode.value.lossRate} + '%'"></div>
+                                <div class="progress-bar bg-warning" th:style="'width: ' + ${mode.value.drawRate} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Статистика по весовым категориям -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⚖️ Статистика по весам</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:each="weight : ${advancedStatistics.byWeightClass}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span th:text="${weight.key}">Вес</span>
+                                <div>
+                                    <span class="badge bg-success" th:text="${weight.value.wins}">0</span>
+                                    <span class="badge bg-danger" th:text="${weight.value.losses}">0</span>
+                                    <span class="badge bg-warning" th:text="${weight.value.draws}">0</span>
+                                </div>
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${weight.value.winRate} + '%'"></div>
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${weight.value.lossRate} + '%'"></div>
+                                <div class="progress-bar bg-warning" th:style="'width: ' + ${weight.value.drawRate} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Методы побед и поражений -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🏆 Методы побед</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="winMethodsChart" width="400" height="200"></canvas>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">🎯 Режимы боев</h5>
+                        <h5 class="mb-0">💔 Методы поражений</h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="modesChart" width="400" height="200"></canvas>
+                        <canvas id="lossMethodsChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дополнительные аналитические виджеты -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Сравнение с соперниками -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🥊 Сравнение с соперниками</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мои показатели</h6>
+                                <p class="mb-1">Значимые удары: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1)}">0</span></p>
+                                <p class="mb-1">Общие удары: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.avgMyTotalStrikesPerFight, 1, 1)}">0</span></p>
+                                <p class="mb-1">Тейкдауны: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1)}">0</span></p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперники</h6>
+                                <p class="mb-1">Значимые удары: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.avgOpponentSignificantStrikesPerFight, 1, 1)}">0</span></p>
+                                <p class="mb-1">Общие удары: <span th:text="${#numbers.formatDecimal(advancedStatistics.strikes.avgOpponentTotalStrikesPerFight, 1, 1)}">0</span></p>
+                                <p class="mb-1">Тейкдауны: <span th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1)}">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Эффективность судейских решений -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⚖️ Эффективность судей</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Победы по судьям</h6>
+                                <p class="mb-1">Боев выиграно: <span th:text="${advancedStatistics.judgeScores.fightsWonByJudges}">0</span></p>
+                                <p class="mb-1">Процент: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.judgeWinRate, 1, 1)}">0</span>%</p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-info">Средние оценки</h6>
+                                <p class="mb-1">Мои: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1)}">0</span></p>
+                                <p class="mb-1">Соперник: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1)}">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Продвинутая аналитика -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Анализ эффективности -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📊 Эффективность ударов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-success" th:text="${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)}">0</h4>
+                            <p class="mb-1">% значимых ударов</p>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${advancedStatistics.strikes.mySignificantStrikesAccuracy} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Анализ тейкдаунов -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🤼 Эффективность тейкдаунов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-info" th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)}">0</h4>
+                            <p class="mb-1">% успешных тейкдаунов</p>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-info" th:style="'width: ' + ${advancedStatistics.takedowns.myTakedownAccuracy} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Анализ времени контроля -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⏱️ Контроль боя</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-warning" th:text="${advancedStatistics.controlTime.avgMyControlTimeFormatted}">00:00</h4>
+                            <p class="mb-1">Среднее время контроля</p>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-warning" style="width: 100%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -172,6 +452,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Данные для графиков (получаем из Thymeleaf)
             const statistics = /*[[${statistics}]]*/ {};
+            const advancedStatistics = /*[[${advancedStatistics}]]*/ {};
             
             if (statistics) {
                 // График результатов боев
@@ -195,27 +476,54 @@
                     }
                 });
 
-                // График методов побед (заглушка)
+                // График методов побед
                 const methodsCtx = document.getElementById('methodsChart').getContext('2d');
-                new Chart(methodsCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Победы', 'Поражения', 'Ничьи'],
-                        datasets: [{
-                            label: 'Количество',
-                            data: [statistics.wins || 0, statistics.losses || 0, statistics.draws || 0],
-                            backgroundColor: ['#28a745', '#dc3545', '#ffc107']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
+                if (advancedStatistics && advancedStatistics.winMethods) {
+                    const winMethods = advancedStatistics.winMethods;
+                    const labels = Object.keys(winMethods);
+                    const data = Object.values(winMethods);
+                    
+                    new Chart(methodsCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Количество побед',
+                                data: data,
+                                backgroundColor: '#28a745'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                } else {
+                    // Заглушка если нет данных
+                    new Chart(methodsCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Победы', 'Поражения', 'Ничьи'],
+                            datasets: [{
+                                label: 'Количество',
+                                data: [statistics.wins || 0, statistics.losses || 0, statistics.draws || 0],
+                                backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                }
 
                 // График весовых категорий (заглушка)
                 const weightClassesCtx = document.getElementById('weightClassesChart').getContext('2d');
@@ -258,6 +566,132 @@
                         }
                     }
                 });
+            }
+
+            // Графики расширенной статистики
+            if (advancedStatistics) {
+                // График движения рейтинга
+                if (advancedStatistics.ratingHistory && advancedStatistics.ratingHistory.length > 0) {
+                    const ratingCtx = document.getElementById('ratingChart').getContext('2d');
+                    const ratingData = advancedStatistics.ratingHistory;
+                    
+                    new Chart(ratingCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ratingData.map(item => item.date),
+                            datasets: [{
+                                label: 'Рейтинг',
+                                data: ratingData.map(item => item.rating),
+                                borderColor: '#007bff',
+                                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // График движения по рейтингу
+                if (advancedStatistics.rankingHistory && advancedStatistics.rankingHistory.length > 0) {
+                    const rankingCtx = document.getElementById('rankingChart').getContext('2d');
+                    const rankingData = advancedStatistics.rankingHistory;
+                    
+                    new Chart(rankingCtx, {
+                        type: 'line',
+                        data: {
+                            labels: rankingData.map(item => item.date),
+                            datasets: [{
+                                label: 'Место в рейтинге',
+                                data: rankingData.map(item => item.ranking),
+                                borderColor: '#28a745',
+                                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    reverse: true // Обратный порядок - меньше место = лучше
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // График методов побед
+                if (advancedStatistics.winMethods) {
+                    const winMethodsCtx = document.getElementById('winMethodsChart').getContext('2d');
+                    const winMethods = advancedStatistics.winMethods;
+                    const winLabels = Object.keys(winMethods);
+                    const winData = Object.values(winMethods);
+                    
+                    new Chart(winMethodsCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: winLabels,
+                            datasets: [{
+                                data: winData,
+                                backgroundColor: ['#28a745', '#20c997', '#17a2b8', '#6f42c1', '#fd7e14']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // График методов поражений
+                if (advancedStatistics.lossMethods) {
+                    const lossMethodsCtx = document.getElementById('lossMethodsChart').getContext('2d');
+                    const lossMethods = advancedStatistics.lossMethods;
+                    const lossLabels = Object.keys(lossMethods);
+                    const lossData = Object.values(lossMethods);
+                    
+                    new Chart(lossMethodsCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: lossLabels,
+                            datasets: [{
+                                data: lossData,
+                                backgroundColor: ['#dc3545', '#e83e8c', '#6c757d', '#343a40', '#fd7e14']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
             }
         });
     </script>
