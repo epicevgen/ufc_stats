@@ -259,10 +259,11 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">🏆 Движение по рейтингу</h5>
+                        <h5 class="mb-0">🏆 Динамика положения в рейтинге</h5>
                     </div>
                     <div class="card-body">
                         <canvas id="rankingChart" width="400" height="200"></canvas>
+                        <div class="mt-2 small text-muted" id="rankingChangeAverages" style="display:none"></div>
                     </div>
                 </div>
             </div>
@@ -552,11 +553,29 @@
                     });
                 }
 
-                // График движения по рейтингу
+                // График динамики положения в рейтинге + средние изменения мест
                 if (advancedStatistics.rankingHistory && advancedStatistics.rankingHistory.length > 0) {
-                    const rankingCtx = document.getElementById('rankingChart').getContext('2d');
+                    const rankingCanvas = document.getElementById('rankingChart');
+                    const rankingCtx = rankingCanvas.getContext('2d');
                     const rankingData = advancedStatistics.rankingHistory;
-                    
+
+                    // Подсчет средних: победы — положительный подъём (уменьшение числа места), поражения — спуск (увеличение)
+                    const winPositionChanges = rankingData
+                        .filter(item => item && item.fightResult === 'WIN' && typeof item.change === 'number' && item.change > 0)
+                        .map(item => item.change);
+                    const winPosAvg = winPositionChanges.length ? (winPositionChanges.reduce((a,b)=>a+b,0) / winPositionChanges.length) : 0;
+
+                    const lossPositionChanges = rankingData
+                        .filter(item => item && item.fightResult === 'LOSS' && typeof item.change === 'number' && item.change < 0)
+                        .map(item => Math.abs(item.change));
+                    const lossPosAvg = lossPositionChanges.length ? (lossPositionChanges.reduce((a,b)=>a+b,0) / lossPositionChanges.length) : 0;
+
+                    const rankingAvgEl = document.getElementById('rankingChangeAverages');
+                    if (rankingAvgEl) {
+                        rankingAvgEl.style.display = 'block';
+                        rankingAvgEl.innerText = `Средний подъём места за победу: ${Math.abs(winPosAvg).toFixed(1)} | Средний спуск места за поражение: ${Math.abs(lossPosAvg).toFixed(1)}`;
+                    }
+
                     new Chart(rankingCtx, {
                         type: 'line',
                         data: {
