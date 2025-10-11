@@ -92,7 +92,19 @@ public class AdvancedStatisticsService {
                 .forEach((weightClass, fightList) -> {
                     result.put(weightClass, calculateBasicStatistics(fightList));
                 });
-        return result;
+        
+        // Сортируем по убыванию процента побед
+        return result.entrySet().stream()
+                .sorted((entry1, entry2) -> Double.compare(
+                    entry2.getValue().getWinRate(), 
+                    entry1.getValue().getWinRate()
+                ))
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue,
+                    (e1, e2) -> e1,
+                    LinkedHashMap::new
+                ));
     }
     
     /**
