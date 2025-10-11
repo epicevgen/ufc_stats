@@ -73,26 +73,26 @@ public class AdvancedStatisticsService {
      * Расчет статистики по режимам боев
      */
     private Map<String, AdvancedStatisticsDto.BasicStatisticsDto> calculateStatisticsByFightMode(List<Fight> fights) {
-        return fights.stream()
+        Map<String, AdvancedStatisticsDto.BasicStatisticsDto> result = new HashMap<>();
+        fights.stream()
                 .collect(Collectors.groupingBy(fight -> fight.getFightMode().name()))
-                .entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> calculateBasicStatistics(entry.getValue())
-                ));
+                .forEach((mode, fightList) -> {
+                    result.put(mode, calculateBasicStatistics(fightList));
+                });
+        return result;
     }
     
     /**
      * Расчет статистики по весовым категориям
      */
     private Map<String, AdvancedStatisticsDto.BasicStatisticsDto> calculateStatisticsByWeightClass(List<Fight> fights) {
-        return fights.stream()
+        Map<String, AdvancedStatisticsDto.BasicStatisticsDto> result = new HashMap<>();
+        fights.stream()
                 .collect(Collectors.groupingBy(fight -> fight.getWeightClass().name()))
-                .entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> calculateBasicStatistics(entry.getValue())
-                ));
+                .forEach((weightClass, fightList) -> {
+                    result.put(weightClass, calculateBasicStatistics(fightList));
+                });
+        return result;
     }
     
     /**

@@ -201,7 +201,10 @@
                     <div class="card-body">
                         <div th:each="mode : ${advancedStatistics.byFightMode}">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span th:text="${mode.key}">Режим</span>
+                                <div>
+                                    <span th:text="${mode.key == 'MMA' ? 'ММА' : (mode.key == 'STANCE' ? 'Стойка' : mode.key)}">Режим</span>
+                                    <small class="text-muted d-block">Побед: <span th:text="${#numbers.formatDecimal(mode.value.winRate, 1, 1)}">0</span>%</small>
+                                </div>
                                 <div>
                                     <span class="badge bg-success" th:text="${mode.value.wins}">0</span>
                                     <span class="badge bg-danger" th:text="${mode.value.losses}">0</span>
