@@ -111,11 +111,21 @@ public class AdvancedStatisticsService {
      * Расчет методов побед
      */
     private Map<String, Long> calculateWinMethods(List<Fight> fights) {
-        return fights.stream()
+        Map<String, Long> counts = fights.stream()
                 .filter(fight -> fight.getResult() == FightResult.WIN)
                 .collect(Collectors.groupingBy(
                         fight -> fight.getMethod().name(),
                         Collectors.counting()
+                ));
+
+        // Сортировка по убыванию количества (эквивалентно убыванию процента)
+        return counts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
                 ));
     }
     
@@ -123,11 +133,21 @@ public class AdvancedStatisticsService {
      * Расчет методов поражений
      */
     private Map<String, Long> calculateLossMethods(List<Fight> fights) {
-        return fights.stream()
+        Map<String, Long> counts = fights.stream()
                 .filter(fight -> fight.getResult() == FightResult.LOSS)
                 .collect(Collectors.groupingBy(
                         fight -> fight.getMethod().name(),
                         Collectors.counting()
+                ));
+
+        // Сортировка по убыванию количества (эквивалентно убыванию процента)
+        return counts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
                 ));
     }
     

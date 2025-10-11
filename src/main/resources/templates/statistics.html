@@ -121,6 +121,71 @@
             </div>
         </div>
 
+        <!-- Методы побед и поражений -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Методы побед -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🏅 Методы побед</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#maps.isEmpty(advancedStatistics.winMethods)}">Нет данных</div>
+                        <div th:if="${!#maps.isEmpty(advancedStatistics.winMethods)}">
+                            <div th:each="method : ${advancedStatistics.winMethods}">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span th:text="${method.key == 'DECISION' ? 'Решение' : (method.key == 'SUBMISSION' ? 'Сабмишен' : (method.key == 'KNOCKOUT' ? 'Нокаут' : (method.key == 'EARLY_EXIT' ? 'Досрочный выход' : method.key)))}">Метод</span>
+                                        <small class="text-muted d-block">
+                                            <span th:text="${#numbers.formatDecimal(statistics.wins > 0 ? (method.value * 100.0 / statistics.wins) : 0, 1, 1)}">0.0</span>%
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-success" th:text="${method.value}">0</span>
+                                    </div>
+                                </div>
+                                <div class="progress mb-2" style="height: 8px;">
+                                    <div class="progress-bar bg-success" th:style="'width: ' + ${(statistics.wins > 0 ? (method.value * 100.0 / statistics.wins) : 0)} + '%'">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Методы поражений -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">💥 Методы поражений</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#maps.isEmpty(advancedStatistics.lossMethods)}">Нет данных</div>
+                        <div th:if="${!#maps.isEmpty(advancedStatistics.lossMethods)}">
+                            <div th:each="method : ${advancedStatistics.lossMethods}">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div>
+                                        <span th:text="${method.key == 'DECISION' ? 'Решение' : (method.key == 'SUBMISSION' ? 'Сабмишен' : (method.key == 'KNOCKOUT' ? 'Нокаут' : (method.key == 'EARLY_EXIT' ? 'Досрочный выход' : method.key)))}">Метод</span>
+                                        <small class="text-muted d-block">
+                                            <span th:text="${#numbers.formatDecimal(statistics.losses > 0 ? (method.value * 100.0 / statistics.losses) : 0, 1, 1)}">0.0</span>%
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-danger" th:text="${method.value}">0</span>
+                                    </div>
+                                </div>
+                                <div class="progress mb-2" style="height: 8px;">
+                                    <div class="progress-bar bg-danger" th:style="'width: ' + ${(statistics.losses > 0 ? (method.value * 100.0 / statistics.losses) : 0)} + '%'">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Статистика по времени контроля -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             <div class="col-md-6">
