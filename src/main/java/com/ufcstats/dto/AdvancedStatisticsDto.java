@@ -161,6 +161,7 @@ public class AdvancedStatisticsDto {
         private int change;
         private String fightResult;
         private String opponent;
+        private String weightClass;
     }
     
     /**

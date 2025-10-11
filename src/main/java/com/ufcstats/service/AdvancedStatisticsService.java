@@ -361,6 +361,7 @@ public class AdvancedStatisticsService {
                             .change(change)
                             .fightResult(fight.getResult().name())
                             .opponent(fight.getOpponent())
+                            .weightClass(fight.getWeightClass() != null ? fight.getWeightClass().name() : null)
                             .build();
                 })
                 .collect(Collectors.toList());

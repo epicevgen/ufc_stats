@@ -247,10 +247,11 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">📈 Движение рейтинга</h5>
+                        <h5 class="mb-0">📈 Динамика очков рейтинга</h5>
                     </div>
                     <div class="card-body">
                         <canvas id="ratingChart" width="400" height="200"></canvas>
+                        <div class="mt-2 small text-muted" id="ratingChangeAverages" style="display:none"></div>
                     </div>
                 </div>
             </div>
@@ -329,63 +330,7 @@
         </div>
 
 
-        <!-- Дополнительные аналитические виджеты -->
-        <div class="row mb-4" th:if="${advancedStatistics}">
-            
-            <!-- Методы побед -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">🏆 Методы побед</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <canvas id="winMethodsChart" width="200" height="200"></canvas>
-                            </div>
-                            <div class="col-6">
-                                <div th:each="method : ${advancedStatistics.winMethods}" class="mb-2">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span th:text="${method.key == 'KO_TKO' ? 'Нокаут/ТКО' : (method.key == 'SUBMISSION' ? 'Сабмишн' : (method.key == 'DECISION' ? 'Решение судей' : (method.key == 'DRAW' ? 'Ничья' : method.key)))}">Метод</span>
-                                        <div>
-                                            <span class="badge bg-success" th:text="${method.value}">0</span>
-                                            <small class="text-muted ms-1" th:data-value="${method.value}" th:data-total="${#aggregates.sum(advancedStatistics.winMethods.values())}">0</small>%
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Методы поражений -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">💔 Методы поражений</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <canvas id="lossMethodsChart" width="200" height="200"></canvas>
-                            </div>
-                            <div class="col-6">
-                                <div th:each="method : ${advancedStatistics.lossMethods}" class="mb-2">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span th:text="${method.key == 'KO_TKO' ? 'Нокаут/ТКО' : (method.key == 'SUBMISSION' ? 'Сабмишн' : (method.key == 'DECISION' ? 'Решение судей' : (method.key == 'DRAW' ? 'Ничья' : method.key)))}">Метод</span>
-                                        <div>
-                                            <span class="badge bg-danger" th:text="${method.value}">0</span>
-                                            <small class="text-muted ms-1" th:data-value="${method.value}" th:data-total="${#aggregates.sum(advancedStatistics.lossMethods.values())}">0</small>%
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Дополнительные аналитические виджеты -->
         <div class="row mb-4" th:if="${advancedStatistics}">
@@ -474,18 +419,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script th:inline="javascript">
         // Инициализация графиков
         document.addEventListener('DOMContentLoaded', function() {
             // Данные для графиков (получаем из Thymeleaf)
             const statistics = /*[[${statistics}]]*/ {};
             const advancedStatistics = /*[[${advancedStatistics}]]*/ {};
             
-            // Графики расширенной статистики
-            if (advancedStatistics) {
+                // Графики расширенной статистики
+                if (advancedStatistics) {
 
                 // График весовых категорий (заглушка)
-                const weightClassesCtx = document.getElementById('weightClassesChart').getContext('2d');
+                const weightClassesCanvas = document.getElementById('weightClassesChart');
+                if (weightClassesCanvas) {
+                const weightClassesCtx = weightClassesCanvas.getContext('2d');
                 new Chart(weightClassesCtx, {
                     type: 'pie',
                     data: {
@@ -504,9 +451,12 @@
                         }
                     }
                 });
+                }
 
                 // График режимов боев (заглушка)
-                const modesCtx = document.getElementById('modesChart').getContext('2d');
+                const modesCanvas = document.getElementById('modesChart');
+                if (modesCanvas) {
+                const modesCtx = modesCanvas.getContext('2d');
                 new Chart(modesCtx, {
                     type: 'polarArea',
                     data: {
@@ -525,21 +475,46 @@
                         }
                     }
                 });
+                }
             }
 
             // Графики расширенной статистики
             if (advancedStatistics) {
-                // График движения рейтинга
-                if (advancedStatistics.ratingHistory && advancedStatistics.ratingHistory.length > 0) {
-                    const ratingCtx = document.getElementById('ratingChart').getContext('2d');
+                // График динамики очков рейтинга + средние изменения
+                const ratingCanvas = document.getElementById('ratingChart');
+                if (advancedStatistics.ratingHistory && advancedStatistics.ratingHistory.length > 0 && ratingCanvas) {
+                    const ratingCtx = ratingCanvas.getContext('2d');
                     const ratingData = advancedStatistics.ratingHistory;
-                    
+
+                    // Рассчет средних изменений очков за победу/поражение
+                    const changesByResult = ratingData.reduce((acc, item) => {
+                        if (!item || typeof item.change !== 'number' || !item.fightResult) return acc;
+                        const key = item.fightResult;
+                        if (!acc[key]) acc[key] = { sum: 0, count: 0 };
+                        acc[key].sum += item.change;
+                        acc[key].count += 1;
+                        return acc;
+                    }, {});
+
+                    const winAvg = changesByResult['WIN'] && changesByResult['WIN'].count > 0
+                        ? (changesByResult['WIN'].sum / changesByResult['WIN'].count)
+                        : 0;
+                    const lossAvg = changesByResult['LOSS'] && changesByResult['LOSS'].count > 0
+                        ? (changesByResult['LOSS'].sum / changesByResult['LOSS'].count)
+                        : 0;
+
+                    const avgEl = document.getElementById('ratingChangeAverages');
+                    if (avgEl) {
+                        avgEl.style.display = 'block';
+                        avgEl.innerText = `Средний прирост за победу: ${winAvg.toFixed(1)} | Среднее уменьшение за поражение: ${lossAvg.toFixed(1)}`;
+                    }
+
                     new Chart(ratingCtx, {
                         type: 'line',
                         data: {
                             labels: ratingData.map(item => item.date),
                             datasets: [{
-                                label: 'Рейтинг',
+                                label: 'Очки рейтинга',
                                 data: ratingData.map(item => item.rating),
                                 borderColor: '#007bff',
                                 backgroundColor: 'rgba(0, 123, 255, 0.1)',
@@ -557,7 +532,8 @@
                             scales: {
                                 y: {
                                     beginAtZero: false
-                                }
+                                },
+                                x: {}
                             }
                         }
                     });
@@ -598,133 +574,7 @@
                     });
                 }
 
-                // Круговая диаграмма методов побед
-                if (advancedStatistics.winMethods && Object.keys(advancedStatistics.winMethods).length > 0) {
-                    const winMethodsCtx = document.getElementById('winMethodsChart').getContext('2d');
-                    const winMethodsData = advancedStatistics.winMethods;
-                    
-                    const winMethodsLabels = Object.keys(winMethodsData).map(key => {
-                        switch(key) {
-                            case 'KO_TKO': return 'Нокаут/ТКО';
-                            case 'SUBMISSION': return 'Сабмишн';
-                            case 'DECISION': return 'Решение судей';
-                            case 'DRAW': return 'Ничья';
-                            default: return key;
-                        }
-                    });
-                    
-                    const winMethodsValues = Object.values(winMethodsData);
-                    const totalWins = winMethodsValues.reduce((sum, value) => sum + value, 0);
-                    
-                    new Chart(winMethodsCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: winMethodsLabels,
-                            datasets: [{
-                                data: winMethodsValues,
-                                backgroundColor: [
-                                    '#28a745', // Зеленый для нокаутов
-                                    '#007bff', // Синий для сабмишнов
-                                    '#ffc107', // Желтый для решений
-                                    '#6c757d'  // Серый для ничьих
-                                ],
-                                borderWidth: 2,
-                                borderColor: '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        padding: 20,
-                                        usePointStyle: true
-                                    }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            const value = context.parsed;
-                                            const percentage = ((value / totalWins) * 100).toFixed(1);
-                                            return context.label + ': ' + value + ' (' + percentage + '%)';
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-
-                // Круговая диаграмма методов поражений
-                if (advancedStatistics.lossMethods && Object.keys(advancedStatistics.lossMethods).length > 0) {
-                    const lossMethodsCtx = document.getElementById('lossMethodsChart').getContext('2d');
-                    const lossMethodsData = advancedStatistics.lossMethods;
-                    
-                    const lossMethodsLabels = Object.keys(lossMethodsData).map(key => {
-                        switch(key) {
-                            case 'KO_TKO': return 'Нокаут/ТКО';
-                            case 'SUBMISSION': return 'Сабмишн';
-                            case 'DECISION': return 'Решение судей';
-                            case 'DRAW': return 'Ничья';
-                            default: return key;
-                        }
-                    });
-                    
-                    const lossMethodsValues = Object.values(lossMethodsData);
-                    const totalLosses = lossMethodsValues.reduce((sum, value) => sum + value, 0);
-                    
-                    new Chart(lossMethodsCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: lossMethodsLabels,
-                            datasets: [{
-                                data: lossMethodsValues,
-                                backgroundColor: [
-                                    '#dc3545', // Красный для нокаутов
-                                    '#fd7e14', // Оранжевый для сабмишнов
-                                    '#6f42c1', // Фиолетовый для решений
-                                    '#6c757d'  // Серый для ничьих
-                                ],
-                                borderWidth: 2,
-                                borderColor: '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        padding: 20,
-                                        usePointStyle: true
-                                    }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            const value = context.parsed;
-                                            const percentage = ((value / totalLosses) * 100).toFixed(1);
-                                            return context.label + ': ' + value + ' (' + percentage + '%)';
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-
-                // Расчет процентов для методов побед
-                document.querySelectorAll('[data-value][data-total]').forEach(element => {
-                    const value = parseFloat(element.dataset.value);
-                    const total = parseFloat(element.dataset.total);
-                    if (total > 0) {
-                        const percentage = ((value / total) * 100).toFixed(1);
-                        element.textContent = percentage + '%';
-                    }
-                });
+                // диаграммы методов побед/поражений удалены
 
             }
 
