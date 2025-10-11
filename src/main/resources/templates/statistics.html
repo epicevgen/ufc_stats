@@ -86,26 +86,22 @@
                                 <h6 class="text-success">Мои удары</h6>
                                 <p class="mb-1">Значимые: 
                                     <span th:text="${advancedStatistics.strikes?.avgMySignificantStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    в ср., 
-                                    <span th:text="${advancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%
+                                    (<span th:text="${advancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                                 <p class="mb-1">Общие: 
                                     <span th:text="${advancedStatistics.strikes?.avgMyTotalStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgMyTotalStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    в ср., 
-                                    <span th:text="${advancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%
+                                    (<span th:text="${advancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
                                 <p class="mb-1">Значимые: 
                                     <span th:text="${advancedStatistics.strikes?.avgOpponentSignificantStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgOpponentSignificantStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    в ср., 
-                                    <span th:text="${advancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%
+                                    (<span th:text="${advancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                                 <p class="mb-1">Общие: 
                                     <span th:text="${advancedStatistics.strikes?.avgOpponentTotalStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgOpponentTotalStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    в ср., 
-                                    <span th:text="${advancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%
+                                    (<span th:text="${advancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                             </div>
                         </div>
