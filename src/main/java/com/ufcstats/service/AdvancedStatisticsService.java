@@ -173,10 +173,15 @@ public class AdvancedStatisticsService {
     }
     
     /**
-     * Расчет статистики по тейкдаунам
+     * Расчет статистики по тейкдаунам (только для боев в режиме ММА)
      */
     private AdvancedStatisticsDto.TakedownStatisticsDto calculateTakedownStatistics(List<Fight> fights) {
-        List<FightRound> allRounds = fights.stream()
+        // Фильтруем только бои в режиме ММА
+        List<Fight> mmaFights = fights.stream()
+                .filter(fight -> fight.getFightMode() != null && fight.getFightMode().name().equals("MMA"))
+                .collect(Collectors.toList());
+        
+        List<FightRound> allRounds = mmaFights.stream()
                 .flatMap(fight -> fight.getRounds().stream())
                 .collect(Collectors.toList());
         
@@ -208,8 +213,8 @@ public class AdvancedStatisticsService {
                 .opponentTakedownAccuracy(opponentTakedownsAttempted > 0 ? opponentTakedownsSuccessful / opponentTakedownsAttempted * 100 : 0)
                 .opponentTakedownsSuccessful(opponentTakedownsSuccessful)
                 .opponentTakedownsAttempted(opponentTakedownsAttempted)
-                .avgMyTakedownsPerFight(fights.size() > 0 ? myTakedownsSuccessful / fights.size() : 0)
-                .avgOpponentTakedownsPerFight(fights.size() > 0 ? opponentTakedownsSuccessful / fights.size() : 0)
+                .avgMyTakedownsPerFight(mmaFights.size() > 0 ? myTakedownsSuccessful / mmaFights.size() : 0)
+                .avgOpponentTakedownsPerFight(mmaFights.size() > 0 ? opponentTakedownsSuccessful / mmaFights.size() : 0)
                 .build();
     }
     
