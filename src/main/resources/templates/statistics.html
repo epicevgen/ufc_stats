@@ -255,6 +255,64 @@
         <!-- Дополнительные аналитические виджеты -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             
+            <!-- Методы побед -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🏆 Методы побед</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <canvas id="winMethodsChart" width="200" height="200"></canvas>
+                            </div>
+                            <div class="col-6">
+                                <div th:each="method : ${advancedStatistics.winMethods}" class="mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span th:text="${method.key == 'KO_TKO' ? 'Нокаут/ТКО' : (method.key == 'SUBMISSION' ? 'Сабмишн' : (method.key == 'DECISION' ? 'Решение судей' : (method.key == 'DRAW' ? 'Ничья' : method.key)))}">Метод</span>
+                                        <div>
+                                            <span class="badge bg-success" th:text="${method.value}">0</span>
+                                            <small class="text-muted ms-1" th:data-value="${method.value}" th:data-total="${#aggregates.sum(advancedStatistics.winMethods.values())}">0</small>%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Методы поражений -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">💔 Методы поражений</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <canvas id="lossMethodsChart" width="200" height="200"></canvas>
+                            </div>
+                            <div class="col-6">
+                                <div th:each="method : ${advancedStatistics.lossMethods}" class="mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span th:text="${method.key == 'KO_TKO' ? 'Нокаут/ТКО' : (method.key == 'SUBMISSION' ? 'Сабмишн' : (method.key == 'DECISION' ? 'Решение судей' : (method.key == 'DRAW' ? 'Ничья' : method.key)))}">Метод</span>
+                                        <div>
+                                            <span class="badge bg-danger" th:text="${method.value}">0</span>
+                                            <small class="text-muted ms-1" th:data-value="${method.value}" th:data-total="${#aggregates.sum(advancedStatistics.lossMethods.values())}">0</small>%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дополнительные аналитические виджеты -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            
             <!-- Эффективность судейских решений -->
             <div class="col-md-6">
                 <div class="card">
@@ -462,6 +520,134 @@
                         }
                     });
                 }
+
+                // Круговая диаграмма методов побед
+                if (advancedStatistics.winMethods && Object.keys(advancedStatistics.winMethods).length > 0) {
+                    const winMethodsCtx = document.getElementById('winMethodsChart').getContext('2d');
+                    const winMethodsData = advancedStatistics.winMethods;
+                    
+                    const winMethodsLabels = Object.keys(winMethodsData).map(key => {
+                        switch(key) {
+                            case 'KO_TKO': return 'Нокаут/ТКО';
+                            case 'SUBMISSION': return 'Сабмишн';
+                            case 'DECISION': return 'Решение судей';
+                            case 'DRAW': return 'Ничья';
+                            default: return key;
+                        }
+                    });
+                    
+                    const winMethodsValues = Object.values(winMethodsData);
+                    const totalWins = winMethodsValues.reduce((sum, value) => sum + value, 0);
+                    
+                    new Chart(winMethodsCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: winMethodsLabels,
+                            datasets: [{
+                                data: winMethodsValues,
+                                backgroundColor: [
+                                    '#28a745', // Зеленый для нокаутов
+                                    '#007bff', // Синий для сабмишнов
+                                    '#ffc107', // Желтый для решений
+                                    '#6c757d'  // Серый для ничьих
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.parsed;
+                                            const percentage = ((value / totalWins) * 100).toFixed(1);
+                                            return context.label + ': ' + value + ' (' + percentage + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Круговая диаграмма методов поражений
+                if (advancedStatistics.lossMethods && Object.keys(advancedStatistics.lossMethods).length > 0) {
+                    const lossMethodsCtx = document.getElementById('lossMethodsChart').getContext('2d');
+                    const lossMethodsData = advancedStatistics.lossMethods;
+                    
+                    const lossMethodsLabels = Object.keys(lossMethodsData).map(key => {
+                        switch(key) {
+                            case 'KO_TKO': return 'Нокаут/ТКО';
+                            case 'SUBMISSION': return 'Сабмишн';
+                            case 'DECISION': return 'Решение судей';
+                            case 'DRAW': return 'Ничья';
+                            default: return key;
+                        }
+                    });
+                    
+                    const lossMethodsValues = Object.values(lossMethodsData);
+                    const totalLosses = lossMethodsValues.reduce((sum, value) => sum + value, 0);
+                    
+                    new Chart(lossMethodsCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: lossMethodsLabels,
+                            datasets: [{
+                                data: lossMethodsValues,
+                                backgroundColor: [
+                                    '#dc3545', // Красный для нокаутов
+                                    '#fd7e14', // Оранжевый для сабмишнов
+                                    '#6f42c1', // Фиолетовый для решений
+                                    '#6c757d'  // Серый для ничьих
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const value = context.parsed;
+                                            const percentage = ((value / totalLosses) * 100).toFixed(1);
+                                            return context.label + ': ' + value + ' (' + percentage + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Расчет процентов для методов побед
+                document.querySelectorAll('[data-value][data-total]').forEach(element => {
+                    const value = parseFloat(element.dataset.value);
+                    const total = parseFloat(element.dataset.total);
+                    if (total > 0) {
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        element.textContent = percentage + '%';
+                    }
+                });
 
             }
 
