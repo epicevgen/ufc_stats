@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -422,6 +423,12 @@
     <script th:inline="javascript">
         // Инициализация графиков
         document.addEventListener('DOMContentLoaded', function() {
+            // Регистрация плагина масштабирования, если доступен
+            try {
+                if (window.Chart && (window.ChartZoom || window['chartjs-plugin-zoom'])) {
+                    Chart.register(window.ChartZoom || window['chartjs-plugin-zoom']);
+                }
+            } catch (e) { /* ignore */ }
             // Данные для графиков (получаем из Thymeleaf)
             const statistics = /*[[${statistics}]]*/ {};
             const advancedStatistics = /*[[${advancedStatistics}]]*/ {};
@@ -486,27 +493,21 @@
                     const ratingCtx = ratingCanvas.getContext('2d');
                     const ratingData = advancedStatistics.ratingHistory;
 
-                    // Рассчет средних изменений очков за победу/поражение
-                    const changesByResult = ratingData.reduce((acc, item) => {
-                        if (!item || typeof item.change !== 'number' || !item.fightResult) return acc;
-                        const key = item.fightResult;
-                        if (!acc[key]) acc[key] = { sum: 0, count: 0 };
-                        acc[key].sum += item.change;
-                        acc[key].count += 1;
-                        return acc;
-                    }, {});
+                    // Рассчет средних: победы — только положительные изменения; поражения — модуль отрицательных
+                    const winChanges = ratingData
+                        .filter(item => item && item.fightResult === 'WIN' && typeof item.change === 'number' && item.change > 0)
+                        .map(item => item.change);
+                    const winAvg = winChanges.length ? (winChanges.reduce((a, b) => a + b, 0) / winChanges.length) : 0;
 
-                    const winAvg = changesByResult['WIN'] && changesByResult['WIN'].count > 0
-                        ? (changesByResult['WIN'].sum / changesByResult['WIN'].count)
-                        : 0;
-                    const lossAvg = changesByResult['LOSS'] && changesByResult['LOSS'].count > 0
-                        ? (changesByResult['LOSS'].sum / changesByResult['LOSS'].count)
-                        : 0;
+                    const lossChangesAbs = ratingData
+                        .filter(item => item && item.fightResult === 'LOSS' && typeof item.change === 'number' && item.change < 0)
+                        .map(item => Math.abs(item.change));
+                    const lossAvg = lossChangesAbs.length ? (lossChangesAbs.reduce((a, b) => a + b, 0) / lossChangesAbs.length) : 0;
 
                     const avgEl = document.getElementById('ratingChangeAverages');
                     if (avgEl) {
                         avgEl.style.display = 'block';
-                        avgEl.innerText = `Средний прирост за победу: ${winAvg.toFixed(1)} | Среднее уменьшение за поражение: ${lossAvg.toFixed(1)}`;
+                        avgEl.innerText = `Средний прирост за победу: ${Math.abs(winAvg).toFixed(1)} | Среднее уменьшение за поражение: ${Math.abs(lossAvg).toFixed(1)}`;
                     }
 
                     new Chart(ratingCtx, {
@@ -527,6 +528,18 @@
                             plugins: {
                                 legend: {
                                     display: false
+                                },
+                                zoom: {
+                                    zoom: {
+                                        wheel: { enabled: true },
+                                        pinch: { enabled: true },
+                                        drag: { enabled: true },
+                                        mode: 'xy'
+                                    },
+                                    pan: {
+                                        enabled: true,
+                                        mode: 'xy'
+                                    }
                                 }
                             },
                             scales: {
@@ -562,6 +575,18 @@
                             plugins: {
                                 legend: {
                                     display: false
+                                },
+                                zoom: {
+                                    zoom: {
+                                        wheel: { enabled: true },
+                                        pinch: { enabled: true },
+                                        drag: { enabled: true },
+                                        mode: 'xy'
+                                    },
+                                    pan: {
+                                        enabled: true,
+                                        mode: 'xy'
+                                    }
                                 }
                             },
                             scales: {
