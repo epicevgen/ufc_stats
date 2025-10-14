@@ -6,8 +6,11 @@
     <title th:text="${title}">Статистика - UFC Stats</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script>
+        // head-logger: проверяем наличие глобалов сразу после загрузки скриптов
+        console.log('[head] Chart present:', !!window.Chart);
+    </script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -251,8 +254,14 @@
                         <h5 class="mb-0">📈 Динамика очков рейтинга</h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="ratingChart" width="400" height="200"></canvas>
+                        <canvas id="ratingChart" width="400" height="200" style="cursor: grab; touch-action: none;"></canvas>
                         <div class="mt-2 small text-muted" id="ratingChangeAverages" style="display:none"></div>
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRating('out')" title="Уменьшить">−</button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRating('in')" title="Увеличить">+</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="ratingResetBtn">Сброс масштаба</button>
+                            <small class="text-muted ms-auto">Перетаскивание — панорама, Shift+перетаскивание — выделение для зума</small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -262,8 +271,14 @@
                         <h5 class="mb-0">🏆 Динамика положения в рейтинге</h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="rankingChart" width="400" height="200"></canvas>
+                        <canvas id="rankingChart" width="400" height="200" style="cursor: grab; touch-action: none;"></canvas>
                         <div class="mt-2 small text-muted" id="rankingChangeAverages" style="display:none"></div>
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRanking('out')" title="Уменьшить">−</button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRanking('in')" title="Увеличить">+</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="rankingResetBtn">Сброс масштаба</button>
+                            <small class="text-muted ms-auto">Перетаскивание — панорама, Shift+перетаскивание — выделение для зума</small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -422,17 +437,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
-        // Инициализация графиков
+        // Ждем загрузки Chart.js и zoom плагина
         document.addEventListener('DOMContentLoaded', function() {
-            // Регистрация плагина масштабирования, если доступен
-            try {
-                if (window.Chart && (window.ChartZoom || window['chartjs-plugin-zoom'])) {
-                    Chart.register(window.ChartZoom || window['chartjs-plugin-zoom']);
-                }
-            } catch (e) { /* ignore */ }
+            console.log('[DOMContentLoaded] Chart present:', !!window.Chart);
+            console.log('[DOMContentLoaded] ChartZoom present:', !!window.ChartZoom);
+            
+            // Проверяем доступность Chart.js
+            if (!window.Chart) {
+                console.error('[Chart.js] Chart.js not loaded!');
+                return;
+            }
+            console.log('[Chart.js] Chart.js loaded, version:', window.Chart.version);
+            
+            console.log('[Chart.js] Chart.js loaded, version:', window.Chart.version);
+            
             // Данные для графиков (получаем из Thymeleaf)
             const statistics = /*[[${statistics}]]*/ {};
             const advancedStatistics = /*[[${advancedStatistics}]]*/ {};
+            
+            console.log('[Debug] statistics:', statistics);
+            console.log('[Debug] advancedStatistics:', advancedStatistics);
+            console.log('[Debug] ratingHistory:', advancedStatistics?.ratingHistory);
+            console.log('[Debug] rankingHistory:', advancedStatistics?.rankingHistory);
             
                 // Графики расширенной статистики
                 if (advancedStatistics) {
@@ -490,36 +516,48 @@
             if (advancedStatistics) {
                 // График динамики очков рейтинга + средние изменения
                 const ratingCanvas = document.getElementById('ratingChart');
-                if (advancedStatistics.ratingHistory && advancedStatistics.ratingHistory.length > 0 && ratingCanvas) {
+                console.log('[Debug] ratingCanvas found:', !!ratingCanvas);
+                if (ratingCanvas) {
+                    // Проверяем наличие данных или создаем заглушку
+                    const hasRatingData = advancedStatistics.ratingHistory && advancedStatistics.ratingHistory.length > 0;
+                    const ratingData = hasRatingData ? advancedStatistics.ratingHistory : [
+                        { date: 'Нет данных', rating: 0, change: 0, fightResult: 'NONE' }
+                    ];
                     const ratingCtx = ratingCanvas.getContext('2d');
-                    const ratingData = advancedStatistics.ratingHistory;
 
                     // Рассчет средних: победы — только положительные изменения; поражения — модуль отрицательных
-                    const winChanges = ratingData
+                    const winChanges = hasRatingData ? ratingData
                         .filter(item => item && item.fightResult === 'WIN' && typeof item.change === 'number' && item.change > 0)
-                        .map(item => item.change);
+                        .map(item => item.change) : [];
                     const winAvg = winChanges.length ? (winChanges.reduce((a, b) => a + b, 0) / winChanges.length) : 0;
 
-                    const lossChangesAbs = ratingData
+                    const lossChangesAbs = hasRatingData ? ratingData
                         .filter(item => item && item.fightResult === 'LOSS' && typeof item.change === 'number' && item.change < 0)
-                        .map(item => Math.abs(item.change));
+                        .map(item => Math.abs(item.change)) : [];
                     const lossAvg = lossChangesAbs.length ? (lossChangesAbs.reduce((a, b) => a + b, 0) / lossChangesAbs.length) : 0;
 
                     const avgEl = document.getElementById('ratingChangeAverages');
                     if (avgEl) {
+                        if (hasRatingData) {
                         avgEl.style.display = 'block';
                         avgEl.innerText = `Средний прирост за победу: ${Math.abs(winAvg).toFixed(1)} | Среднее уменьшение за поражение: ${Math.abs(lossAvg).toFixed(1)}`;
+                        } else {
+                            avgEl.style.display = 'block';
+                            avgEl.innerText = 'Нет данных для отображения графика';
+                        }
                     }
 
-                    new Chart(ratingCtx, {
+                console.log('[Debug] Creating rating chart with data:', ratingData.length, 'points');
+                try {
+                const ratingChart = new Chart(ratingCtx, {
                         type: 'line',
                         data: {
                             labels: ratingData.map(item => item.date),
                             datasets: [{
-                                label: 'Очки рейтинга',
+                                label: hasRatingData ? 'Очки рейтинга' : 'Нет данных',
                                 data: ratingData.map(item => item.rating),
-                                borderColor: '#007bff',
-                                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                                borderColor: hasRatingData ? '#007bff' : '#6c757d',
+                                backgroundColor: hasRatingData ? 'rgba(0, 123, 255, 0.1)' : 'rgba(108, 117, 125, 0.1)',
                                 fill: true,
                                 tension: 0.4
                             }]
@@ -530,18 +568,6 @@
                                 legend: {
                                     display: false
                                 },
-                                zoom: {
-                                    zoom: {
-                                        wheel: { enabled: true },
-                                        pinch: { enabled: true },
-                                        drag: { enabled: true },
-                                        mode: 'xy'
-                                    },
-                                    pan: {
-                                        enabled: true,
-                                        mode: 'xy'
-                                    }
-                                }
                             },
                             scales: {
                                 y: {
@@ -551,40 +577,296 @@
                             }
                         }
                     });
+                    const ratingResetBtn = document.getElementById('ratingResetBtn');
+                    if (ratingResetBtn) {
+                        ratingResetBtn.addEventListener('click', function() {
+                            console.log('[rating] reset button click');
+                            // Сброс к исходным границам
+                            const scales = ratingChart.options.scales;
+                            scales.x.min = 0;
+                            scales.x.max = ratingData.length - 1;
+                            const values = ratingData.map(d => d.rating);
+                            scales.y.min = Math.min(...values) * 0.9;
+                            scales.y.max = Math.max(...values) * 1.1;
+                            
+                            // Округляем значения для красивого отображения
+                            scales.x.min = Math.floor(scales.x.min);
+                            scales.x.max = Math.ceil(scales.x.max);
+                            scales.y.min = Math.floor(scales.y.min);
+                            scales.y.max = Math.ceil(scales.y.max);
+                            
+                            ratingChart.update('none');
+                        });
+                    }
+                            // Перетягивание и зум для графика рейтинга
+                            let isDragging = false;
+                            let isSelecting = false;
+                            let lastX = 0;
+                            let lastY = 0;
+                            let startX = 0;
+                            let startY = 0;
+                            let selectionBox = null;
+                            
+                            // Инициализируем границы графика
+                            const initBounds = () => {
+                                const scales = ratingChart.options.scales;
+                                if (!scales.x.min) {
+                                    scales.x.min = 0;
+                                    scales.x.max = ratingData.length - 1;
+                                }
+                                if (!scales.y.min) {
+                                    const values = ratingData.map(d => d.rating);
+                                    scales.y.min = Math.min(...values) * 0.9;
+                                    scales.y.max = Math.max(...values) * 1.1;
+                                }
+                            };
+                            initBounds();
+                            
+                            // Обработчики мыши
+                            ratingCanvas.addEventListener('mousedown', function(e) {
+                                startX = e.clientX;
+                                startY = e.clientY;
+                                lastX = e.clientX;
+                                lastY = e.clientY;
+                                
+                                if (e.shiftKey) {
+                                    // Выделение области
+                                    isSelecting = true;
+                                    ratingCanvas.style.cursor = 'crosshair';
+                                    console.log('[rating] selection start');
+                                } else {
+                                    // Перетягивание
+                                    isDragging = true;
+                                    ratingCanvas.style.cursor = 'grabbing';
+                                    console.log('[rating] drag start');
+                                }
+                            });
+                            
+                            ratingCanvas.addEventListener('mousemove', function(e) {
+                                if (isDragging) {
+                                    const deltaX = e.clientX - lastX;
+                                    const deltaY = e.clientY - lastY;
+                                    
+                                    const scales = ratingChart.options.scales;
+                                    const rangeX = scales.x.max - scales.x.min;
+                                    const rangeY = scales.y.max - scales.y.min;
+                                    
+                                    scales.x.min -= deltaX * rangeX * 0.001;
+                                    scales.x.max -= deltaX * rangeX * 0.001;
+                                    scales.y.min += deltaY * rangeY * 0.001;
+                                    scales.y.max += deltaY * rangeY * 0.001;
+                                    
+                                    ratingChart.update('none');
+                                    lastX = e.clientX;
+                                    lastY = e.clientY;
+                                    console.log('[rating] dragging', deltaX, deltaY);
+                                } else if (isSelecting) {
+                                    // Показываем выделение области
+                                    const rect = ratingCanvas.getBoundingClientRect();
+                                    const x = Math.min(startX, e.clientX) - rect.left;
+                                    const y = Math.min(startY, e.clientY) - rect.top;
+                                    const width = Math.abs(e.clientX - startX);
+                                    const height = Math.abs(e.clientY - startY);
+                                    
+                                    // Создаем или обновляем прямоугольник выделения
+                                    if (!selectionBox) {
+                                        selectionBox = document.createElement('div');
+                                        selectionBox.style.position = 'absolute';
+                                        selectionBox.style.border = '2px dashed #007bff';
+                                        selectionBox.style.backgroundColor = 'rgba(0, 123, 255, 0.1)';
+                                        selectionBox.style.pointerEvents = 'none';
+                                        selectionBox.style.zIndex = '1000';
+                                        document.body.appendChild(selectionBox);
+                                    }
+                                    
+                                    selectionBox.style.left = (rect.left + x) + 'px';
+                                    selectionBox.style.top = (rect.top + y) + 'px';
+                                    selectionBox.style.width = width + 'px';
+                                    selectionBox.style.height = height + 'px';
+                                    selectionBox.style.display = 'block';
+                                    
+                                    console.log('[rating] selecting', width, height);
+                                }
+                            });
+                            
+                            ratingCanvas.addEventListener('mouseup', function(e) {
+                                if (isDragging) {
+                                    isDragging = false;
+                                    ratingCanvas.style.cursor = 'grab';
+                                    console.log('[rating] drag end');
+                                } else if (isSelecting) {
+                                    isSelecting = false;
+                                    ratingCanvas.style.cursor = 'grab';
+                                    
+                                    // Применяем зум к выделенной области
+                                    const rect = ratingCanvas.getBoundingClientRect();
+                                    const canvasRect = ratingCanvas.getBoundingClientRect();
+                                    const x1 = Math.min(startX, e.clientX) - canvasRect.left;
+                                    const y1 = Math.min(startY, e.clientY) - canvasRect.top;
+                                    const x2 = Math.max(startX, e.clientX) - canvasRect.left;
+                                    const y2 = Math.max(startY, e.clientY) - canvasRect.top;
+                                    
+                                    if (x2 - x1 > 10 && y2 - y1 > 10) { // Минимальный размер выделения
+                                        const scales = ratingChart.options.scales;
+                                        const canvasWidth = ratingCanvas.width;
+                                        const canvasHeight = ratingCanvas.height;
+                                        
+                                        // Конвертируем координаты экрана в координаты данных
+                                        const xMin = scales.x.min + (x1 / canvasWidth) * (scales.x.max - scales.x.min);
+                                        const xMax = scales.x.min + (x2 / canvasWidth) * (scales.x.max - scales.x.min);
+                                        const yMin = scales.y.min + (y1 / canvasHeight) * (scales.y.max - scales.y.min);
+                                        const yMax = scales.y.min + (y2 / canvasHeight) * (scales.y.max - scales.y.min);
+                                        
+                                        scales.x.min = xMin;
+                                        scales.x.max = xMax;
+                                        scales.y.min = yMin;
+                                        scales.y.max = yMax;
+                                        
+                                        ratingChart.update('none');
+                                        console.log('[rating] zoom to selection', xMin, xMax, yMin, yMax);
+                                    }
+                                    
+                                    // Убираем прямоугольник выделения
+                                    if (selectionBox) {
+                                        selectionBox.style.display = 'none';
+                                    }
+                                    
+                                    console.log('[rating] selection end');
+                                }
+                            });
+                            
+                            ratingCanvas.addEventListener('mouseleave', function(e) {
+                                isDragging = false;
+                                isSelecting = false;
+                                ratingCanvas.style.cursor = 'grab';
+                                if (selectionBox) {
+                                    selectionBox.style.display = 'none';
+                                }
+                            });
+                            
+                            // Обработчики трекпада
+                            ratingCanvas.addEventListener('touchstart', function(e) {
+                                if (e.touches.length === 1) {
+                                    isDragging = true;
+                                    lastX = e.touches[0].clientX;
+                                    lastY = e.touches[0].clientY;
+                                    ratingCanvas.style.cursor = 'grabbing';
+                                    console.log('[rating] touch start');
+                                }
+                            });
+                            
+                            ratingCanvas.addEventListener('touchmove', function(e) {
+                                e.preventDefault();
+                                if (isDragging && e.touches.length === 1) {
+                                    const deltaX = e.touches[0].clientX - lastX;
+                                    const deltaY = e.touches[0].clientY - lastY;
+                                    
+                                    const scales = ratingChart.options.scales;
+                                    const rangeX = scales.x.max - scales.x.min;
+                                    const rangeY = scales.y.max - scales.y.min;
+                                    
+                                    scales.x.min -= deltaX * rangeX * 0.001;
+                                    scales.x.max -= deltaX * rangeX * 0.001;
+                                    scales.y.min += deltaY * rangeY * 0.001;
+                                    scales.y.max += deltaY * rangeY * 0.001;
+                                    
+                                    ratingChart.update('none');
+                                    lastX = e.touches[0].clientX;
+                                    lastY = e.touches[0].clientY;
+                                    console.log('[rating] touch dragging', deltaX, deltaY);
+                                }
+                            });
+                            
+                            ratingCanvas.addEventListener('touchend', function(e) {
+                                isDragging = false;
+                                ratingCanvas.style.cursor = 'grab';
+                                console.log('[rating] touch end');
+                            });
+                            
+                            // Зум колесиком мыши (убираем трекпад)
+                            ratingCanvas.addEventListener('wheel', function(e) {
+                                e.preventDefault();
+                                const delta = e.deltaY > 0 ? 1.1 : 0.9;
+                                const scales = ratingChart.options.scales;
+                                
+                                const centerX = (scales.x.min + scales.x.max) / 2;
+                                const centerY = (scales.y.min + scales.y.max) / 2;
+                                const rangeX = scales.x.max - scales.x.min;
+                                const rangeY = scales.y.max - scales.y.min;
+                                
+                                scales.x.min = centerX - (rangeX * delta) / 2;
+                                scales.x.max = centerX + (rangeX * delta) / 2;
+                                scales.y.min = centerY - (rangeY * delta) / 2;
+                                scales.y.max = centerY + (rangeY * delta) / 2;
+                                
+                                ratingChart.update('none');
+                                console.log('[rating] zoom', delta);
+                            });
+                            
+                            // Функция зума для кнопок
+                            window.zoomRating = function(direction) {
+                                const delta = direction === 'in' ? 0.9 : 1.1;
+                                const scales = ratingChart.options.scales;
+                                
+                                const centerX = (scales.x.min + scales.x.max) / 2;
+                                const centerY = (scales.y.min + scales.y.max) / 2;
+                                const rangeX = scales.x.max - scales.x.min;
+                                const rangeY = scales.y.max - scales.y.min;
+                                
+                                scales.x.min = centerX - (rangeX * delta) / 2;
+                                scales.x.max = centerX + (rangeX * delta) / 2;
+                                scales.y.min = centerY - (rangeY * delta) / 2;
+                                scales.y.max = centerY + (rangeY * delta) / 2;
+                                
+                                ratingChart.update('none');
+                                console.log('[rating] zoom button', direction);
+                            };
+                } catch (error) {
+                    console.error('[Rating Chart] Error creating chart:', error);
+                }
                 }
 
                 // График динамики положения в рейтинге + средние изменения мест
-                if (advancedStatistics.rankingHistory && advancedStatistics.rankingHistory.length > 0) {
                     const rankingCanvas = document.getElementById('rankingChart');
+                if (rankingCanvas) {
+                    // Проверяем наличие данных или создаем заглушку
+                    const hasRankingData = advancedStatistics.rankingHistory && advancedStatistics.rankingHistory.length > 0;
+                    const rankingData = hasRankingData ? advancedStatistics.rankingHistory : [
+                        { date: 'Нет данных', ranking: 0, change: 0, fightResult: 'NONE' }
+                    ];
                     const rankingCtx = rankingCanvas.getContext('2d');
-                    const rankingData = advancedStatistics.rankingHistory;
 
                     // Подсчет средних: победы — положительный подъём (уменьшение числа места), поражения — спуск (увеличение)
-                    const winPositionChanges = rankingData
+                    const winPositionChanges = hasRankingData ? rankingData
                         .filter(item => item && item.fightResult === 'WIN' && typeof item.change === 'number' && item.change > 0)
-                        .map(item => item.change);
+                        .map(item => item.change) : [];
                     const winPosAvg = winPositionChanges.length ? (winPositionChanges.reduce((a,b)=>a+b,0) / winPositionChanges.length) : 0;
 
-                    const lossPositionChanges = rankingData
+                    const lossPositionChanges = hasRankingData ? rankingData
                         .filter(item => item && item.fightResult === 'LOSS' && typeof item.change === 'number' && item.change < 0)
-                        .map(item => Math.abs(item.change));
+                        .map(item => Math.abs(item.change)) : [];
                     const lossPosAvg = lossPositionChanges.length ? (lossPositionChanges.reduce((a,b)=>a+b,0) / lossPositionChanges.length) : 0;
 
                     const rankingAvgEl = document.getElementById('rankingChangeAverages');
                     if (rankingAvgEl) {
+                        if (hasRankingData) {
                         rankingAvgEl.style.display = 'block';
                         rankingAvgEl.innerText = `Средний подъём места за победу: ${Math.abs(winPosAvg).toFixed(1)} | Средний спуск места за поражение: ${Math.abs(lossPosAvg).toFixed(1)}`;
+                        } else {
+                            rankingAvgEl.style.display = 'block';
+                            rankingAvgEl.innerText = 'Нет данных для отображения графика';
+                        }
                     }
 
-                    new Chart(rankingCtx, {
+                const rankingChart = new Chart(rankingCtx, {
                         type: 'line',
                         data: {
                             labels: rankingData.map(item => item.date),
                             datasets: [{
-                                label: 'Место в рейтинге',
+                                label: hasRankingData ? 'Место в рейтинге' : 'Нет данных',
                                 data: rankingData.map(item => item.ranking),
-                                borderColor: '#28a745',
-                                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                                borderColor: hasRankingData ? '#28a745' : '#6c757d',
+                                backgroundColor: hasRankingData ? 'rgba(40, 167, 69, 0.1)' : 'rgba(108, 117, 125, 0.1)',
                                 fill: true,
                                 tension: 0.4
                             }]
@@ -595,18 +877,6 @@
                                 legend: {
                                     display: false
                                 },
-                                zoom: {
-                                    zoom: {
-                                        wheel: { enabled: true },
-                                        pinch: { enabled: true },
-                                        drag: { enabled: true },
-                                        mode: 'xy'
-                                    },
-                                    pan: {
-                                        enabled: true,
-                                        mode: 'xy'
-                                    }
-                                }
                             },
                             scales: {
                                 y: {
@@ -616,6 +886,165 @@
                             }
                         }
                     });
+                    const rankingResetBtn = document.getElementById('rankingResetBtn');
+                    if (rankingResetBtn) {
+                        rankingResetBtn.addEventListener('click', function() {
+                            console.log('[ranking] reset button click');
+                            // Сброс к исходным границам
+                            const scales = rankingChart.options.scales;
+                            scales.x.min = 0;
+                            scales.x.max = rankingData.length - 1;
+                            const values = rankingData.map(d => d.ranking);
+                            scales.y.min = Math.min(...values) * 0.9;
+                            scales.y.max = Math.max(...values) * 1.1;
+                            
+                            // Округляем значения для красивого отображения
+                            scales.x.min = Math.floor(scales.x.min);
+                            scales.x.max = Math.ceil(scales.x.max);
+                            scales.y.min = Math.floor(scales.y.min);
+                            scales.y.max = Math.ceil(scales.y.max);
+                            
+                            rankingChart.update('none');
+                        });
+                    }
+                            // Перетягивание и зум для графика рейтинга
+                            let isDraggingRanking = false;
+                            let lastXRanking = 0;
+                            let lastYRanking = 0;
+                            
+                            // Инициализируем границы графика
+                            const initRankingBounds = () => {
+                                const scales = rankingChart.options.scales;
+                                if (!scales.x.min) {
+                                    scales.x.min = 0;
+                                    scales.x.max = rankingData.length - 1;
+                                }
+                                if (!scales.y.min) {
+                                    const values = rankingData.map(d => d.ranking);
+                                    scales.y.min = Math.min(...values) * 0.9;
+                                    scales.y.max = Math.max(...values) * 1.1;
+                                }
+                            };
+                            initRankingBounds();
+                            
+                            // Обработчики мыши
+                            rankingCanvas.addEventListener('mousedown', function(e) {
+                                isDraggingRanking = true;
+                                lastXRanking = e.clientX;
+                                lastYRanking = e.clientY;
+                                rankingCanvas.style.cursor = 'grabbing';
+                                console.log('[ranking] drag start');
+                            });
+                            
+                            rankingCanvas.addEventListener('mousemove', function(e) {
+                                if (isDraggingRanking) {
+                                    const deltaX = e.clientX - lastXRanking;
+                                    const deltaY = e.clientY - lastYRanking;
+                                    
+                                    const scales = rankingChart.options.scales;
+                                    const rangeX = scales.x.max - scales.x.min;
+                                    const rangeY = scales.y.max - scales.y.min;
+                                    
+                                    scales.x.min -= deltaX * rangeX * 0.001;
+                                    scales.x.max -= deltaX * rangeX * 0.001;
+                                    scales.y.min += deltaY * rangeY * 0.001;
+                                    scales.y.max += deltaY * rangeY * 0.001;
+                                    
+                                    rankingChart.update('none');
+                                    lastXRanking = e.clientX;
+                                    lastYRanking = e.clientY;
+                                    console.log('[ranking] dragging', deltaX, deltaY);
+                                }
+                            });
+                            
+                            rankingCanvas.addEventListener('mouseup', function(e) {
+                                isDraggingRanking = false;
+                                rankingCanvas.style.cursor = 'grab';
+                                console.log('[ranking] drag end');
+                            });
+                            
+                            rankingCanvas.addEventListener('mouseleave', function(e) {
+                                isDraggingRanking = false;
+                                rankingCanvas.style.cursor = 'grab';
+                            });
+                            
+                            // Обработчики трекпада
+                            rankingCanvas.addEventListener('touchstart', function(e) {
+                                if (e.touches.length === 1) {
+                                    isDraggingRanking = true;
+                                    lastXRanking = e.touches[0].clientX;
+                                    lastYRanking = e.touches[0].clientY;
+                                    rankingCanvas.style.cursor = 'grabbing';
+                                    console.log('[ranking] touch start');
+                                }
+                            });
+                            
+                            rankingCanvas.addEventListener('touchmove', function(e) {
+                                e.preventDefault();
+                                if (isDraggingRanking && e.touches.length === 1) {
+                                    const deltaX = e.touches[0].clientX - lastXRanking;
+                                    const deltaY = e.touches[0].clientY - lastYRanking;
+                                    
+                                    const scales = rankingChart.options.scales;
+                                    const rangeX = scales.x.max - scales.x.min;
+                                    const rangeY = scales.y.max - scales.y.min;
+                                    
+                                    scales.x.min -= deltaX * rangeX * 0.001;
+                                    scales.x.max -= deltaX * rangeX * 0.001;
+                                    scales.y.min += deltaY * rangeY * 0.001;
+                                    scales.y.max += deltaY * rangeY * 0.001;
+                                    
+                                    rankingChart.update('none');
+                                    lastXRanking = e.touches[0].clientX;
+                                    lastYRanking = e.touches[0].clientY;
+                                    console.log('[ranking] touch dragging', deltaX, deltaY);
+                                }
+                            });
+                            
+                            rankingCanvas.addEventListener('touchend', function(e) {
+                                isDraggingRanking = false;
+                                rankingCanvas.style.cursor = 'grab';
+                                console.log('[ranking] touch end');
+                            });
+                            
+                            // Зум колесиком мыши (убираем трекпад)
+                            rankingCanvas.addEventListener('wheel', function(e) {
+                                e.preventDefault();
+                                const delta = e.deltaY > 0 ? 1.1 : 0.9;
+                                const scales = rankingChart.options.scales;
+                                
+                                const centerX = (scales.x.min + scales.x.max) / 2;
+                                const centerY = (scales.y.min + scales.y.max) / 2;
+                                const rangeX = scales.x.max - scales.x.min;
+                                const rangeY = scales.y.max - scales.y.min;
+                                
+                                scales.x.min = centerX - (rangeX * delta) / 2;
+                                scales.x.max = centerX + (rangeX * delta) / 2;
+                                scales.y.min = centerY - (rangeY * delta) / 2;
+                                scales.y.max = centerY + (rangeY * delta) / 2;
+                                
+                                rankingChart.update('none');
+                                console.log('[ranking] zoom', delta);
+                            });
+                            
+                            // Функция зума для кнопок
+                            window.zoomRanking = function(direction) {
+                                const delta = direction === 'in' ? 0.9 : 1.1;
+                                const scales = rankingChart.options.scales;
+                                
+                                const centerX = (scales.x.min + scales.x.max) / 2;
+                                const centerY = (scales.y.min + scales.y.max) / 2;
+                                const rangeX = scales.x.max - scales.x.min;
+                                const rangeY = scales.y.max - scales.y.min;
+                                
+                                scales.x.min = centerX - (rangeX * delta) / 2;
+                                scales.x.max = centerX + (rangeX * delta) / 2;
+                                scales.y.min = centerY - (rangeY * delta) / 2;
+                                scales.y.max = centerY + (rangeY * delta) / 2;
+                                
+                                rankingChart.update('none');
+                                console.log('[ranking] zoom button', direction);
+                            };
                 }
 
                 // диаграммы методов побед/поражений удалены
