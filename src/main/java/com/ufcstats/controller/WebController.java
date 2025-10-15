@@ -12,9 +12,11 @@ import com.ufcstats.service.RatingChangeService;
 import com.ufcstats.service.AdvancedStatisticsService;
 import com.ufcstats.service.FighterStatisticsService;
 import com.ufcstats.service.StrikeMovementService;
+import com.ufcstats.service.AchievementStatisticsService;
 import com.ufcstats.dto.AdvancedStatisticsDto;
 import com.ufcstats.dto.FighterStatisticsDto;
 import com.ufcstats.dto.StrikeMovementDto;
+import com.ufcstats.dto.AchievementStatisticsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -46,6 +48,7 @@ public class WebController {
     private final AdvancedStatisticsService advancedStatisticsService;
     private final FighterStatisticsService fighterStatisticsService;
     private final StrikeMovementService strikeMovementService;
+    private final AchievementStatisticsService achievementStatisticsService;
 
 
     @GetMapping("/")
@@ -257,10 +260,12 @@ public class WebController {
         AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics();
         FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics();
         StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData();
+        AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics();
         model.addAttribute("statistics", stats);
         model.addAttribute("advancedStatistics", advancedStats);
         model.addAttribute("fighterStatistics", fighterStats);
         model.addAttribute("strikeMovement", strikeMovement);
+        model.addAttribute("achievementStatistics", achievementStats);
         return "statistics";
     }
 

@@ -415,6 +415,169 @@
             </div>
         </div>
 
+        <!-- Статистика достижений -->
+        <div class="row mb-4" th:if="${achievementStatistics}">
+            <div class="col-12">
+                <h3 class="mb-3">🏆 Статистика достижений</h3>
+            </div>
+            
+            <!-- Максимальные значения -->
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📈 Максимальные значения</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-primary mb-1">Максимальные очки рейтинга</h6>
+                                            <small class="text-muted" th:text="'Дата: ' + ${achievementStatistics.maxRatingPointsDate}">Дата</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-primary fs-6" th:text="${achievementStatistics.maxRatingPoints}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-success mb-1">Самое высокое место в рейтинге</h6>
+                                            <small class="text-muted" th:text="'Дата: ' + ${achievementStatistics.minRankingPositionDate}">Дата</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-success fs-6" th:text="${achievementStatistics.minRankingPosition}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Минимальные значения -->
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📉 Минимальные значения</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-warning mb-1">Минимальные очки рейтинга</h6>
+                                            <small class="text-muted" th:text="'Дата: ' + ${achievementStatistics.minRatingPointsDate}">Дата</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-warning fs-6" th:text="${achievementStatistics.minRatingPoints}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-danger mb-1">Самое низкое место в рейтинге</h6>
+                                            <small class="text-muted" th:text="'Дата: ' + ${achievementStatistics.maxRankingPositionDate}">Дата</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-danger fs-6" th:text="${achievementStatistics.maxRankingPosition}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Серии побед -->
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🔥 Серии побед</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-success mb-1">Максимальная серия побед</h6>
+                                            <small class="text-muted" th:text="'Период: ' + ${achievementStatistics.maxWinStreakStartDate} + ' - ' + ${achievementStatistics.maxWinStreakEndDate}">Период</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-success fs-6" th:text="${achievementStatistics.maxWinStreak}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-info mb-1">Текущая серия побед</h6>
+                                            <small class="text-muted" th:text="'Начало: ' + ${achievementStatistics.currentWinStreakStartDate}">Начало</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-info fs-6" th:text="${achievementStatistics.currentWinStreak}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Серии поражений -->
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">💔 Серии поражений</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-danger mb-1">Максимальная серия поражений</h6>
+                                            <small class="text-muted" th:text="'Период: ' + ${achievementStatistics.maxLossStreakStartDate} + ' - ' + ${achievementStatistics.maxLossStreakEndDate}">Период</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-danger fs-6" th:text="${achievementStatistics.maxLossStreak}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="achievement-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-warning mb-1">Текущая серия поражений</h6>
+                                            <small class="text-muted" th:text="'Начало: ' + ${achievementStatistics.currentLossStreakStartDate}">Начало</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-warning fs-6" th:text="${achievementStatistics.currentLossStreak}">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- График движения ударов -->
         <div class="row mb-4" th:if="${strikeMovement}">
             <div class="col-12">
