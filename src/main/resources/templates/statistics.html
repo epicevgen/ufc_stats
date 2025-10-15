@@ -284,6 +284,136 @@
             </div>
         </div>
 
+        <!-- Статистика бойцов -->
+        <div class="row mb-4" th:if="${fighterStatistics}">
+            <div class="col-12">
+                <h3 class="mb-3">🥊 Статистика бойцов</h3>
+            </div>
+            
+            <!-- Топ 5 лучших бойцов по проценту побед -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🏆 Топ 5 лучших бойцов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(fighterStatistics.topFightersByWinRate)}" class="text-muted">Нет данных</div>
+                        <div th:each="fighter, iterStat : ${fighterStatistics.topFightersByWinRate}" th:if="${!iterStat.last}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="fw-bold" th:text="${fighter.fighterName}">Боец</span>
+                                    <small class="text-muted d-block">
+                                        <span th:text="${fighter.totalFights}">0</span> боев, 
+                                        <span th:text="${#numbers.formatDecimal(fighter.winRate, 1, 1)}">0</span>% побед
+                                    </small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-success" th:text="${fighter.wins}">0</span>
+                                    <span class="badge bg-danger" th:text="${fighter.losses}">0</span>
+                                    <span class="badge bg-warning" th:text="${fighter.draws}">0</span>
+                                </div>
+                            </div>
+                            <div class="progress mb-2" style="height: 6px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${fighter.winRate} + '%'"></div>
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${fighter.lossRate} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Топ 5 худших бойцов по проценту побед -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📉 Топ 5 худших бойцов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(fighterStatistics.worstFightersByWinRate)}" class="text-muted">Нет данных</div>
+                        <div th:each="fighter, iterStat : ${fighterStatistics.worstFightersByWinRate}" th:if="${!iterStat.last}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="fw-bold" th:text="${fighter.fighterName}">Боец</span>
+                                    <small class="text-muted d-block">
+                                        <span th:text="${fighter.totalFights}">0</span> боев, 
+                                        <span th:text="${#numbers.formatDecimal(fighter.winRate, 1, 1)}">0</span>% побед
+                                    </small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-success" th:text="${fighter.wins}">0</span>
+                                    <span class="badge bg-danger" th:text="${fighter.losses}">0</span>
+                                    <span class="badge bg-warning" th:text="${fighter.draws}">0</span>
+                                </div>
+                            </div>
+                            <div class="progress mb-2" style="height: 6px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${fighter.winRate} + '%'"></div>
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${fighter.lossRate} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Лучший нокаутер и мастер болевых -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">💥 Лучшие финишеры</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-warning">🥊 Лучший нокаутер</h6>
+                                <p class="mb-1">
+                                    <span class="fw-bold" th:text="${fighterStatistics.bestFinishers.bestKnockoutArtist}">Боец</span>
+                                </p>
+                                <p class="mb-1">
+                                    <span class="badge bg-warning" th:text="${fighterStatistics.bestFinishers.knockoutCount}">0</span> нокаутов
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-info">🤼 Мастер болевых</h6>
+                                <p class="mb-1">
+                                    <span class="fw-bold" th:text="${fighterStatistics.bestFinishers.bestSubmissionSpecialist}">Боец</span>
+                                </p>
+                                <p class="mb-1">
+                                    <span class="badge bg-info" th:text="${fighterStatistics.bestFinishers.submissionCount}">0</span> сабмишенов
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Топ 5 неудобных соперников -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">😤 Топ 5 неудобных соперников</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(fighterStatistics.toughestOpponents)}" class="text-muted">Нет данных</div>
+                        <div th:each="opponent, iterStat : ${fighterStatistics.toughestOpponents}" th:if="${!iterStat.last}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="fw-bold" th:text="${opponent.opponentName}">Соперник</span>
+                                    <small class="text-muted d-block">
+                                        <span th:text="${opponent.totalFights}">0</span> боев, 
+                                        <span th:text="${#numbers.formatDecimal(opponent.lossRate, 1, 1)}">0</span>% поражений
+                                    </small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-danger" th:text="${opponent.losses}">0</span>
+                                </div>
+                            </div>
+                            <div class="progress mb-2" style="height: 6px;">
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${opponent.lossRate} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Дополнительная аналитика -->
         <div class="row mb-4" th:if="${advancedStatistics}">

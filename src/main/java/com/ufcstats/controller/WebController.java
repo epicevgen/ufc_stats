@@ -10,7 +10,9 @@ import com.ufcstats.model.enums.WeightClass;
 import com.ufcstats.service.FightService;
 import com.ufcstats.service.RatingChangeService;
 import com.ufcstats.service.AdvancedStatisticsService;
+import com.ufcstats.service.FighterStatisticsService;
 import com.ufcstats.dto.AdvancedStatisticsDto;
+import com.ufcstats.dto.FighterStatisticsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,6 +42,7 @@ public class WebController {
     private final FightService fightService;
     private final RatingChangeService ratingChangeService;
     private final AdvancedStatisticsService advancedStatisticsService;
+    private final FighterStatisticsService fighterStatisticsService;
 
 
     @GetMapping("/")
@@ -249,8 +252,10 @@ public class WebController {
         model.addAttribute("title", "Статистика");
         FightService.FightStatistics stats = fightService.getFightStatistics();
         AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics();
+        FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics();
         model.addAttribute("statistics", stats);
         model.addAttribute("advancedStatistics", advancedStats);
+        model.addAttribute("fighterStatistics", fighterStats);
         return "statistics";
     }
 
