@@ -415,6 +415,57 @@
             </div>
         </div>
 
+        <!-- График движения ударов -->
+        <div class="row mb-4" th:if="${strikeMovement}">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">📊 График движения ударов</h5>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="strikeToggle" checked>
+                                <label class="form-check-label" for="strikeToggle">
+                                    <span id="strikeToggleText">Процент</span>
+                                </label>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="strikeResetBtn">Сброс</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="strikeZoomInBtn">+</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="strikeZoomOutBtn">-</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative">
+                            <canvas id="strikeChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-center gap-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="strike-legend-item" data-dataset="0" style="cursor: pointer;">
+                                        <span class="legend-color" style="background-color: #3b82f6; width: 20px; height: 3px; display: inline-block; margin-right: 8px;"></span>
+                                        <span class="legend-label">Общие удары</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="strike-legend-item" data-dataset="1" style="cursor: pointer;">
+                                        <span class="legend-color" style="background-color: #ef4444; width: 20px; height: 3px; display: inline-block; margin-right: 8px;"></span>
+                                        <span class="legend-label">Значимые удары</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="strike-legend-item" data-dataset="2" style="cursor: pointer;">
+                                        <span class="legend-color" style="background: repeating-linear-gradient(90deg, rgba(128, 128, 128, 0.4) 0px, rgba(128, 128, 128, 0.4) 5px, transparent 5px, transparent 10px); width: 20px; height: 3px; display: inline-block; margin-right: 8px;"></span>
+                                        <span class="legend-label">50% уровень</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Дополнительная аналитика -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             <!-- Статистика по режимам боев -->
@@ -584,11 +635,18 @@
             // Данные для графиков (получаем из Thymeleaf)
             const statistics = /*[[${statistics}]]*/ {};
             const advancedStatistics = /*[[${advancedStatistics}]]*/ {};
+            const strikeMovement = /*[[${strikeMovement}]]*/ {};
             
             console.log('[Debug] statistics:', statistics);
             console.log('[Debug] advancedStatistics:', advancedStatistics);
+            console.log('[Debug] strikeMovement:', strikeMovement);
             console.log('[Debug] ratingHistory:', advancedStatistics?.ratingHistory);
             console.log('[Debug] rankingHistory:', advancedStatistics?.rankingHistory);
+            
+            // Делаем данные доступными глобально
+            window.statistics = statistics;
+            window.advancedStatistics = advancedStatistics;
+            window.strikeMovement = strikeMovement;
             
                 // Графики расширенной статистики
                 if (advancedStatistics) {
@@ -1179,6 +1237,420 @@
 
                 // диаграммы методов побед/поражений удалены
 
+            }
+
+            // График движения ударов
+            const strikeCanvas = document.getElementById('strikeChart');
+            if (strikeCanvas && window.strikeMovement) {
+                console.log('[Debug] strikeCanvas found: true');
+                console.log('[Debug] strikeMovement data:', window.strikeMovement);
+                
+                const strikeData = window.strikeMovement;
+                const totalStrikesData = strikeData.totalStrikesHistory || [];
+                const significantStrikesData = strikeData.significantStrikesHistory || [];
+                
+                console.log('[Debug] Creating strike chart with data:', totalStrikesData.length, 'points');
+                
+                // Подготавливаем данные для графика
+                const labels = totalStrikesData.map((_, index) => index + 1);
+                const totalStrikesCounts = totalStrikesData.map(d => d.totalStrikesLanded);
+                const significantStrikesCounts = significantStrikesData.map(d => d.significantStrikesLanded);
+                const totalStrikesAccuracy = totalStrikesData.map(d => d.totalStrikesAccuracy);
+                const significantStrikesAccuracy = significantStrikesData.map(d => d.significantStrikesAccuracy);
+                
+                // Создаем график
+                const strikeChart = new Chart(strikeCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Общие удары',
+                            data: totalStrikesAccuracy, // Начинаем с процентов
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1
+                        }, {
+                            label: 'Значимые удары',
+                            data: significantStrikesAccuracy, // Начинаем с процентов
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1
+                        }, {
+                            label: '50% уровень',
+                            data: new Array(labels.length).fill(50),
+                            borderColor: 'rgba(128, 128, 128, 0.4)',
+                            backgroundColor: 'rgba(128, 128, 128, 0.1)',
+                            borderWidth: 1,
+                            borderDash: [5, 5],
+                            fill: false,
+                            pointRadius: 0,
+                            pointHoverRadius: 0,
+                            tension: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false // Используем кастомную легенду
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const datasetLabel = context.dataset.label;
+                                        const value = context.parsed.y;
+                                        const index = context.dataIndex;
+                                        const dataPoint = totalStrikesData[index];
+                                        
+                                        if (window.strikeChartMode === 'percentage') {
+                                            return `${datasetLabel}: ${value.toFixed(1)}%`;
+                                        } else {
+                                            return `${datasetLabel}: ${Math.round(value)} ударов`;
+                                        }
+                                    },
+                                    afterLabel: function(context) {
+                                        const index = context.dataIndex;
+                                        const dataPoint = totalStrikesData[index];
+                                        return `Бой ${index + 1}: ${dataPoint.opponent} (${dataPoint.result})`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Номер боя'
+                                },
+                                grid: {
+                                    display: true
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Процент попаданий (%)'
+                                },
+                                grid: {
+                                    display: true
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Сохраняем ссылку на график глобально
+                window.strikeChart = strikeChart;
+                window.strikeChartMode = 'percentage'; // Начинаем с процентов
+                
+                // Переменные для перетаскивания
+                let isDraggingStrike = false;
+                let lastXStrike = 0;
+                let lastYStrike = 0;
+                let isSelectingStrike = false;
+                let startXStrike = 0;
+                let startYStrike = 0;
+                let selectionBoxStrike = null;
+                
+                // Функция для установки начальных границ
+                function initStrikeBounds() {
+                    const scales = strikeChart.options.scales;
+                    scales.x.min = 0;
+                    scales.x.max = Math.max(totalStrikesData.length - 1, 10);
+                    scales.y.min = 0;
+                    scales.y.max = 100;
+                    strikeChart.update('none');
+                }
+                
+                // Устанавливаем начальные границы
+                initStrikeBounds();
+                
+                // Обработчики событий мыши
+                strikeCanvas.addEventListener('mousedown', function(e) {
+                    const rect = strikeCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    if (e.shiftKey) {
+                        // Выделение области
+                        isSelectingStrike = true;
+                        startXStrike = x;
+                        startYStrike = y;
+                        
+                        // Создаем элемент выделения
+                        selectionBoxStrike = document.createElement('div');
+                        selectionBoxStrike.style.position = 'absolute';
+                        selectionBoxStrike.style.border = '2px dashed #007bff';
+                        selectionBoxStrike.style.backgroundColor = 'rgba(0, 123, 255, 0.1)';
+                        selectionBoxStrike.style.pointerEvents = 'none';
+                        selectionBoxStrike.style.zIndex = '1000';
+                        strikeCanvas.parentElement.appendChild(selectionBoxStrike);
+                        
+                        console.log('[strike] selection start', x, y);
+                    } else {
+                        // Перетаскивание
+                        isDraggingStrike = true;
+                        lastXStrike = x;
+                        lastYStrike = y;
+                        strikeCanvas.style.cursor = 'grabbing';
+                        console.log('[strike] drag start', x, y);
+                    }
+                });
+                
+                strikeCanvas.addEventListener('mousemove', function(e) {
+                    const rect = strikeCanvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    if (isSelectingStrike && selectionBoxStrike) {
+                        // Обновляем выделение
+                        const left = Math.min(startXStrike, x);
+                        const top = Math.min(startYStrike, y);
+                        const width = Math.abs(x - startXStrike);
+                        const height = Math.abs(y - startYStrike);
+                        
+                        selectionBoxStrike.style.left = (rect.left + left) + 'px';
+                        selectionBoxStrike.style.top = (rect.top + top) + 'px';
+                        selectionBoxStrike.style.width = width + 'px';
+                        selectionBoxStrike.style.height = height + 'px';
+                    } else if (isDraggingStrike) {
+                        // Перетаскивание
+                        const deltaX = x - lastXStrike;
+                        const deltaY = y - lastYStrike;
+                        
+                        const scales = strikeChart.options.scales;
+                        const rangeX = scales.x.max - scales.x.min;
+                        const rangeY = scales.y.max - scales.y.min;
+                        
+                        scales.x.min -= deltaX * rangeX / strikeCanvas.width;
+                        scales.x.max -= deltaX * rangeX / strikeCanvas.width;
+                        scales.y.min += deltaY * rangeY / strikeCanvas.height;
+                        scales.y.max += deltaY * rangeY / strikeCanvas.height;
+                        
+                        strikeChart.update('none');
+                        lastXStrike = x;
+                        lastYStrike = y;
+                        console.log('[strike] dragging', deltaX, deltaY);
+                    }
+                });
+                
+                strikeCanvas.addEventListener('mouseup', function(e) {
+                    if (isSelectingStrike && selectionBoxStrike) {
+                        // Применяем зум к выделенной области
+                        const rect = strikeCanvas.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        const left = Math.min(startXStrike, x);
+                        const right = Math.max(startXStrike, x);
+                        const top = Math.min(startYStrike, y);
+                        const bottom = Math.max(startYStrike, y);
+                        
+                        if (right - left > 10 && bottom - top > 10) {
+                            const scales = strikeChart.options.scales;
+                            const rangeX = scales.x.max - scales.x.min;
+                            const rangeY = scales.y.max - scales.y.min;
+                            
+                            const newXMin = scales.x.min + (left / strikeCanvas.width) * rangeX;
+                            const newXMax = scales.x.min + (right / strikeCanvas.width) * rangeX;
+                            const newYMin = scales.y.min + (1 - bottom / strikeCanvas.height) * rangeY;
+                            const newYMax = scales.y.min + (1 - top / strikeCanvas.height) * rangeY;
+                            
+                            scales.x.min = Math.round(newXMin);
+                            scales.x.max = Math.round(newXMax);
+                            scales.y.min = Math.round(newYMin);
+                            scales.y.max = Math.round(newYMax);
+                            
+                            strikeChart.update('none');
+                            console.log('[strike] selection zoom applied');
+                        }
+                        
+                        // Удаляем элемент выделения
+                        if (selectionBoxStrike) {
+                            selectionBoxStrike.remove();
+                            selectionBoxStrike = null;
+                        }
+                        
+                        isSelectingStrike = false;
+                    } else if (isDraggingStrike) {
+                        isDraggingStrike = false;
+                        strikeCanvas.style.cursor = 'grab';
+                        console.log('[strike] drag end');
+                    }
+                });
+                
+                strikeCanvas.addEventListener('mouseleave', function(e) {
+                    isDraggingStrike = false;
+                    isSelectingStrike = false;
+                    strikeCanvas.style.cursor = 'grab';
+                    
+                    if (selectionBoxStrike) {
+                        selectionBoxStrike.remove();
+                        selectionBoxStrike = null;
+                    }
+                    
+                    console.log('[strike] mouse leave');
+                });
+                
+                // Обработчики событий касания
+                strikeCanvas.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    const rect = strikeCanvas.getBoundingClientRect();
+                    const x = e.touches[0].clientX - rect.left;
+                    const y = e.touches[0].clientY - rect.top;
+                    
+                    isDraggingStrike = true;
+                    lastXStrike = x;
+                    lastYStrike = y;
+                    console.log('[strike] touch start', x, y);
+                });
+                
+                strikeCanvas.addEventListener('touchmove', function(e) {
+                    e.preventDefault();
+                    if (isDraggingStrike) {
+                        const rect = strikeCanvas.getBoundingClientRect();
+                        const x = e.touches[0].clientX - rect.left;
+                        const y = e.touches[0].clientY - rect.top;
+                        
+                        const deltaX = x - lastXStrike;
+                        const deltaY = y - lastYStrike;
+                        
+                        const scales = strikeChart.options.scales;
+                        const rangeX = scales.x.max - scales.x.min;
+                        const rangeY = scales.y.max - scales.y.min;
+                        
+                        scales.x.min -= deltaX * rangeX / strikeCanvas.width;
+                        scales.x.max -= deltaX * rangeX / strikeCanvas.width;
+                        scales.y.min += deltaY * rangeY / strikeCanvas.height;
+                        scales.y.max += deltaY * rangeY / strikeCanvas.height;
+                        
+                        strikeChart.update('none');
+                        lastXStrike = x;
+                        lastYStrike = y;
+                        console.log('[strike] touch dragging', deltaX, deltaY);
+                    }
+                });
+                
+                strikeCanvas.addEventListener('touchend', function(e) {
+                    isDraggingStrike = false;
+                    console.log('[strike] touch end');
+                });
+                
+                // Кнопка сброса
+                document.getElementById('strikeResetBtn').addEventListener('click', function() {
+                    const scales = strikeChart.options.scales;
+                    scales.x.min = 0;
+                    scales.x.max = Math.max(totalStrikesData.length - 1, 10);
+                    scales.y.min = 0;
+                    scales.y.max = 100;
+                    strikeChart.update('none');
+                    console.log('[strike] reset');
+                });
+                
+                // Кнопки зума
+                document.getElementById('strikeZoomInBtn').addEventListener('click', function() {
+                    window.zoomStrike('in');
+                });
+                
+                document.getElementById('strikeZoomOutBtn').addEventListener('click', function() {
+                    window.zoomStrike('out');
+                });
+                
+                // Функция зума для кнопок
+                window.zoomStrike = function(direction) {
+                    const delta = direction === 'in' ? 0.9 : 1.1;
+                    const scales = strikeChart.options.scales;
+                    
+                    const centerX = (scales.x.min + scales.x.max) / 2;
+                    const centerY = (scales.y.min + scales.y.max) / 2;
+                    const rangeX = scales.x.max - scales.x.min;
+                    const rangeY = scales.y.max - scales.y.min;
+                    
+                    scales.x.min = centerX - (rangeX * delta) / 2;
+                    scales.x.max = centerX + (rangeX * delta) / 2;
+                    scales.y.min = centerY - (rangeY * delta) / 2;
+                    scales.y.max = centerY + (rangeY * delta) / 2;
+                    
+                    strikeChart.update('none');
+                    console.log('[strike] zoom button', direction);
+                };
+                
+                // Тумблер процент/количество
+                document.getElementById('strikeToggle').addEventListener('change', function() {
+                    const isPercentage = this.checked;
+                    const toggleText = document.getElementById('strikeToggleText');
+                    
+                    if (isPercentage) {
+                        // Переключаем на проценты
+                        strikeChart.data.datasets[0].data = totalStrikesAccuracy;
+                        strikeChart.data.datasets[1].data = significantStrikesAccuracy;
+                        // Показываем фоновую линию 50%
+                        strikeChart.data.datasets[2].data = new Array(labels.length).fill(50);
+                        strikeChart.data.datasets[2].hidden = false;
+                        strikeChart.options.scales.y.title.text = 'Процент попаданий (%)';
+                        toggleText.textContent = 'Процент';
+                        window.strikeChartMode = 'percentage';
+                    } else {
+                        // Переключаем на количество
+                        strikeChart.data.datasets[0].data = totalStrikesCounts;
+                        strikeChart.data.datasets[1].data = significantStrikesCounts;
+                        // Скрываем фоновую линию 50% в режиме количества
+                        strikeChart.data.datasets[2].hidden = true;
+                        strikeChart.options.scales.y.title.text = 'Количество ударов';
+                        toggleText.textContent = 'Количество';
+                        window.strikeChartMode = 'count';
+                    }
+                    
+                    // Обновляем границы Y
+                    const scales = strikeChart.options.scales;
+                    if (isPercentage) {
+                        scales.y.min = 0;
+                        scales.y.max = 100;
+                    } else {
+                        const maxTotal = Math.max(...totalStrikesCounts);
+                        const maxSignificant = Math.max(...significantStrikesCounts);
+                        const maxValue = Math.max(maxTotal, maxSignificant);
+                        scales.y.min = 0;
+                        scales.y.max = Math.ceil(maxValue * 1.1);
+                    }
+                    
+                    strikeChart.update();
+                    console.log('[strike] toggle to', isPercentage ? 'percentage' : 'count');
+                });
+                
+                // Интерактивная легенда
+                document.querySelectorAll('.strike-legend-item').forEach(function(item) {
+                    item.addEventListener('click', function() {
+                        const datasetIndex = parseInt(this.getAttribute('data-dataset'));
+                        const meta = strikeChart.getDatasetMeta(datasetIndex);
+                        
+                        meta.hidden = meta.hidden === null ? !strikeChart.data.datasets[datasetIndex].hidden : null;
+                        strikeChart.update();
+                        
+                        // Обновляем стиль легенды
+                        const legendLabel = this.querySelector('.legend-label');
+                        if (meta.hidden) {
+                            legendLabel.style.opacity = '0.5';
+                            legendLabel.style.textDecoration = 'line-through';
+                        } else {
+                            legendLabel.style.opacity = '1';
+                            legendLabel.style.textDecoration = 'none';
+                        }
+                        
+                        console.log('[strike] legend toggle dataset', datasetIndex, 'hidden:', meta.hidden);
+                    });
+                });
             }
 
 
