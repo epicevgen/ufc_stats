@@ -18,7 +18,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">UFC Stats</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -48,7 +48,7 @@
             <!-- 1. ОСНОВНЫЕ ПОКАЗАТЕЛИ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingBasic">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasic" aria-expanded="true" aria-controls="collapseBasic">
+                    <button class="accordion-button" type="button" data-target="#collapseBasic" aria-expanded="true" aria-controls="collapseBasic">
                         <i class="fas fa-chart-line me-2"></i> 📊 Основные показатели
                     </button>
                 </h2>
@@ -95,7 +95,7 @@
             <!-- 2. АНАЛИЗ БОЕВОЙ АКТИВНОСТИ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingCombat">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCombat" aria-expanded="false" aria-controls="collapseCombat">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseCombat" aria-expanded="false" aria-controls="collapseCombat">
                         <i class="fas fa-fist-raised me-2"></i> 🥊 Анализ боевой активности
                     </button>
                 </h2>
@@ -168,7 +168,7 @@
             <!-- 3. МЕТОДЫ ПОБЕД И ПОРАЖЕНИЙ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingMethods">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMethods" aria-expanded="false" aria-controls="collapseMethods">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseMethods" aria-expanded="false" aria-controls="collapseMethods">
                         <i class="fas fa-trophy me-2"></i> 🏅 Методы побед и поражений
                     </button>
                 </h2>
@@ -245,7 +245,7 @@
             <!-- 4. ВРЕМЯ КОНТРОЛЯ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingControl">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseControl" aria-expanded="false" aria-controls="collapseControl">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseControl" aria-expanded="false" aria-controls="collapseControl">
                         <i class="fas fa-clock me-2"></i> ⏱️ Время контроля
                     </button>
                 </h2>
@@ -281,7 +281,7 @@
             <!-- 5. ГРАФИКИ ДИНАМИКИ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingCharts">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCharts" aria-expanded="false" aria-controls="collapseCharts">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseCharts" aria-expanded="false" aria-controls="collapseCharts">
                         <i class="fas fa-chart-line me-2"></i> 📈 Графики динамики
                     </button>
                 </h2>
@@ -331,7 +331,7 @@
             <!-- 6. СТАТИСТИКА БОЙЦОВ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingFighters">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFighters" aria-expanded="false" aria-controls="collapseFighters">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseFighters" aria-expanded="false" aria-controls="collapseFighters">
                         <i class="fas fa-users me-2"></i> 👥 Статистика бойцов
                     </button>
                 </h2>
@@ -474,7 +474,7 @@
             <!-- 7. СТАТИСТИКА ДОСТИЖЕНИЙ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAchievements">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAchievements" aria-expanded="false" aria-controls="collapseAchievements">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseAchievements" aria-expanded="false" aria-controls="collapseAchievements">
                         <i class="fas fa-trophy me-2"></i> 🏆 Статистика достижений
                     </button>
                 </h2>
@@ -649,7 +649,7 @@
             <!-- 8. ГРАФИК ДВИЖЕНИЯ УДАРОВ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingStrikeMovement">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStrikeMovement" aria-expanded="false" aria-controls="collapseStrikeMovement">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseStrikeMovement" aria-expanded="false" aria-controls="collapseStrikeMovement">
                         <i class="fas fa-chart-area me-2"></i> 📊 График движения ударов
                     </button>
                 </h2>
@@ -803,7 +803,7 @@
             <!-- 9. ПРОДВИНУТАЯ АНАЛИТИКА -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAdvanced">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
+                    <button class="accordion-button collapsed" type="button" data-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
                         <i class="fas fa-chart-pie me-2"></i> 📊 Продвинутая аналитика
                     </button>
                 </h2>
@@ -1938,6 +1938,45 @@
                 });
             }
 
+            // Управление аккордеоном - полностью отключаем Bootstrap и делаем свой
+            document.querySelectorAll('.accordion-button').forEach(function(button) {
+                // Получаем target ID
+                const targetId = button.getAttribute('data-target');
+                
+                // Добавляем свой обработчик
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    
+                    console.log('[Accordion] Button clicked:', this.textContent.trim());
+                    
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (!targetElement) {
+                        console.error('[Accordion] Target element not found:', targetId);
+                        return;
+                    }
+                    
+                    const isExpanded = targetElement.classList.contains('show');
+                    
+                    console.log('[Accordion] Target:', targetId, 'Currently expanded:', isExpanded);
+                    
+                    if (isExpanded) {
+                        // Сворачиваем раздел
+                        targetElement.classList.remove('show');
+                        this.classList.add('collapsed');
+                        this.setAttribute('aria-expanded', 'false');
+                        console.log('[Accordion] Collapsing section');
+                    } else {
+                        // Разворачиваем раздел
+                        targetElement.classList.add('show');
+                        this.classList.remove('collapsed');
+                        this.setAttribute('aria-expanded', 'true');
+                        console.log('[Accordion] Expanding section');
+                    }
+                });
+            });
 
         });
     </script>
