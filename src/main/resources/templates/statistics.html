@@ -55,42 +55,42 @@
                 <div id="collapseBasic" class="accordion-collapse collapse show" aria-labelledby="headingBasic" data-bs-parent="#statisticsAccordion">
                     <div class="accordion-body">
                         <div class="row">
-                            <div class="col-md-3">
-                                <div class="card text-center">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary">Всего боев</h5>
-                                        <h2 class="card-text" th:text="${statistics.totalFights}">0</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card text-center">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-success">Побед</h5>
-                                        <h2 class="card-text" th:text="${statistics.wins}">0</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card text-center">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-danger">Поражений</h5>
-                                        <h2 class="card-text" th:text="${statistics.losses}">0</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card text-center">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-warning">Процент побед</h5>
-                                        <h2 class="card-text" th:text="${#numbers.formatDecimal(statistics.winRate, 1, 1)} + '%'">0%</h2>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">Всего боев</h5>
+                        <h2 class="card-text" th:text="${statistics.totalFights}">0</h2>
                     </div>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Побед</h5>
+                        <h2 class="card-text" th:text="${statistics.wins}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-danger">Поражений</h5>
+                        <h2 class="card-text" th:text="${statistics.losses}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning">Процент побед</h5>
+                        <h2 class="card-text" th:text="${#numbers.formatDecimal(statistics.winRate, 1, 1)} + '%'">0%</h2>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
             <!-- 2. АНАЛИЗ БОЕВОЙ АКТИВНОСТИ -->
             <div class="accordion-item">
@@ -101,7 +101,7 @@
                 </h2>
                 <div id="collapseCombat" class="accordion-collapse collapse" aria-labelledby="headingCombat" data-bs-parent="#statisticsAccordion">
                     <div class="accordion-body">
-                        <!-- Расширенная статистика -->
+        <!-- Расширенная статистика -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             <!-- Статистика по ударам -->
             <div class="col-md-6">
@@ -158,12 +158,12 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
             <!-- 3. МЕТОДЫ ПОБЕД И ПОРАЖЕНИЙ -->
             <div class="accordion-item">
@@ -174,7 +174,7 @@
                 </h2>
                 <div id="collapseMethods" class="accordion-collapse collapse" aria-labelledby="headingMethods" data-bs-parent="#statisticsAccordion">
                     <div class="accordion-body">
-                        <!-- Методы побед и поражений -->
+        <!-- Методы побед и поражений -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             <!-- Методы побед -->
             <div class="col-md-6">
@@ -233,14 +233,14 @@
                                     </div>
                                 </div>
                             </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
 
             <!-- 4. ВРЕМЯ КОНТРОЛЯ -->
             <div class="accordion-item">
@@ -251,7 +251,7 @@
                 </h2>
                 <div id="collapseControl" class="accordion-collapse collapse" aria-labelledby="headingControl" data-bs-parent="#statisticsAccordion">
                     <div class="accordion-body">
-                        <!-- Статистика по времени контроля -->
+        <!-- Статистика по времени контроля -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             <div class="col-md-6">
                 <div class="card">
@@ -273,10 +273,10 @@
                 </div>
             </div>
             
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
             <!-- 5. ГРАФИКИ ДИНАМИКИ -->
             <div class="accordion-item">
@@ -287,15 +287,15 @@
                 </h2>
                 <div id="collapseCharts" class="accordion-collapse collapse" aria-labelledby="headingCharts" data-bs-parent="#statisticsAccordion">
                     <div class="accordion-body">
-                        <!-- Графики движения рейтинга -->
+        <!-- Графики движения рейтинга -->
         <div class="row mb-4" th:if="${advancedStatistics}">
-            <div class="col-md-6">
+            <div class="col-12 mb-4">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">📈 Динамика очков рейтинга</h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="ratingChart" width="400" height="200" style="cursor: grab; touch-action: none;"></canvas>
+                        <canvas id="ratingChart" width="800" height="300" style="cursor: grab; touch-action: none;"></canvas>
                         <div class="mt-2 small text-muted" id="ratingChangeAverages" style="display:none"></div>
                         <div class="d-flex align-items-center gap-2 mt-2">
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRating('out')" title="Уменьшить">−</button>
@@ -306,13 +306,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">🏆 Динамика положения в рейтинге</h5>
                     </div>
                     <div class="card-body">
-                        <canvas id="rankingChart" width="400" height="200" style="cursor: grab; touch-action: none;"></canvas>
+                        <canvas id="rankingChart" width="800" height="300" style="cursor: grab; touch-action: none;"></canvas>
                         <div class="mt-2 small text-muted" id="rankingChangeAverages" style="display:none"></div>
                         <div class="d-flex align-items-center gap-2 mt-2">
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRanking('out')" title="Уменьшить">−</button>
@@ -322,11 +322,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
             <!-- 6. СТАТИСТИКА БОЙЦОВ -->
             <div class="accordion-item">
@@ -793,12 +793,12 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
             <!-- 9. ПРОДВИНУТАЯ АНАЛИТИКА -->
             <div class="accordion-item">
@@ -809,7 +809,7 @@
                 </h2>
                 <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced" data-bs-parent="#statisticsAccordion">
                     <div class="accordion-body">
-                        <!-- Продвинутая аналитика -->
+        <!-- Продвинутая аналитика -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             <!-- Анализ эффективности общих ударов -->
             <div class="col-md-3">
@@ -1034,7 +1034,12 @@
                             },
                             scales: {
                                 y: {
-                                    beginAtZero: false
+                                    beginAtZero: false,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return Math.round(value);
+                                        }
+                                    }
                                 },
                                 x: {}
                             }
@@ -1344,7 +1349,12 @@
                             scales: {
                                 y: {
                                     beginAtZero: false,
-                                    reverse: true // Обратный порядок - меньше место = лучше
+                                    reverse: true, // Обратный порядок - меньше место = лучше
+                                    ticks: {
+                                        callback: function(value) {
+                                            return Math.round(value);
+                                        }
+                                    }
                                 }
                             }
                         }
