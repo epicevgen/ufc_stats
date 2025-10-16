@@ -224,26 +224,6 @@
                 </div>
             </div>
             
-            <!-- Статистика по судейским оценкам -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">⚖️ Судейские оценки</h5>
-                    </div>
-                    <div class="card-body">
-        <div class="row">
-                            <div class="col-6">
-                                <h6 class="text-success">Мои оценки</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.judgeScores?.avgMyScore != null ? #numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1) : '0.0'}">0</span></p>
-                            </div>
-                            <div class="col-6">
-                                <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.judgeScores?.avgOpponentScore != null ? #numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1) : '0.0'}">0</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Графики движения рейтинга -->
@@ -696,11 +676,11 @@
         <!-- Дополнительные аналитические виджеты -->
         <div class="row mb-4" th:if="${advancedStatistics}">
             
-            <!-- Эффективность судейских решений -->
+            <!-- Судейские оценки и эффективность -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">⚖️ Эффективность судей</h5>
+                        <h5 class="mb-0">⚖️ Судейские оценки</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
