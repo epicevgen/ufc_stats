@@ -92,6 +92,84 @@
             </div>
         </div>
 
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Анализ эффективности общих ударов -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
+                        <h5 class="mb-0">🎯 Эффективность общих ударов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-primary" th:text="${#numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)}">0</h4>
+                            <p class="mb-1">% общих ударов</p>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-primary" th:style="'width: ' + ${advancedStatistics.strikes.myTotalStrikesAccuracy} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Анализ эффективности значимых ударов -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
+                        <h5 class="mb-0">📊 Эффективность ударов</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-success" th:text="${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)}">0</h4>
+                            <p class="mb-1">% значимых ударов</p>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${advancedStatistics.strikes.mySignificantStrikesAccuracy} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Анализ тейкдаунов -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
+                        <h5 class="mb-0">🤼 Эффективность тейкдаунов (ММА)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-info" th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)}">0</h4>
+                            <p class="mb-1">% успешных тейкдаунов</p>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-info" th:style="'width: ' + ${advancedStatistics.takedowns.myTakedownAccuracy} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Анализ времени контроля -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
+                        <h5 class="mb-0">⏱️ Контроль боя</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h4 class="text-warning" th:text="${advancedStatistics.controlTime.avgMyControlTimeFormatted}">00:00</h4>
+                            <p class="mb-1">Среднее время контроля</p>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-warning" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <!-- 2. АНАЛИЗ БОЕВОЙ АКТИВНОСТИ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingCombat">
@@ -801,93 +879,6 @@
         </div>
 
             <!-- 9. ПРОДВИНУТАЯ АНАЛИТИКА -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingAdvanced">
-                    <button class="accordion-button collapsed" type="button" data-target="#collapseAdvanced" aria-expanded="false" aria-controls="collapseAdvanced">
-                        <i class="fas fa-chart-pie me-2"></i> 📊 Продвинутая аналитика
-                    </button>
-                </h2>
-                <div id="collapseAdvanced" class="accordion-collapse collapse" aria-labelledby="headingAdvanced">
-                    <div class="accordion-body">
-        <!-- Продвинутая аналитика -->
-        <div class="row mb-4" th:if="${advancedStatistics}">
-            <!-- Анализ эффективности общих ударов -->
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
-                        <h5 class="mb-0">🎯 Эффективность общих ударов</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center">
-                            <h4 class="text-primary" th:text="${#numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)}">0</h4>
-                            <p class="mb-1">% общих ударов</p>
-                            <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-primary" th:style="'width: ' + ${advancedStatistics.strikes.myTotalStrikesAccuracy} + '%'"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Анализ эффективности значимых ударов -->
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
-                        <h5 class="mb-0">📊 Эффективность ударов</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center">
-                            <h4 class="text-success" th:text="${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)}">0</h4>
-                            <p class="mb-1">% значимых ударов</p>
-                            <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-success" th:style="'width: ' + ${advancedStatistics.strikes.mySignificantStrikesAccuracy} + '%'"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Анализ тейкдаунов -->
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
-                        <h5 class="mb-0">🤼 Эффективность тейкдаунов (ММА)</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center">
-                            <h4 class="text-info" th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)}">0</h4>
-                            <p class="mb-1">% успешных тейкдаунов</p>
-                            <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-info" th:style="'width: ' + ${advancedStatistics.takedowns.myTakedownAccuracy} + '%'"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Анализ времени контроля -->
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
-                        <h5 class="mb-0">⏱️ Контроль боя</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center">
-                            <h4 class="text-warning" th:text="${advancedStatistics.controlTime.avgMyControlTimeFormatted}">00:00</h4>
-                            <p class="mb-1">Среднее время контроля</p>
-                            <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-warning" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
