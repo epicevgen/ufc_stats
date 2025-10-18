@@ -358,8 +358,66 @@
                                     </div>
                                 </div>
                             </div>
-                                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Дополнительная аналитика -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Статистика по режимам боев -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🎯 Статистика по режимам</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:each="mode : ${advancedStatistics.byFightMode}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span th:text="${mode.key == 'MMA' ? 'ММА' : (mode.key == 'STANCE' ? 'Стойка' : mode.key)}">Режим</span>
+                                    <small class="text-muted d-block">Побед: <span th:text="${#numbers.formatDecimal(mode.value.winRate, 1, 1)}">0</span>%</small>
                                 </div>
+                                <div>
+                                    <span class="badge bg-success" th:text="${mode.value.wins}">0</span>
+                                    <span class="badge bg-danger" th:text="${mode.value.losses}">0</span>
+                                    <span class="badge bg-warning" th:text="${mode.value.draws}">0</span>
+                                </div>
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${mode.value.winRate} + '%'"></div>
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${mode.value.lossRate} + '%'"></div>
+                                <div class="progress-bar bg-warning" th:style="'width: ' + ${mode.value.drawRate} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статистика по весовым категориям -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⚖️ Статистика по весам</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:each="weight : ${advancedStatistics.byWeightClass}" class="weight-item" th:data-weight="__${weight.key}__" th:data-win-rate="__${weight.value.winRate}__">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span th:text="${weight.key == 'HEAVYWEIGHT' ? 'Супертяжелый' : (weight.key == 'LIGHT_HEAVYWEIGHT' ? 'Полутяжелый' : (weight.key == 'MIDDLEWEIGHT' ? 'Средний' : (weight.key == 'WELTERWEIGHT' ? 'Полусредний' : (weight.key == 'LIGHTWEIGHT' ? 'Легкий' : (weight.key == 'FEATHERWEIGHT' ? 'Полулегкий' : (weight.key == 'BANTAMWEIGHT' ? 'Легчайший' : (weight.key == 'FLYWEIGHT' ? 'Наилегчайший' : (weight.key == 'MINIMUM' ? 'Минимальный' : (weight.key == 'STRAWWEIGHT' ? 'Минимальный' : weight.key)))))))))}">Вес</span>
+                                    <small class="text-muted d-block">Побед: <span th:text="${#numbers.formatDecimal(weight.value.winRate, 1, 1)}">0</span>%</small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-success" th:text="${weight.value.wins}">0</span>
+                                    <span class="badge bg-danger" th:text="${weight.value.losses}">0</span>
+                                    <span class="badge bg-warning" th:text="${weight.value.draws}">0</span>
+                                </div>
+                            </div>
+                            <div class="progress mb-2" style="height: 8px;">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${weight.value.winRate} + '%'"></div>
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${weight.value.lossRate} + '%'"></div>
+                                <div class="progress-bar bg-warning" th:style="'width: ' + ${weight.value.drawRate} + '%'"></div>
                             </div>
                         </div>
                     </div>
@@ -367,6 +425,9 @@
             </div>
         </div>
 
+                    </div>
+                </div>
+            </div>
 
             <!-- 4. ГРАФИКИ ДИНАМИКИ -->
             <div class="accordion-item">
@@ -795,70 +856,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Дополнительная аналитика -->
-        <div class="row mb-4" th:if="${advancedStatistics}">
-            <!-- Статистика по режимам боев -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">🎯 Статистика по режимам</h5>
-                    </div>
-                    <div class="card-body">
-                        <div th:each="mode : ${advancedStatistics.byFightMode}">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div>
-                                    <span th:text="${mode.key == 'MMA' ? 'ММА' : (mode.key == 'STANCE' ? 'Стойка' : mode.key)}">Режим</span>
-                                    <small class="text-muted d-block">Побед: <span th:text="${#numbers.formatDecimal(mode.value.winRate, 1, 1)}">0</span>%</small>
-                                </div>
-                                <div>
-                                    <span class="badge bg-success" th:text="${mode.value.wins}">0</span>
-                                    <span class="badge bg-danger" th:text="${mode.value.losses}">0</span>
-                                    <span class="badge bg-warning" th:text="${mode.value.draws}">0</span>
-                                </div>
-                            </div>
-                            <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-success" th:style="'width: ' + ${mode.value.winRate} + '%'"></div>
-                                <div class="progress-bar bg-danger" th:style="'width: ' + ${mode.value.lossRate} + '%'"></div>
-                                <div class="progress-bar bg-warning" th:style="'width: ' + ${mode.value.drawRate} + '%'"></div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Статистика по весовым категориям -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">⚖️ Статистика по весам</h5>
-                    </div>
-                    <div class="card-body">
-                        <div th:each="weight : ${advancedStatistics.byWeightClass}" class="weight-item" th:data-weight="__${weight.key}__" th:data-win-rate="__${weight.value.winRate}__">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div>
-                                    <span th:text="${weight.key == 'HEAVYWEIGHT' ? 'Супертяжелый' : (weight.key == 'LIGHT_HEAVYWEIGHT' ? 'Полутяжелый' : (weight.key == 'MIDDLEWEIGHT' ? 'Средний' : (weight.key == 'WELTERWEIGHT' ? 'Полусредний' : (weight.key == 'LIGHTWEIGHT' ? 'Легкий' : (weight.key == 'FEATHERWEIGHT' ? 'Полулегкий' : (weight.key == 'BANTAMWEIGHT' ? 'Легчайший' : (weight.key == 'FLYWEIGHT' ? 'Наилегчайший' : (weight.key == 'MINIMUM' ? 'Минимальный' : (weight.key == 'STRAWWEIGHT' ? 'Минимальный' : weight.key)))))))))}">Вес</span>
-                                    <small class="text-muted d-block">Побед: <span th:text="${#numbers.formatDecimal(weight.value.winRate, 1, 1)}">0</span>%</small>
-                                </div>
-                                <div>
-                                    <span class="badge bg-success" th:text="${weight.value.wins}">0</span>
-                                    <span class="badge bg-danger" th:text="${weight.value.losses}">0</span>
-                                    <span class="badge bg-warning" th:text="${weight.value.draws}">0</span>
-                                </div>
-                            </div>
-                            <div class="progress mb-2" style="height: 8px;">
-                                <div class="progress-bar bg-success" th:style="'width: ' + ${weight.value.winRate} + '%'"></div>
-                                <div class="progress-bar bg-danger" th:style="'width: ' + ${weight.value.lossRate} + '%'"></div>
-                                <div class="progress-bar bg-warning" th:style="'width: ' + ${weight.value.drawRate} + '%'"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        
 
 
             <!-- 8. ПРОДВИНУТАЯ АНАЛИТИКА -->
