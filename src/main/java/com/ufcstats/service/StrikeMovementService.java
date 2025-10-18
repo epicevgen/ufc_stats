@@ -23,16 +23,19 @@ public class StrikeMovementService {
     private final FightRepository fightRepository;
 
     public StrikeMovementDto getStrikeMovementData() {
-        log.debug("Получение данных о движении ударов");
-        List<Fight> fights = fightRepository.findAll().stream()
-                .sorted((f1, f2) -> f1.getFightDate().compareTo(f2.getFightDate()))
-                .collect(Collectors.toList());
+        return getStrikeMovementData(null, null);
+    }
+    
+    public StrikeMovementDto getStrikeMovementData(String fightModeFilter, Integer seasonFilter) {
+        log.debug("Получение данных о движении ударов с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
+        
+        List<Fight> filteredFights = getFilteredFights(fightModeFilter, seasonFilter);
         
         List<StrikeMovementDto.StrikeDataPoint> totalStrikesHistory = new ArrayList<>();
         List<StrikeMovementDto.StrikeDataPoint> significantStrikesHistory = new ArrayList<>();
         
-        for (int i = 0; i < fights.size(); i++) {
-            Fight fight = fights.get(i);
+        for (int i = 0; i < filteredFights.size(); i++) {
+            Fight fight = filteredFights.get(i);
             StrikeMovementDto.StrikeDataPoint dataPoint = calculateStrikeDataPoint(fight, i + 1);
             
             totalStrikesHistory.add(dataPoint);
@@ -43,6 +46,20 @@ public class StrikeMovementService {
                 .totalStrikesHistory(totalStrikesHistory)
                 .significantStrikesHistory(significantStrikesHistory)
                 .build();
+    }
+    
+    /**
+     * Получить отфильтрованные бои
+     */
+    private List<Fight> getFilteredFights(String fightModeFilter, Integer seasonFilter) {
+        List<Fight> allFights = fightRepository.findAll().stream()
+                .sorted((f1, f2) -> f1.getFightDate().compareTo(f2.getFightDate()))
+                .collect(Collectors.toList());
+        
+        return allFights.stream()
+                .filter(fight -> fightModeFilter == null || fight.getFightMode().name().equals(fightModeFilter))
+                .filter(fight -> seasonFilter == null || fight.getSeason().equals(seasonFilter))
+                .collect(Collectors.toList());
     }
     
     private StrikeMovementDto.StrikeDataPoint calculateStrikeDataPoint(Fight fight, int fightNumber) {

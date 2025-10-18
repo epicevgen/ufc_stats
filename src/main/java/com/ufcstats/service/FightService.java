@@ -206,12 +206,19 @@ public class FightService {
      * Получить статистику боев
      */
     public FightStatistics getFightStatistics() {
-        log.debug("Получение статистики боев");
+        return getFightStatistics(null, null);
+    }
+    
+    /**
+     * Получить статистику боев с фильтрацией
+     */
+    public FightStatistics getFightStatistics(String fightModeFilter, Integer seasonFilter) {
+        log.debug("Получение статистики боев с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
         
-        long totalFights = fightRepository.countAllFights();
-        long wins = fightRepository.countWins();
-        long losses = fightRepository.countLosses();
-        long draws = fightRepository.countDraws();
+        long totalFights = fightRepository.countFightsWithFilters(fightModeFilter, seasonFilter);
+        long wins = fightRepository.countWinsWithFilters(fightModeFilter, seasonFilter);
+        long losses = fightRepository.countLossesWithFilters(fightModeFilter, seasonFilter);
+        long draws = fightRepository.countDrawsWithFilters(fightModeFilter, seasonFilter);
         
         return FightStatistics.builder()
                 .totalFights(totalFights)

@@ -121,6 +121,42 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
     long countDraws();
 
     /**
+     * Подсчитать общее количество боев с фильтрами
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
+    long countFightsWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+                                @Param("seasonFilter") Integer seasonFilter);
+
+    /**
+     * Подсчитать количество побед с фильтрами
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'WIN' AND " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
+    long countWinsWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+                              @Param("seasonFilter") Integer seasonFilter);
+
+    /**
+     * Подсчитать количество поражений с фильтрами
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'LOSS' AND " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
+    long countLossesWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+                                @Param("seasonFilter") Integer seasonFilter);
+
+    /**
+     * Подсчитать количество ничьих с фильтрами
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'DRAW' AND " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
+    long countDrawsWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+                               @Param("seasonFilter") Integer seasonFilter);
+
+    /**
      * Найти бои с рейтингом (не null)
      */
     @Query("SELECT f FROM Fight f WHERE f.ratingPoints IS NOT NULL ORDER BY f.ratingPoints DESC")

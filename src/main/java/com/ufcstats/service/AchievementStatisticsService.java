@@ -22,31 +22,48 @@ public class AchievementStatisticsService {
     private final FightRepository fightRepository;
 
     public AchievementStatisticsDto getAchievementStatistics() {
-        log.debug("Получение статистики достижений");
-        List<Fight> fights = fightRepository.findAll().stream()
-                .sorted((f1, f2) -> f1.getFightDate().compareTo(f2.getFightDate()))
-                .collect(Collectors.toList());
+        return getAchievementStatistics(null, null);
+    }
+    
+    public AchievementStatisticsDto getAchievementStatistics(String fightModeFilter, Integer seasonFilter) {
+        log.debug("Получение статистики достижений с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
+        
+        List<Fight> filteredFights = getFilteredFights(fightModeFilter, seasonFilter);
 
         return AchievementStatisticsDto.builder()
-                .maxRatingPoints(calculateMaxRatingPoints(fights))
-                .maxRankingPosition(calculateMaxRankingPosition(fights))
-                .maxWinStreak(calculateMaxWinStreak(fights))
-                .maxLossStreak(calculateMaxLossStreak(fights))
-                .minRatingPoints(calculateMinRatingPoints(fights))
-                .minRankingPosition(calculateMinRankingPosition(fights))
-                .maxRatingPointsDate(findMaxRatingPointsDate(fights))
-                .maxRankingPositionDate(findMaxRankingPositionDate(fights))
-                .maxWinStreakStartDate(findMaxWinStreakStartDate(fights))
-                .maxWinStreakEndDate(findMaxWinStreakEndDate(fights))
-                .maxLossStreakStartDate(findMaxLossStreakStartDate(fights))
-                .maxLossStreakEndDate(findMaxLossStreakEndDate(fights))
-                .minRatingPointsDate(findMinRatingPointsDate(fights))
-                .minRankingPositionDate(findMinRankingPositionDate(fights))
-                .currentWinStreak(calculateCurrentWinStreak(fights))
-                .currentLossStreak(calculateCurrentLossStreak(fights))
-                .currentWinStreakStartDate(findCurrentWinStreakStartDate(fights))
-                .currentLossStreakStartDate(findCurrentLossStreakStartDate(fights))
+                .maxRatingPoints(calculateMaxRatingPoints(filteredFights))
+                .maxRankingPosition(calculateMaxRankingPosition(filteredFights))
+                .maxWinStreak(calculateMaxWinStreak(filteredFights))
+                .maxLossStreak(calculateMaxLossStreak(filteredFights))
+                .minRatingPoints(calculateMinRatingPoints(filteredFights))
+                .minRankingPosition(calculateMinRankingPosition(filteredFights))
+                .maxRatingPointsDate(findMaxRatingPointsDate(filteredFights))
+                .maxRankingPositionDate(findMaxRankingPositionDate(filteredFights))
+                .maxWinStreakStartDate(findMaxWinStreakStartDate(filteredFights))
+                .maxWinStreakEndDate(findMaxWinStreakEndDate(filteredFights))
+                .maxLossStreakStartDate(findMaxLossStreakStartDate(filteredFights))
+                .maxLossStreakEndDate(findMaxLossStreakEndDate(filteredFights))
+                .minRatingPointsDate(findMinRatingPointsDate(filteredFights))
+                .minRankingPositionDate(findMinRankingPositionDate(filteredFights))
+                .currentWinStreak(calculateCurrentWinStreak(filteredFights))
+                .currentLossStreak(calculateCurrentLossStreak(filteredFights))
+                .currentWinStreakStartDate(findCurrentWinStreakStartDate(filteredFights))
+                .currentLossStreakStartDate(findCurrentLossStreakStartDate(filteredFights))
                 .build();
+    }
+    
+    /**
+     * Получить отфильтрованные бои
+     */
+    private List<Fight> getFilteredFights(String fightModeFilter, Integer seasonFilter) {
+        List<Fight> allFights = fightRepository.findAll().stream()
+                .sorted((f1, f2) -> f1.getFightDate().compareTo(f2.getFightDate()))
+                .collect(Collectors.toList());
+        
+        return allFights.stream()
+                .filter(fight -> fightModeFilter == null || fight.getFightMode().name().equals(fightModeFilter))
+                .filter(fight -> seasonFilter == null || fight.getSeason().equals(seasonFilter))
+                .collect(Collectors.toList());
     }
 
     private Integer calculateMaxRatingPoints(List<Fight> fights) {

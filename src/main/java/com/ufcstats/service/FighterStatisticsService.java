@@ -28,16 +28,35 @@ public class FighterStatisticsService {
      * Получить статистику бойцов
      */
     public FighterStatisticsDto getFighterStatistics() {
-        log.debug("Получение статистики бойцов");
+        return getFighterStatistics(null, null);
+    }
+    
+    /**
+     * Получить статистику бойцов с фильтрацией
+     */
+    public FighterStatisticsDto getFighterStatistics(String fightModeFilter, Integer seasonFilter) {
+        log.debug("Получение статистики бойцов с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
         
-        List<Fight> allFights = fightRepository.findAllOrderByFightDateDesc();
+        List<Fight> filteredFights = getFilteredFights(fightModeFilter, seasonFilter);
         
         return FighterStatisticsDto.builder()
-                .topFightersByWinRate(calculateTopFightersByWinRate(allFights))
-                .worstFightersByWinRate(calculateWorstFightersByWinRate(allFights))
-                .bestFinishers(calculateBestFinishers(allFights))
-                .toughestOpponents(calculateToughestOpponents(allFights))
+                .topFightersByWinRate(calculateTopFightersByWinRate(filteredFights))
+                .worstFightersByWinRate(calculateWorstFightersByWinRate(filteredFights))
+                .bestFinishers(calculateBestFinishers(filteredFights))
+                .toughestOpponents(calculateToughestOpponents(filteredFights))
                 .build();
+    }
+    
+    /**
+     * Получить отфильтрованные бои
+     */
+    private List<Fight> getFilteredFights(String fightModeFilter, Integer seasonFilter) {
+        List<Fight> allFights = fightRepository.findAllOrderByFightDateDesc();
+        
+        return allFights.stream()
+                .filter(fight -> fightModeFilter == null || fight.getFightMode().name().equals(fightModeFilter))
+                .filter(fight -> seasonFilter == null || fight.getSeason().equals(seasonFilter))
+                .collect(Collectors.toList());
     }
     
     /**

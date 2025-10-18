@@ -30,23 +30,42 @@ public class AdvancedStatisticsService {
      * Получить расширенную статистику
      */
     public AdvancedStatisticsDto getAdvancedStatistics() {
-        log.debug("Получение расширенной статистики");
+        return getAdvancedStatistics(null, null);
+    }
+    
+    /**
+     * Получить расширенную статистику с фильтрацией
+     */
+    public AdvancedStatisticsDto getAdvancedStatistics(String fightModeFilter, Integer seasonFilter) {
+        log.debug("Получение расширенной статистики с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
         
-        List<Fight> allFights = fightRepository.findAllOrderByFightDateDesc();
+        List<Fight> filteredFights = getFilteredFights(fightModeFilter, seasonFilter);
         
         return AdvancedStatisticsDto.builder()
-                .basic(calculateBasicStatistics(allFights))
-                .byFightMode(calculateStatisticsByFightMode(allFights))
-                .byWeightClass(calculateStatisticsByWeightClass(allFights))
-                .winMethods(calculateWinMethods(allFights))
-                .lossMethods(calculateLossMethods(allFights))
-                .strikes(calculateStrikeStatistics(allFights))
-                .takedowns(calculateTakedownStatistics(allFights))
-                .controlTime(calculateControlTimeStatistics(allFights))
-                .judgeScores(calculateJudgeScoreStatistics(allFights))
-                .ratingHistory(calculateRatingHistory(allFights))
-                .rankingHistory(calculateRankingHistory(allFights))
+                .basic(calculateBasicStatistics(filteredFights))
+                .byFightMode(calculateStatisticsByFightMode(filteredFights))
+                .byWeightClass(calculateStatisticsByWeightClass(filteredFights))
+                .winMethods(calculateWinMethods(filteredFights))
+                .lossMethods(calculateLossMethods(filteredFights))
+                .strikes(calculateStrikeStatistics(filteredFights))
+                .takedowns(calculateTakedownStatistics(filteredFights))
+                .controlTime(calculateControlTimeStatistics(filteredFights))
+                .judgeScores(calculateJudgeScoreStatistics(filteredFights))
+                .ratingHistory(calculateRatingHistory(filteredFights))
+                .rankingHistory(calculateRankingHistory(filteredFights))
                 .build();
+    }
+    
+    /**
+     * Получить отфильтрованные бои
+     */
+    private List<Fight> getFilteredFights(String fightModeFilter, Integer seasonFilter) {
+        List<Fight> allFights = fightRepository.findAllOrderByFightDateDesc();
+        
+        return allFights.stream()
+                .filter(fight -> fightModeFilter == null || fight.getFightMode().name().equals(fightModeFilter))
+                .filter(fight -> seasonFilter == null || fight.getSeason().equals(seasonFilter))
+                .collect(Collectors.toList());
     }
     
     /**

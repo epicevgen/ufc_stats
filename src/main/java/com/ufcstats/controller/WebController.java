@@ -254,18 +254,30 @@ public class WebController {
     }
 
     @GetMapping("/statistics")
-    public String statistics(Model model) {
+    public String statistics(Model model,
+                           @RequestParam(required = false) String fightModeFilter,
+                           @RequestParam(required = false) Integer seasonFilter) {
         model.addAttribute("title", "Статистика");
-        FightService.FightStatistics stats = fightService.getFightStatistics();
-        AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics();
-        FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics();
-        StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData();
-        AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics();
+        
+        // Получаем статистику с учетом фильтров
+        FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, seasonFilter);
+        AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, seasonFilter);
+        FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, seasonFilter);
+        StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, seasonFilter);
+        AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, seasonFilter);
+        
         model.addAttribute("statistics", stats);
         model.addAttribute("advancedStatistics", advancedStats);
         model.addAttribute("fighterStatistics", fighterStats);
         model.addAttribute("strikeMovement", strikeMovement);
         model.addAttribute("achievementStatistics", achievementStats);
+        
+        // Добавляем данные для фильтров
+        model.addAttribute("fightModes", FightMode.values());
+        model.addAttribute("seasons", fightService.getDistinctSeasons());
+        model.addAttribute("selectedFightMode", fightModeFilter);
+        model.addAttribute("selectedSeason", seasonFilter);
+        
         return "statistics";
     }
 

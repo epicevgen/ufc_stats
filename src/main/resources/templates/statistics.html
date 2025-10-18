@@ -42,6 +42,53 @@
             </div>
         </div>
 
+        <!-- ФИЛЬТРЫ -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🔍 Фильтры</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="get" action="/statistics" id="filterForm">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="fightModeFilter" class="form-label">Режим боя</label>
+                                    <select class="form-select" id="fightModeFilter" name="fightModeFilter">
+                                        <option value="">Все режимы</option>
+                                        <option th:each="mode : ${fightModes}" 
+                                                th:value="${mode.name()}" 
+                                                th:text="${mode.displayName}"
+                                                th:selected="${selectedFightMode == mode.name()}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="seasonFilter" class="form-label">Сезон</label>
+                                    <select class="form-select" id="seasonFilter" name="seasonFilter">
+                                        <option value="">Все сезоны</option>
+                                        <option th:each="season : ${seasons}" 
+                                                th:value="${season}" 
+                                                th:text="'Сезон ' + ${season}"
+                                                th:selected="${selectedSeason == season}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary me-2">
+                                        <i class="fas fa-filter"></i> Применить фильтры
+                                    </button>
+                                    <a href="/statistics" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times"></i> Сбросить
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Аккордеон для группировки виджетов -->
         <div class="accordion" id="statisticsAccordion" th:if="${statistics}">
             
@@ -1952,6 +1999,47 @@
             });
 
         });
+
+        // Автоматическое применение фильтров при изменении селектов
+        document.addEventListener('DOMContentLoaded', function() {
+            const fightModeSelect = document.getElementById('fightModeFilter');
+            const seasonSelect = document.getElementById('seasonFilter');
+            
+            if (fightModeSelect) {
+                fightModeSelect.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
+            
+            if (seasonSelect) {
+                seasonSelect.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
+        });
+
+        function applyFilters() {
+            const fightMode = document.getElementById('fightModeFilter').value;
+            const season = document.getElementById('seasonFilter').value;
+            
+            // Строим URL с параметрами
+            let url = '/statistics';
+            const params = new URLSearchParams();
+            
+            if (fightMode) {
+                params.append('fightModeFilter', fightMode);
+            }
+            if (season) {
+                params.append('seasonFilter', season);
+            }
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            // Перенаправляем на обновленную страницу
+            window.location.href = url;
+        }
     </script>
 </body>
 </html>
