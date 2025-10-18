@@ -126,7 +126,7 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
     @Query("SELECT COUNT(f) FROM Fight f WHERE " +
            "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
            "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
-    long countFightsWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+    long countFightsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
                                 @Param("seasonFilter") Integer seasonFilter);
 
     /**
@@ -135,7 +135,7 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
     @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'WIN' AND " +
            "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
            "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
-    long countWinsWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+    long countWinsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
                               @Param("seasonFilter") Integer seasonFilter);
 
     /**
@@ -144,7 +144,7 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
     @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'LOSS' AND " +
            "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
            "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
-    long countLossesWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+    long countLossesWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
                                 @Param("seasonFilter") Integer seasonFilter);
 
     /**
@@ -153,7 +153,7 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
     @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'DRAW' AND " +
            "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
            "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
-    long countDrawsWithFilters(@Param("fightModeFilter") String fightModeFilter, 
+    long countDrawsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
                                @Param("seasonFilter") Integer seasonFilter);
 
     /**

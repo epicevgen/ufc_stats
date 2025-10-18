@@ -35,16 +35,12 @@
     </nav>
 
     <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
+        <div class="row mb-4">
+            <div class="col-md-6">
                 <h1>📊 Статистика боев</h1>
                 <p class="lead">Анализ ваших результатов в UFC 5</p>
             </div>
-        </div>
-
-        <!-- ФИЛЬТРЫ -->
-        <div class="row mb-4">
-            <div class="col-12">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">🔍 Фильтры</h5>
@@ -52,7 +48,7 @@
                     <div class="card-body">
                         <form method="get" action="/statistics" id="filterForm">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label for="fightModeFilter" class="form-label">Режим боя</label>
                                     <select class="form-select" id="fightModeFilter" name="fightModeFilter">
                                         <option value="">Все режимы</option>
@@ -63,7 +59,7 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label for="seasonFilter" class="form-label">Сезон</label>
                                     <select class="form-select" id="seasonFilter" name="seasonFilter">
                                         <option value="">Все сезоны</option>
@@ -74,12 +70,11 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-4 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary me-2">
-                                        <i class="fas fa-filter"></i> Применить фильтры
-                                    </button>
-                                    <a href="/statistics" class="btn btn-outline-secondary">
-                                        <i class="fas fa-times"></i> Сбросить
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <a href="/statistics" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-times"></i> Сбросить фильтры
                                     </a>
                                 </div>
                             </div>

@@ -2,6 +2,7 @@ package com.ufcstats.service;
 
 import com.ufcstats.dto.StrikeMovementDto;
 import com.ufcstats.model.Fight;
+import com.ufcstats.model.enums.FightMode;
 import com.ufcstats.model.FightRound;
 import com.ufcstats.repository.FightRepository;
 import lombok.RequiredArgsConstructor;
@@ -56,10 +57,28 @@ public class StrikeMovementService {
                 .sorted((f1, f2) -> f1.getFightDate().compareTo(f2.getFightDate()))
                 .collect(Collectors.toList());
         
+        // Конвертируем строку в enum
+        final FightMode fightMode = parseFightMode(fightModeFilter);
+        
         return allFights.stream()
-                .filter(fight -> fightModeFilter == null || fight.getFightMode().name().equals(fightModeFilter))
+                .filter(fight -> fightMode == null || fight.getFightMode() == fightMode)
                 .filter(fight -> seasonFilter == null || fight.getSeason().equals(seasonFilter))
                 .collect(Collectors.toList());
+    }
+    
+    /**
+     * Парсинг строки в enum FightMode
+     */
+    private FightMode parseFightMode(String fightModeFilter) {
+        if (fightModeFilter == null || fightModeFilter.isEmpty()) {
+            return null;
+        }
+        try {
+            return FightMode.valueOf(fightModeFilter);
+        } catch (IllegalArgumentException e) {
+            log.warn("Неверный режим боя: {}", fightModeFilter);
+            return null;
+        }
     }
     
     private StrikeMovementDto.StrikeDataPoint calculateStrikeDataPoint(Fight fight, int fightNumber) {

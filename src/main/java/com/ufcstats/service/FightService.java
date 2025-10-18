@@ -215,10 +215,20 @@ public class FightService {
     public FightStatistics getFightStatistics(String fightModeFilter, Integer seasonFilter) {
         log.debug("Получение статистики боев с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
         
-        long totalFights = fightRepository.countFightsWithFilters(fightModeFilter, seasonFilter);
-        long wins = fightRepository.countWinsWithFilters(fightModeFilter, seasonFilter);
-        long losses = fightRepository.countLossesWithFilters(fightModeFilter, seasonFilter);
-        long draws = fightRepository.countDrawsWithFilters(fightModeFilter, seasonFilter);
+        // Конвертируем строку в enum
+        FightMode fightMode = null;
+        if (fightModeFilter != null && !fightModeFilter.isEmpty()) {
+            try {
+                fightMode = FightMode.valueOf(fightModeFilter);
+            } catch (IllegalArgumentException e) {
+                log.warn("Неверный режим боя: {}", fightModeFilter);
+            }
+        }
+        
+        long totalFights = fightRepository.countFightsWithFilters(fightMode, seasonFilter);
+        long wins = fightRepository.countWinsWithFilters(fightMode, seasonFilter);
+        long losses = fightRepository.countLossesWithFilters(fightMode, seasonFilter);
+        long draws = fightRepository.countDrawsWithFilters(fightMode, seasonFilter);
         
         return FightStatistics.builder()
                 .totalFights(totalFights)
