@@ -73,7 +73,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-12">
-                                    <a href="/statistics" class="btn btn-outline-secondary btn-sm">
+                                    <a href="#" class="btn btn-outline-secondary btn-sm" onclick="resetFilters(); return false;">
                                         <i class="fas fa-times"></i> Сбросить фильтры
                                     </a>
                                 </div>
@@ -2028,6 +2028,12 @@
                 params.append('seasonFilter', season);
             }
             
+            // Сохраняем состояние аккордеонов
+            const accordionStates = getAccordionStates();
+            if (accordionStates) {
+                params.append('accordionStates', accordionStates);
+            }
+            
             if (params.toString()) {
                 url += '?' + params.toString();
             }
@@ -2035,6 +2041,71 @@
             // Перенаправляем на обновленную страницу
             window.location.href = url;
         }
+
+        // Функция для получения состояния аккордеонов
+        function getAccordionStates() {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            const states = [];
+            
+            accordionButtons.forEach((button, index) => {
+                const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                states.push(isExpanded ? '1' : '0');
+            });
+            
+            return states.join(',');
+        }
+
+        // Функция для восстановления состояния аккордеонов
+        function restoreAccordionStates() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const accordionStates = urlParams.get('accordionStates');
+            
+            if (accordionStates) {
+                const states = accordionStates.split(',');
+                const accordionButtons = document.querySelectorAll('.accordion-button');
+                
+                states.forEach((state, index) => {
+                    if (accordionButtons[index]) {
+                        const button = accordionButtons[index];
+                        const targetId = button.getAttribute('data-target');
+                        const targetElement = document.querySelector(targetId);
+                        
+                        if (state === '1') {
+                            // Разворачиваем аккордеон
+                            button.classList.remove('collapsed');
+                            button.setAttribute('aria-expanded', 'true');
+                            if (targetElement) {
+                                targetElement.classList.add('show');
+                            }
+                        } else {
+                            // Сворачиваем аккордеон
+                            button.classList.add('collapsed');
+                            button.setAttribute('aria-expanded', 'false');
+                            if (targetElement) {
+                                targetElement.classList.remove('show');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Функция для сброса фильтров с сохранением состояния аккордеонов
+        function resetFilters() {
+            const accordionStates = getAccordionStates();
+            let url = '/statistics';
+            
+            if (accordionStates) {
+                url += '?accordionStates=' + accordionStates;
+            }
+            
+            window.location.href = url;
+        }
+
+        // Восстанавливаем состояние аккордеонов при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreAccordionStates();
+        });
     </script>
 </body>
 </html>
