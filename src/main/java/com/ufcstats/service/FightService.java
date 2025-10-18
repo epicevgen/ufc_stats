@@ -219,6 +219,7 @@ public class FightService {
                 .losses(losses)
                 .draws(draws)
                 .winRate(totalFights > 0 ? (double) wins / totalFights * 100 : 0.0)
+                .drawRate(totalFights > 0 ? (double) draws / totalFights * 100 : 0.0)
                 .build();
     }
 
@@ -329,13 +330,15 @@ public class FightService {
         private long losses;
         private long draws;
         private double winRate;
+        private double drawRate;
 
-        public FightStatistics(long totalFights, long wins, long losses, long draws, double winRate) {
+        public FightStatistics(long totalFights, long wins, long losses, long draws, double winRate, double drawRate) {
             this.totalFights = totalFights;
             this.wins = wins;
             this.losses = losses;
             this.draws = draws;
             this.winRate = winRate;
+            this.drawRate = drawRate;
         }
 
         // Getters
@@ -344,5 +347,6 @@ public class FightService {
         public long getLosses() { return losses; }
         public long getDraws() { return draws; }
         public double getWinRate() { return winRate; }
+        public double getDrawRate() { return drawRate; }
     }
 }
