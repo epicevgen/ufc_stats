@@ -235,12 +235,60 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Второй ряд виджетов боевой активности -->
+        <div class="row mb-4" th:if="${advancedStatistics}">
+            <!-- Время контроля -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⏱️ Время контроля</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мое время</h6>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'}">00:00</span></p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgOpponentControlTimeFormatted != null ? advancedStatistics.controlTime.avgOpponentControlTimeFormatted : '00:00'}">00:00</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Судейские оценки -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">⚖️ Судейские оценки</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Победы по судьям</h6>
+                                <p class="mb-1">Боев выиграно: <span th:text="${advancedStatistics.judgeScores.fightsWonByJudges}">0</span></p>
+                                <p class="mb-1">Процент: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.judgeWinRate, 1, 1)}">0</span>%</p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-info">Средние оценки</h6>
+                                <p class="mb-1">Мои: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1)}">0</span></p>
+                                <p class="mb-1">Соперник: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1)}">0</span></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+                    </div>
+                </div>
+            </div>
 
             <!-- 3. МЕТОДЫ ПОБЕД И ПОРАЖЕНИЙ -->
             <div class="accordion-item">
@@ -319,43 +367,8 @@
             </div>
         </div>
 
-            <!-- 4. ВРЕМЯ КОНТРОЛЯ -->
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingControl">
-                    <button class="accordion-button collapsed" type="button" data-target="#collapseControl" aria-expanded="false" aria-controls="collapseControl">
-                        <i class="fas fa-clock me-2"></i> ⏱️ Время контроля
-                    </button>
-                </h2>
-                <div id="collapseControl" class="accordion-collapse collapse" aria-labelledby="headingControl">
-                    <div class="accordion-body">
-        <!-- Статистика по времени контроля -->
-        <div class="row mb-4" th:if="${advancedStatistics}">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">⏱️ Время контроля</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <h6 class="text-success">Мое время</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'}">00:00</span></p>
-                            </div>
-                            <div class="col-6">
-                                <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgOpponentControlTimeFormatted != null ? advancedStatistics.controlTime.avgOpponentControlTimeFormatted : '00:00'}">00:00</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-                    </div>
-                </div>
-            </div>
-        </div>
 
-            <!-- 5. ГРАФИКИ ДИНАМИКИ -->
+            <!-- 4. ГРАФИКИ ДИНАМИКИ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingCharts">
                     <button class="accordion-button collapsed" type="button" data-target="#collapseCharts" aria-expanded="false" aria-controls="collapseCharts">
@@ -405,7 +418,7 @@
             </div>
         </div>
 
-            <!-- 6. СТАТИСТИКА БОЙЦОВ -->
+            <!-- 5. СТАТИСТИКА БОЙЦОВ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingFighters">
                     <button class="accordion-button collapsed" type="button" data-target="#collapseFighters" aria-expanded="false" aria-controls="collapseFighters">
@@ -548,7 +561,7 @@
                 </div>
             </div>
 
-            <!-- 7. СТАТИСТИКА ДОСТИЖЕНИЙ -->
+            <!-- 6. СТАТИСТИКА ДОСТИЖЕНИЙ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAchievements">
                     <button class="accordion-button collapsed" type="button" data-target="#collapseAchievements" aria-expanded="false" aria-controls="collapseAchievements">
@@ -723,7 +736,7 @@
                 </div>
             </div>
 
-            <!-- 8. ГРАФИК ДВИЖЕНИЯ УДАРОВ -->
+            <!-- 7. ГРАФИК ДВИЖЕНИЯ УДАРОВ -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingStrikeMovement">
                     <button class="accordion-button collapsed" type="button" data-target="#collapseStrikeMovement" aria-expanded="false" aria-controls="collapseStrikeMovement">
@@ -847,37 +860,8 @@
 
         
 
-        <!-- Дополнительные аналитические виджеты -->
-        <div class="row mb-4" th:if="${advancedStatistics}">
-            
-            <!-- Судейские оценки и эффективность -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">⚖️ Судейские оценки</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <h6 class="text-success">Победы по судьям</h6>
-                                <p class="mb-1">Боев выиграно: <span th:text="${advancedStatistics.judgeScores.fightsWonByJudges}">0</span></p>
-                                <p class="mb-1">Процент: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.judgeWinRate, 1, 1)}">0</span>%</p>
-                            </div>
-                            <div class="col-6">
-                                <h6 class="text-info">Средние оценки</h6>
-                                <p class="mb-1">Мои: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1)}">0</span></p>
-                                <p class="mb-1">Соперник: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1)}">0</span></p>
-                            </div>
-                        </div>
-                    </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-            <!-- 9. ПРОДВИНУТАЯ АНАЛИТИКА -->
+            <!-- 8. ПРОДВИНУТАЯ АНАЛИТИКА -->
         </div>
     </div>
 
