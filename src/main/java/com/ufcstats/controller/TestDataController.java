@@ -70,7 +70,7 @@ public class TestDataController {
         
         // Создаем бои
         for (int i = 0; i < count; i++) {
-            Fight fight = createFight(i);
+            Fight fight = createFight(i, count);
             fights.add(fight);
         }
         
@@ -88,14 +88,21 @@ public class TestDataController {
         return "Сгенерировано " + count + " боев с полной статистикой";
     }
     
-    private Fight createFight(int index) {
+    private Fight createFight(int index, int totalCount) {
         Fight fight = new Fight();
         
         // Базовая информация - генерируем дату в прошлом
         int daysAgo = Math.min(365 - index * 7, 365); // Не более 365 дней назад
         fight.setFightDate(LocalDateTime.now().minusDays(daysAgo).minusHours(random.nextInt(24)));
         fight.setFightMode(fightModes[random.nextInt(fightModes.length)]);
-        fight.setSeason(1);
+        // Распределяем бои по 3 сезонам
+        if (index < totalCount / 3) {
+            fight.setSeason(1); // Первая треть - сезон 1
+        } else if (index < (totalCount * 2) / 3) {
+            fight.setSeason(2); // Вторая треть - сезон 2
+        } else {
+            fight.setSeason(3); // Третья треть - сезон 3
+        }
         fight.setResult(results[random.nextInt(results.length)]);
         fight.setMethod(methods[random.nextInt(methods.length)]);
         fight.setWeightClass(weightClasses[random.nextInt(weightClasses.length)]);

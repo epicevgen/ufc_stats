@@ -41,7 +41,7 @@ public class TestDataCreator implements CommandLineRunner {
         Fight fight = new Fight();
         fight.setFightDate(LocalDate.of(2024, 12, 15).atStartOfDay());
         fight.setFightMode(FightMode.STANCE);
-        fight.setSeason(2024);
+        fight.setSeason(1);
         fight.setResult(FightResult.WIN);
         fight.setMethod(FightMethod.DECISION);
         fight.setRoundsPlayed(3);
@@ -65,7 +65,7 @@ public class TestDataCreator implements CommandLineRunner {
         // Основная информация о бое
         fight.setFightDate(LocalDate.of(2024, 12, 15).atStartOfDay());
         fight.setFightMode(FightMode.STANCE);
-        fight.setSeason(2024);
+        fight.setSeason(3);
         fight.setResult(FightResult.WIN);
         fight.setMethod(FightMethod.DECISION);
         fight.setRoundsPlayed(5);
@@ -309,7 +309,14 @@ public class TestDataCreator implements CommandLineRunner {
                 Fight fight = new Fight();
                 fight.setFightDate(LocalDate.of(2024, 1, 15 + i).atStartOfDay());
                 fight.setFightMode(i % 2 == 0 ? FightMode.STANCE : FightMode.MMA);
-                fight.setSeason(2024);
+                // Распределяем бои по 3 сезонам
+                if (i < 8) {
+                    fight.setSeason(1); // Первые 8 боев - сезон 1
+                } else if (i < 17) {
+                    fight.setSeason(2); // Следующие 9 боев - сезон 2
+                } else {
+                    fight.setSeason(3); // Остальные бои - сезон 3
+                }
                 fight.setResult(i % 3 == 0 ? FightResult.WIN : (i % 3 == 1 ? FightResult.LOSS : FightResult.DRAW));
                 fight.setMethod(i % 4 == 0 ? FightMethod.DECISION : (i % 4 == 1 ? FightMethod.KNOCKOUT : (i % 4 == 2 ? FightMethod.SUBMISSION : FightMethod.EARLY_EXIT)));
                 fight.setRoundsPlayed((i % 5) + 1);
