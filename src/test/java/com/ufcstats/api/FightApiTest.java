@@ -42,7 +42,7 @@ public class FightApiTest extends BaseApiTest {
                 .extract()
                 .response();
 
-        log.info("Получено боев: {}", response.path("totalElements"));
+        log.info("Получено боев: {}", (Object) response.path("totalElements"));
         assertNotNull(response.path("content"));
     }
 

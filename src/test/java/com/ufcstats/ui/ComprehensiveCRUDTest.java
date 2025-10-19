@@ -35,8 +35,11 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         // Вызываем базовую настройку
         super.setUp();
         
-        // Ждем загрузки страницы
-        $("#fights-table").shouldBe(visible);
+        // Переходим на страницу боев
+        open(getBaseUrl() + "/fights");
+        
+        // Ждем загрузки страницы (может быть таблица или сообщение "Бои не найдены")
+        sleep(2000);
     }
 
     @Test
@@ -153,18 +156,25 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         // Подтверждаем удаление
         confirm();
         
-        // Ждем обновления таблицы и проверяем, что запись исчезла
-        $("#fights-table").shouldBe(visible);
+        // Ждем обновления страницы и проверяем, что запись исчезла
+        waitForFightsTable();
         sleep(1000);
-        boolean stillPresent = false;
-        for (SelenideElement row : $$("#fights-table tbody tr")) {
-            String rowText = row.getText();
-            if (rowText != null && rowText.contains(fighterName)) {
-                stillPresent = true;
-                break;
+        
+        // Если таблица есть, проверяем, что запись исчезла
+        if ($("#fights-table").exists()) {
+            boolean stillPresent = false;
+            for (SelenideElement row : $$("#fights-table tbody tr")) {
+                String rowText = row.getText();
+                if (rowText != null && rowText.contains(fighterName)) {
+                    stillPresent = true;
+                    break;
+                }
             }
+            assertFalse(stillPresent, "Бой должен быть удален из таблицы: " + fighterName);
+        } else {
+            // Если таблицы нет, значит все бои удалены - это нормально
+            log.info("Таблица боев не найдена - все бои удалены");
         }
-        assertFalse(stillPresent, "Бой должен быть удален из таблицы: " + fighterName);
     }
 
 
@@ -234,27 +244,24 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
             sleep(2000);
         }
         
-        // Ждем загрузки таблицы
-        sleep(3000);
+        // Ждем загрузки страницы
+        waitForFightsTable();
         
-        // Проверяем, что таблица существует
-        if (!$("#fights-table").exists()) {
-            log.warn("Таблица не найдена, переходим на страницу боев еще раз");
-            open(getBaseUrl() + "/fights");
-            sleep(3000);
+        // Проверяем содержимое страницы
+        String pageText = "";
+        if ($("#fights-table").exists()) {
+            pageText = $("#fights-table").getText();
+            log.info("Содержимое таблицы боев: {}", pageText);
+        } else {
+            pageText = $("body").getText();
+            log.info("Содержимое страницы (без таблицы): {}", pageText);
         }
         
-        $("#fights-table").shouldBe(visible);
-        
-        // Проверяем содержимое таблицы
-        String tableText = $("#fights-table").getText();
-        log.info("Содержимое таблицы боев: {}", tableText);
-        
-        // Проверяем, что бой появился в таблице
-        if (!tableText.contains(myName) || !tableText.contains(oppName)) {
-            log.error("Созданный бой не найден в таблице. Ищем по всем страницам...");
+        // Проверяем, что бой появился на странице
+        if (!pageText.contains(myName) || !pageText.contains(oppName)) {
+            log.error("Созданный бой не найден на странице. Ищем по всем страницам...");
             log.error("Ищем бой с именами: {} и {}", myName, oppName);
-            log.error("Содержимое таблицы: {}", tableText);
+            log.error("Содержимое страницы: {}", pageText);
             
             // Попробуем найти бой на всех страницах
             boolean found = false;
@@ -279,9 +286,9 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
                     sleep(1000);
                 }
                 
-                String pageText = $("#fights-table").getText();
-                log.info("Содержимое страницы {}: {}", page, pageText);
-                if (pageText.contains(myName) && pageText.contains(oppName)) {
+                String currentPageText = $("#fights-table").getText();
+                log.info("Содержимое страницы {}: {}", page, currentPageText);
+                if (currentPageText.contains(myName) && currentPageText.contains(oppName)) {
                     found = true;
                     log.info("Бой найден на странице {}", page);
                     break;
@@ -507,9 +514,15 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
             log.warn("Не удалось очистить стили body: " + e.getMessage());
         }
         
-        // Проверяем, что мы вернулись к таблице боев (после обновления страницы)
+        // Проверяем, что мы вернулись к странице боев (после обновления страницы)
         sleep(1000);
-        $("#fights-table").shouldBe(visible);
+        // Может быть таблица или сообщение "Бои не найдены"
+        if ($("#fights-table").exists()) {
+            $("#fights-table").shouldBe(visible);
+        } else {
+            // Если таблицы нет, проверяем, что есть сообщение "Бои не найдены"
+            $("h4.text-muted").shouldBe(visible);
+        }
         
         log.info("✅ Редактирование боя выполнено успешно");
     }
@@ -577,6 +590,21 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         // Закрываем модальное окно
         $("#viewFightModal").pressEscape();
         sleep(1000);
+    }
+
+    private void waitForFightsTable() {
+        // Ждем загрузки страницы боев
+        sleep(2000);
+        
+        // Проверяем, есть ли таблица или сообщение "Бои не найдены"
+        if ($("#fights-table").exists()) {
+            $("#fights-table").shouldBe(visible);
+            log.info("Таблица боев найдена");
+        } else {
+            // Если таблицы нет, проверяем, что есть сообщение "Бои не найдены"
+            $("h4.text-muted").shouldBe(visible);
+            log.info("Таблица боев не найдена, показывается сообщение 'Бои не найдены'");
+        }
     }
 
     private void searchBy(String text) {

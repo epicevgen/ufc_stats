@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Инициализация тестовых данных
  */
-@Component
+// @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Создатель тестовых данных для демонстрации функциональности
  */
-@Component
+// @Component
 public class TestDataCreator implements CommandLineRunner {
 
     @Autowired
