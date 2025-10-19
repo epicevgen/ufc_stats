@@ -48,6 +48,11 @@ dependencies {
     
     // UI Testing
     testImplementation 'com.codeborne:selenide:7.0.4'
+    
+    // API Testing
+    testImplementation 'io.rest-assured:rest-assured:5.3.2'
+    testImplementation 'io.rest-assured:json-schema-validator:5.3.2'
+    testImplementation 'io.rest-assured:spring-mock-mvc:5.3.2'
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.15.0'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.6.2'
     testImplementation 'org.awaitility:awaitility:4.2.0'

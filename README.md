@@ -74,6 +74,7 @@ cd ufc_stats
 ### Тестирование
 - **JUnit 5** - Unit тестирование
 - **Selenide** - UI тестирование
+- **REST Assured** - API тестирование
 - **Spring Boot Test** - Интеграционное тестирование
 
 ## 📁 Структура проекта
@@ -178,10 +179,19 @@ crontab -e
 ./gradlew test
 
 # Только unit тесты
-./gradlew test --tests "*Test"
+./gradlew test --tests "*Test" --exclude-task "*UITest*" --exclude-task "*ApiTest*"
 
 # Только UI тесты
 ./gradlew test --tests "*UITest*"
+
+# Только API тесты
+./gradlew test --tests "*ApiTest*"
+
+# Интеграционные тесты
+./gradlew test --tests "*IntegrationTest*"
+
+# UI тесты с отображением браузера
+./gradlew test --tests "*UITest*" -Dselenide.headless=false
 
 # Тесты с подробным выводом
 ./gradlew test --info
@@ -191,11 +201,20 @@ crontab -e
 
 ```bash
 # Генерация отчета о покрытии
-./gradlew jacocoTestReport
+./gradlew test jacocoTestReport
 
 # Просмотр отчета
 open build/reports/jacoco/test/html/index.html
 ```
+
+### Типы тестов
+
+| **Тип** | **Технология** | **Покрытие** | **Команда** |
+|---------|----------------|--------------|-------------|
+| **UI тесты** | Selenide | Пользовательский интерфейс | `./gradlew test --tests "*UITest*"` |
+| **API тесты** | REST Assured | HTTP API | `./gradlew test --tests "*ApiTest*"` |
+| **Unit тесты** | JUnit 5 + Mockito | Бизнес-логика | `./gradlew test --tests "*Test" --exclude-task "*UITest*" --exclude-task "*ApiTest*"` |
+| **Интеграционные** | Spring Boot Test | Полная интеграция | `./gradlew test --tests "*IntegrationTest*"` |
 
 ## 🚀 Развертывание
 
@@ -224,6 +243,7 @@ logging.level.root=WARN
 
 - **[Обзор проекта](docs/PROJECT_OVERVIEW.md)** - Подробное описание проекта
 - **[Руководство по разработке](docs/DEVELOPMENT_GUIDE.md)** - Как разрабатывать новые функции
+- **[Руководство по тестированию](docs/TESTING_GUIDE.md)** - Создание и поддержка тестов
 - **[Устранение неполадок](docs/TROUBLESHOOTING.md)** - Решение проблем
 - **[Резервное копирование](backups/README.md)** - Управление бэкапами
 
