@@ -205,6 +205,10 @@ public class ComprehensiveCRUDTest extends SelenideBaseTest {
         selectOption("fightMethod", "DECISION");
         selectOption("weightClass", "LIGHTWEIGHT");
         
+        // Заполняем обязательные поля рейтинга
+        fillField("ratingPoints", "1950");
+        fillField("rankingPosition", "150");
+        
         // Триггерим событие для генерации динамических полей
         executeJavaScript("document.getElementById('roundsPlayed').dispatchEvent(new Event('input'));");
         

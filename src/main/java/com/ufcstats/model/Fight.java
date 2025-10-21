@@ -61,12 +61,14 @@ public class Fight {
     @NotNull(message = "Количество раундов обязательно")
     private Integer roundsPlayed;
 
-    @Column(name = "rating_points")
+    @Column(name = "rating_points", nullable = false)
     @Min(value = 0, message = "Очки рейтинга не могут быть отрицательными")
+    @NotNull(message = "Очки рейтинга обязательны")
     private Integer ratingPoints;
 
-    @Column(name = "ranking_position")
+    @Column(name = "ranking_position", nullable = false)
     @Min(value = 1, message = "Место в рейтинге должно быть больше 0")
+    @NotNull(message = "Место в рейтинге обязательно")
     private Integer rankingPosition;
 
     @Enumerated(EnumType.STRING)

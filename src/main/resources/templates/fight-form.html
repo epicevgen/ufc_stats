@@ -104,9 +104,10 @@
                                     <!-- 3 ряд: Очки рейтинга, Категория, Место в рейтинге -->
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
-                                            <label for="ratingPoints" class="form-label">Очки рейтинга</label>
+                                            <label for="ratingPoints" class="form-label">Очки рейтинга *</label>
                                             <input type="number" class="form-control" id="ratingPoints" 
-                                                   th:field="*{ratingPoints}" min="0">
+                                                   th:field="*{ratingPoints}" min="0" required>
+                                            <div class="invalid-feedback">Укажите очки рейтинга</div>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label for="weightClass" class="form-label">Весовая категория *</label>
@@ -119,9 +120,10 @@
                                             <div class="invalid-feedback">Выберите весовую категорию</div>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label for="rankingPosition" class="form-label">Место в рейтинге</label>
+                                            <label for="rankingPosition" class="form-label">Место в рейтинге *</label>
                                             <input type="number" class="form-control" id="rankingPosition" 
-                                                   th:field="*{rankingPosition}" min="1">
+                                                   th:field="*{rankingPosition}" min="1" required>
+                                            <div class="invalid-feedback">Укажите место в рейтинге</div>
                                         </div>
                                     </div>
                                     

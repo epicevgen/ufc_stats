@@ -196,6 +196,12 @@ public class WebController {
             if (fight.getRoundsPlayed() == null || fight.getRoundsPlayed() < 1 || fight.getRoundsPlayed() > 5) {
                 throw new IllegalArgumentException("Количество раундов должно быть от 1 до 5");
             }
+            if (fight.getRatingPoints() == null || fight.getRatingPoints() < 0) {
+                throw new IllegalArgumentException("Очки рейтинга обязательны и не могут быть отрицательными");
+            }
+            if (fight.getRankingPosition() == null || fight.getRankingPosition() < 1) {
+                throw new IllegalArgumentException("Место в рейтинге обязательно и должно быть больше 0");
+            }
             
             // Обрабатываем дату боя
             if (fight.getFightDate() == null) {
