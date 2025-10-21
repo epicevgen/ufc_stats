@@ -546,6 +546,7 @@
                                         <th class="text-center" style="font-size: 0.8rem;">Раунд</th>
                                         <th class="text-center text-primary order-1" style="font-size: 0.8rem;">Мой боец</th>
                                         <th class="text-center text-danger order-2" style="font-size: 0.8rem;">Соперник</th>
+                                        <th class="text-center" style="font-size: 0.8rem;">Действие</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -563,6 +564,14 @@
                                                        id="judge${judge}_opponent_round${i + 1}" 
                                                        name="judgeScores[${judge-1}].round${i + 1}OpponentScore" 
                                                        min="0" max="10" value="9" style="font-size: 0.8rem; height: 28px;">
+                                            </td>
+                                            <td class="p-1 text-center">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                        onclick="removeJudgeRound(${judge}, ${i + 1})" 
+                                                        title="Удалить раунд из оценок"
+                                                        style="font-size: 0.7rem; padding: 2px 6px;">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     `).join('')}
@@ -1053,6 +1062,38 @@
             console.log('🔧 Additional judges listeners initialization...');
             addJudgesFighterPositionListeners();
         }, 500);
+        
+        // Функция для удаления раунда из судейских оценок
+        function removeJudgeRound(judgeNumber, roundNumber) {
+            console.log(`Удаление раунда ${roundNumber} для судьи ${judgeNumber}`);
+            
+            // Находим все поля для данного раунда у данного судьи
+            const myScoreField = document.getElementById(`judge${judgeNumber}_my_round${roundNumber}`);
+            const opponentScoreField = document.getElementById(`judge${judgeNumber}_opponent_round${roundNumber}`);
+            
+            if (myScoreField && opponentScoreField) {
+                // Очищаем поля оценок
+                myScoreField.value = '';
+                opponentScoreField.value = '';
+                
+                // Добавляем визуальную индикацию удаления
+                const row = myScoreField.closest('tr');
+                if (row) {
+                    row.style.opacity = '0.3';
+                    row.style.backgroundColor = '#f8f9fa';
+                    
+                    // Добавляем стиль для отключенных полей
+                    myScoreField.disabled = true;
+                    opponentScoreField.disabled = true;
+                    myScoreField.style.backgroundColor = '#e9ecef';
+                    opponentScoreField.style.backgroundColor = '#e9ecef';
+                }
+                
+                console.log(`Раунд ${roundNumber} для судьи ${judgeNumber} удален из оценок`);
+            } else {
+                console.warn(`Не найдены поля для раунда ${roundNumber} судьи ${judgeNumber}`);
+            }
+        }
     </script>
 </body>
 </html>
