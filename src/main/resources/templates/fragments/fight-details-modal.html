@@ -35,7 +35,7 @@
                                         </p>
                                         <p class="mb-1"><strong>Раундов:</strong> <span th:text="${fight.roundsPlayed}"></span></p>
                                         <p class="mb-1"><strong>Метод:</strong> 
-                                            <span th:text="${fight.method == 'DECISION' ? 'Решение' : (fight.method == 'SUBMISSION' ? 'Сабмишен' : (fight.method == 'KNOCKOUT' ? 'Нокаут' : 'Досрочный выход'))}"></span>
+                                            <span th:text="${fight.method.displayName}"></span>
                                         </p>
                                     </div>
                                 </div>
