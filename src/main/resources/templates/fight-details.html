@@ -100,28 +100,28 @@
                             <div class="card-body">
                                 <!-- Подсчитываем общую статистику -->
                                 <div th:with="
-                                    totalMyHeadDamage=90,
-                                    totalOpponentHeadDamage=79,
-                                    totalMyBodyDamage=55,
-                                    totalOpponentBodyDamage=46,
-                                    totalMyLegDamage=22,
-                                    totalOpponentLegDamage=17,
-                                    totalMySignificantStrikesLanded=164,
-                                    totalMySignificantStrikesAttempted=244,
-                                    totalOpponentSignificantStrikesLanded=138,
-                                    totalOpponentSignificantStrikesAttempted=209,
-                                    totalMyTotalStrikesLanded=245,
-                                    totalMyTotalStrikesAttempted=365,
-                                    totalOpponentTotalStrikesLanded=214,
-                                    totalOpponentTotalStrikesAttempted=321,
-                                    totalMyTakedownsSuccessful=8,
-                                    totalMyTakedownsAttempted=12,
-                                    totalOpponentTakedownsSuccessful=4,
-                                    totalOpponentTakedownsAttempted=9,
-                                    totalMyKnockdowns=0,
-                                    totalOpponentKnockdowns=0,
-                                    totalMyControlTime='14:15',
-                                    totalOpponentControlTime='06:40'
+                                    totalMyHeadDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyHeadDamage(fight.rounds)},
+                                    totalOpponentHeadDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentHeadDamage(fight.rounds)},
+                                    totalMyBodyDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyBodyDamage(fight.rounds)},
+                                    totalOpponentBodyDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentBodyDamage(fight.rounds)},
+                                    totalMyLegDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyLegDamage(fight.rounds)},
+                                    totalOpponentLegDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentLegDamage(fight.rounds)},
+                                    totalMySignificantStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMySignificantStrikesLanded(fight.rounds)},
+                                    totalMySignificantStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMySignificantStrikesAttempted(fight.rounds)},
+                                    totalOpponentSignificantStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentSignificantStrikesLanded(fight.rounds)},
+                                    totalOpponentSignificantStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentSignificantStrikesAttempted(fight.rounds)},
+                                    totalMyTotalStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTotalStrikesLanded(fight.rounds)},
+                                    totalMyTotalStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTotalStrikesAttempted(fight.rounds)},
+                                    totalOpponentTotalStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTotalStrikesLanded(fight.rounds)},
+                                    totalOpponentTotalStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTotalStrikesAttempted(fight.rounds)},
+                                    totalMyTakedownsSuccessful=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTakedownsSuccessful(fight.rounds)},
+                                    totalMyTakedownsAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTakedownsAttempted(fight.rounds)},
+                                    totalOpponentTakedownsSuccessful=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTakedownsSuccessful(fight.rounds)},
+                                    totalOpponentTakedownsAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTakedownsAttempted(fight.rounds)},
+                                    totalMyKnockdowns=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyKnockdowns(fight.rounds)},
+                                    totalOpponentKnockdowns=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentKnockdowns(fight.rounds)},
+                                    totalMyControlTime=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyControlTimeString(fight.rounds)},
+                                    totalOpponentControlTime=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentControlTimeString(fight.rounds)}
                                 ">
                                     <!-- Статистика в столбиках -->
                                     <div class="row">
@@ -166,8 +166,8 @@
                                                              th:text="${totalMySignificantStrikesLanded} + '/' + ${totalMySignificantStrikesAttempted}">0/0</div>
                                                         <small th:if="${totalMySignificantStrikesAttempted > 0}" 
                                                                style="font-size: 0.8rem;"
-                                                               th:classappend="'text-success'"
-                                                               th:text="'(67.2%)'">(0%)</small>
+                                                               th:classappend="${totalMySignificantStrikesLanded > totalOpponentSignificantStrikesLanded ? 'text-success' : (totalMySignificantStrikesLanded < totalOpponentSignificantStrikesLanded ? 'text-danger' : 'text-muted')}"
+                                                               th:text="'(' + ${#numbers.formatDecimal(totalMySignificantStrikesLanded * 100.0 / totalMySignificantStrikesAttempted, 1, 1)} + '%)'">(0%)</small>
                                                     </div>
                                                     <div>
                                                         <small class="text-muted">Всего ударов</small>
@@ -175,8 +175,8 @@
                                                              th:text="${totalMyTotalStrikesLanded} + '/' + ${totalMyTotalStrikesAttempted}">0/0</div>
                                                         <small th:if="${totalMyTotalStrikesAttempted > 0}" 
                                                                style="font-size: 0.8rem;"
-                                                               th:classappend="'text-success'"
-                                                               th:text="'(67.1%)'">(0%)</small>
+                                                               th:classappend="${totalMyTotalStrikesLanded > totalOpponentTotalStrikesLanded ? 'text-success' : (totalMyTotalStrikesLanded < totalOpponentTotalStrikesLanded ? 'text-danger' : 'text-muted')}"
+                                                               th:text="'(' + ${#numbers.formatDecimal(totalMyTotalStrikesLanded * 100.0 / totalMyTotalStrikesAttempted, 1, 1)} + '%)'">(0%)</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -190,8 +190,8 @@
                                                              th:text="${totalMyTakedownsSuccessful} + '/' + ${totalMyTakedownsAttempted}">0/0</div>
                                                         <small th:if="${totalMyTakedownsAttempted > 0}" 
                                                                style="font-size: 0.8rem;"
-                                                               th:classappend="'text-success'"
-                                                               th:text="'(66.7%)'">(0%)</small>
+                                                               th:classappend="${totalMyTakedownsSuccessful > totalOpponentTakedownsSuccessful ? 'text-success' : (totalMyTakedownsSuccessful < totalOpponentTakedownsSuccessful ? 'text-danger' : 'text-muted')}"
+                                                               th:text="'(' + ${#numbers.formatDecimal(totalMyTakedownsSuccessful * 100.0 / totalMyTakedownsAttempted, 1, 1)} + '%)'">(0%)</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -199,7 +199,7 @@
                                             <!-- Контроль -->
                                             <div class="mb-3">
                                                 <h6 class="text-muted mb-2">Контроль</h6>
-                                                <div class="fw-bold" th:classappend="${totalMyControlTime > totalOpponentControlTime ? 'text-success' : (totalMyControlTime < totalOpponentControlTime ? 'text-danger' : '')}" 
+                                                <div class="fw-bold" th:classappend="${T(com.ufcstats.util.FightStatisticsUtil).compareControlTimes(totalMyControlTime, totalOpponentControlTime) > 0 ? 'text-success' : (T(com.ufcstats.util.FightStatisticsUtil).compareControlTimes(totalMyControlTime, totalOpponentControlTime) < 0 ? 'text-danger' : '')}" 
                                                      th:text="${totalMyControlTime}">00:00</div>
                                             </div>
                                         </div>
@@ -245,8 +245,8 @@
                                                              th:text="${totalOpponentSignificantStrikesLanded} + '/' + ${totalOpponentSignificantStrikesAttempted}">0/0</div>
                                                         <small th:if="${totalOpponentSignificantStrikesAttempted > 0}" 
                                                                style="font-size: 0.8rem;"
-                                                               th:classappend="'text-danger'"
-                                                               th:text="'(66.0%)'">(0%)</small>
+                                                               th:classappend="${totalOpponentSignificantStrikesLanded > totalMySignificantStrikesLanded ? 'text-success' : (totalOpponentSignificantStrikesLanded < totalMySignificantStrikesLanded ? 'text-danger' : 'text-muted')}"
+                                                               th:text="'(' + ${#numbers.formatDecimal(totalOpponentSignificantStrikesLanded * 100.0 / totalOpponentSignificantStrikesAttempted, 1, 1)} + '%)'">(0%)</small>
                                                     </div>
                                                     <div>
                                                         <small class="text-muted">Всего ударов</small>
@@ -254,8 +254,8 @@
                                                              th:text="${totalOpponentTotalStrikesLanded} + '/' + ${totalOpponentTotalStrikesAttempted}">0/0</div>
                                                         <small th:if="${totalOpponentTotalStrikesAttempted > 0}" 
                                                                style="font-size: 0.8rem;"
-                                                               th:classappend="'text-danger'"
-                                                               th:text="'(66.7%)'">(0%)</small>
+                                                               th:classappend="${totalOpponentTotalStrikesLanded > totalMyTotalStrikesLanded ? 'text-success' : (totalOpponentTotalStrikesLanded < totalMyTotalStrikesLanded ? 'text-danger' : 'text-muted')}"
+                                                               th:text="'(' + ${#numbers.formatDecimal(totalOpponentTotalStrikesLanded * 100.0 / totalOpponentTotalStrikesAttempted, 1, 1)} + '%)'">(0%)</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -269,8 +269,8 @@
                                                              th:text="${totalOpponentTakedownsSuccessful} + '/' + ${totalOpponentTakedownsAttempted}">0/0</div>
                                                         <small th:if="${totalOpponentTakedownsAttempted > 0}" 
                                                                style="font-size: 0.8rem;"
-                                                               th:classappend="'text-danger'"
-                                                               th:text="'(44.4%)'">(0%)</small>
+                                                               th:classappend="${totalOpponentTakedownsSuccessful > totalMyTakedownsSuccessful ? 'text-success' : (totalOpponentTakedownsSuccessful < totalMyTakedownsSuccessful ? 'text-danger' : 'text-muted')}"
+                                                               th:text="'(' + ${#numbers.formatDecimal(totalOpponentTakedownsSuccessful * 100.0 / totalOpponentTakedownsAttempted, 1, 1)} + '%)'">(0%)</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -278,7 +278,7 @@
                                             <!-- Контроль -->
                                             <div class="mb-3">
                                                 <h6 class="text-muted mb-2">Контроль</h6>
-                                                <div class="fw-bold" th:classappend="${totalOpponentControlTime > totalMyControlTime ? 'text-success' : (totalOpponentControlTime < totalMyControlTime ? 'text-danger' : '')}" 
+                                                <div class="fw-bold" th:classappend="${T(com.ufcstats.util.FightStatisticsUtil).compareControlTimes(totalOpponentControlTime, totalMyControlTime) > 0 ? 'text-success' : (T(com.ufcstats.util.FightStatisticsUtil).compareControlTimes(totalOpponentControlTime, totalMyControlTime) < 0 ? 'text-danger' : '')}" 
                                                      th:text="${totalOpponentControlTime}">00:00</div>
                                             </div>
                                         </div>
