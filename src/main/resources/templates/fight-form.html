@@ -529,58 +529,108 @@
             // Очищаем контейнер
             judgesContainer.innerHTML = '';
             
-            // Создаем судейские оценки для 3 судей в виде таблиц
-            for (let judge = 1; judge <= 3; judge++) {
-                const judgeTable = document.createElement('div');
-                judgeTable.className = 'flex-fill';
-                judgeTable.innerHTML = `
-                    <div class="card">
-                        <div class="card-header text-center">
-                            <h6 class="mb-0">Судья ${judge}</h6>
-                            <input type="hidden" name="judgeScores[${judge-1}].judgeNumber" value="${judge}">
-                        </div>
-                        <div class="card-body p-2">
-                            <table class="table table-sm table-bordered mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="font-size: 0.8rem;">Раунд</th>
-                                        <th class="text-center text-primary order-1" style="font-size: 0.8rem;">Мой боец</th>
-                                        <th class="text-center text-danger order-2" style="font-size: 0.8rem;">Соперник</th>
-                                        <th class="text-center" style="font-size: 0.8rem;">Действие</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${Array.from({length: roundsCount}, (_, i) => `
-                                        <tr>
-                                            <td class="text-center" style="font-size: 0.8rem;">${i + 1}</td>
-                                            <td class="p-1 order-1">
-                                                <input type="number" class="form-control form-control-sm text-center" 
-                                                       id="judge${judge}_my_round${i + 1}" 
-                                                       name="judgeScores[${judge-1}].round${i + 1}MyScore" 
-                                                       min="0" max="10" value="10" style="font-size: 0.8rem; height: 28px;">
-                                            </td>
-                                            <td class="p-1 order-2">
-                                                <input type="number" class="form-control form-control-sm text-center" 
-                                                       id="judge${judge}_opponent_round${i + 1}" 
-                                                       name="judgeScores[${judge-1}].round${i + 1}OpponentScore" 
-                                                       min="0" max="10" value="9" style="font-size: 0.8rem; height: 28px;">
-                                            </td>
-                                            <td class="p-1 text-center">
-                                                <button type="button" class="btn btn-outline-danger btn-sm" 
-                                                        onclick="removeJudgeRound(${judge}, ${i + 1})" 
-                                                        title="Удалить раунд из оценок"
-                                                        style="font-size: 0.7rem; padding: 2px 6px;">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
+            // Создаем общую таблицу судейских оценок
+            const judgesTable = document.createElement('div');
+            judgesTable.className = 'w-100';
+            judgesTable.innerHTML = `
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h6 class="mb-0">Судейские оценки</h6>
                     </div>
-                `;
-                judgesContainer.appendChild(judgeTable);
+                    <div class="card-body p-2">
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="font-size: 0.8rem;">Раунд</th>
+                                    <th class="text-center" style="font-size: 0.8rem;">Судья 1</th>
+                                    <th class="text-center" style="font-size: 0.8rem;">Судья 2</th>
+                                    <th class="text-center" style="font-size: 0.8rem;">Судья 3</th>
+                                    <th class="text-center" style="font-size: 0.8rem;">Действие</th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th class="text-center text-primary" style="font-size: 0.7rem;">Мой боец / Соперник</th>
+                                    <th class="text-center text-primary" style="font-size: 0.7rem;">Мой боец / Соперник</th>
+                                    <th class="text-center text-primary" style="font-size: 0.7rem;">Мой боец / Соперник</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Array.from({length: roundsCount}, (_, i) => `
+                                    <tr>
+                                        <td class="text-center" style="font-size: 0.8rem;">${i + 1}</td>
+                                        <td class="p-1">
+                                            <div class="row g-1">
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm text-center" 
+                                                           id="judge1_my_round${i + 1}" 
+                                                           name="judgeScores[0].round${i + 1}MyScore" 
+                                                           min="0" max="10" value="10" style="font-size: 0.7rem; height: 24px;">
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm text-center" 
+                                                           id="judge1_opponent_round${i + 1}" 
+                                                           name="judgeScores[0].round${i + 1}OpponentScore" 
+                                                           min="0" max="10" value="9" style="font-size: 0.7rem; height: 24px;">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-1">
+                                            <div class="row g-1">
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm text-center" 
+                                                           id="judge2_my_round${i + 1}" 
+                                                           name="judgeScores[1].round${i + 1}MyScore" 
+                                                           min="0" max="10" value="10" style="font-size: 0.7rem; height: 24px;">
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm text-center" 
+                                                           id="judge2_opponent_round${i + 1}" 
+                                                           name="judgeScores[1].round${i + 1}OpponentScore" 
+                                                           min="0" max="10" value="9" style="font-size: 0.7rem; height: 24px;">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-1">
+                                            <div class="row g-1">
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm text-center" 
+                                                           id="judge3_my_round${i + 1}" 
+                                                           name="judgeScores[2].round${i + 1}MyScore" 
+                                                           min="0" max="10" value="10" style="font-size: 0.7rem; height: 24px;">
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="number" class="form-control form-control-sm text-center" 
+                                                           id="judge3_opponent_round${i + 1}" 
+                                                           name="judgeScores[2].round${i + 1}OpponentScore" 
+                                                           min="0" max="10" value="9" style="font-size: 0.7rem; height: 24px;">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-1 text-center">
+                                            <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                    onclick="removeJudgeRound(${i + 1})" 
+                                                    title="Удалить раунд из оценок всех судей"
+                                                    style="font-size: 0.7rem; padding: 2px 6px;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            judgesContainer.appendChild(judgesTable);
+            
+            // Добавляем скрытые поля для номеров судей
+            for (let judge = 1; judge <= 3; judge++) {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `judgeScores[${judge-1}].judgeNumber`;
+                hiddenInput.value = judge;
+                judgesContainer.appendChild(hiddenInput);
             }
             
             // Восстанавливаем сохраненные данные
@@ -862,87 +912,73 @@
         function toggleJudgesFighterPosition(position) {
             console.log('🔄 Toggling judges fighter position to:', position);
             
-            // Находим все таблицы судей
-            const judgeTables = document.querySelectorAll('#judgesContainer .card table');
-            console.log('📊 Found judge tables:', judgeTables.length);
+            // Находим таблицу судейских оценок
+            const judgesTable = document.querySelector('#judgesContainer .card table');
+            if (!judgesTable) {
+                console.log('❌ Judges table not found');
+                return;
+            }
             
-            judgeTables.forEach((table, index) => {
-                // Находим заголовки и ячейки в каждой таблице
-                const headers = table.querySelectorAll('thead th');
-                const rows = table.querySelectorAll('tbody tr');
-                
-                console.log(`🎯 Judge ${index + 1}:`, {
-                    headers: headers.length,
-                    rows: rows.length
-                });
-                
-                if (headers.length >= 3 && rows.length > 0) {
+            console.log('📊 Found judges table');
+            
+            // Находим заголовки и строки
+            const headerRows = judgesTable.querySelectorAll('thead tr');
+            const rows = judgesTable.querySelectorAll('tbody tr');
+            
+            console.log(`🎯 Judges table:`, {
+                headerRows: headerRows.length,
+                rows: rows.length
+            });
+            
+            if (headerRows.length >= 2 && rows.length > 0) {
+                // Обновляем заголовки во второй строке (подзаголовки)
+                const subHeaders = headerRows[1].querySelectorAll('th');
+                if (subHeaders.length >= 4) { // Пропускаем первый столбец (Раунд) и последний (Действие)
                     if (position === 'right') {
-                        // Мой боец справа: меняем содержимое заголовков и ячеек
-                        // Меняем заголовки местами
-                        const fighterHeader = headers[1];
-                        const opponentHeader = headers[2];
-                        
-                        // Сохраняем оригинальное содержимое
-                        const fighterText = fighterHeader.textContent;
-                        const opponentText = opponentHeader.textContent;
-                        
-                        // Меняем содержимое
-                        fighterHeader.textContent = opponentText;
-                        opponentHeader.textContent = fighterText;
-                        
-                        // Меняем содержимое ячеек в каждой строке
-                        rows.forEach(row => {
-                            const cells = row.querySelectorAll('td');
-                            if (cells.length >= 3) {
-                                const fighterCell = cells[1];
-                                const opponentCell = cells[2];
-                                
-                                // Сохраняем оригинальное содержимое
-                                const fighterValue = fighterCell.querySelector('input')?.value || '';
-                                const opponentValue = opponentCell.querySelector('input')?.value || '';
-                                
-                                // Меняем значения
-                                if (fighterCell.querySelector('input')) {
-                                    fighterCell.querySelector('input').value = opponentValue;
-                                }
-                                if (opponentCell.querySelector('input')) {
-                                    opponentCell.querySelector('input').value = fighterValue;
-                                }
+                        // Мой боец справа: меняем подзаголовки
+                        for (let i = 1; i <= 3; i++) {
+                            if (subHeaders[i]) {
+                                subHeaders[i].textContent = 'Соперник / Мой боец';
                             }
-                        });
-                        
-                        console.log(`✅ Judge ${index + 1}: Fighter moved to right (content swapped)`);
+                        }
                     } else {
-                        // Мой боец слева: возвращаем исходное содержимое
-                        const fighterHeader = headers[1];
-                        const opponentHeader = headers[2];
-                        
-                        // Возвращаем исходное содержимое заголовков
-                        fighterHeader.textContent = 'Мой боец';
-                        opponentHeader.textContent = 'Соперник';
-                        
-                        // Возвращаем исходное содержимое ячеек в каждой строке
-                        rows.forEach(row => {
-                            const cells = row.querySelectorAll('td');
-                            if (cells.length >= 3) {
-                                const fighterCell = cells[1];
-                                const opponentCell = cells[2];
-                                
-                                // Очищаем значения (или можно сохранить оригинальные)
-                                if (fighterCell.querySelector('input')) {
-                                    fighterCell.querySelector('input').value = '';
-                                }
-                                if (opponentCell.querySelector('input')) {
-                                    opponentCell.querySelector('input').value = '';
-                                }
+                        // Мой боец слева: возвращаем исходные подзаголовки
+                        for (let i = 1; i <= 3; i++) {
+                            if (subHeaders[i]) {
+                                subHeaders[i].textContent = 'Мой боец / Соперник';
                             }
-                        });
-                        
-                        console.log(`✅ Judge ${index + 1}: Fighter moved to left (content restored)`);
+                        }
                     }
                 }
-            });
+                
+                // Обновляем значения в полях
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 5) {
+                        // Для каждого судьи (ячейки 1, 2, 3)
+                        for (let judgeIndex = 1; judgeIndex <= 3; judgeIndex++) {
+                            const judgeCell = cells[judgeIndex];
+                            const inputs = judgeCell.querySelectorAll('input');
+                            if (inputs.length >= 2) {
+                                if (position === 'right') {
+                                    // Меняем местами значения полей "Мой боец" и "Соперник"
+                                    const myValue = inputs[0].value;
+                                    const opponentValue = inputs[1].value;
+                                    
+                                    inputs[0].value = opponentValue;
+                                    inputs[1].value = myValue;
+                                } else {
+                                    // Возвращаем стандартные значения
+                                    inputs[0].value = '10'; // Мой боец
+                                    inputs[1].value = '9';  // Соперник
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log(`✅ Judges: Fighter position switched to ${position}`);
+            }
             
             // Обновляем активные кнопки судейских оценок
             const judgesButtons = document.querySelectorAll('#judgesMyFighterLeft, #judgesMyFighterRight');
@@ -1063,35 +1099,40 @@
             addJudgesFighterPositionListeners();
         }, 500);
         
-        // Функция для удаления раунда из судейских оценок
-        function removeJudgeRound(judgeNumber, roundNumber) {
-            console.log(`Удаление раунда ${roundNumber} для судьи ${judgeNumber}`);
+        // Функция для удаления раунда из судейских оценок всех судей
+        function removeJudgeRound(roundNumber) {
+            console.log(`Удаление раунда ${roundNumber} для всех судей`);
             
-            // Находим все поля для данного раунда у данного судьи
-            const myScoreField = document.getElementById(`judge${judgeNumber}_my_round${roundNumber}`);
-            const opponentScoreField = document.getElementById(`judge${judgeNumber}_opponent_round${roundNumber}`);
-            
-            if (myScoreField && opponentScoreField) {
-                // Очищаем поля оценок
-                myScoreField.value = '';
-                opponentScoreField.value = '';
+            // Находим все поля для данного раунда у всех судей
+            const fieldsToClear = [];
+            for (let judge = 1; judge <= 3; judge++) {
+                const myScoreField = document.getElementById(`judge${judge}_my_round${roundNumber}`);
+                const opponentScoreField = document.getElementById(`judge${judge}_opponent_round${roundNumber}`);
                 
-                // Добавляем визуальную индикацию удаления
-                const row = myScoreField.closest('tr');
+                if (myScoreField && opponentScoreField) {
+                    fieldsToClear.push(myScoreField, opponentScoreField);
+                }
+            }
+            
+            if (fieldsToClear.length > 0) {
+                // Очищаем все поля оценок
+                fieldsToClear.forEach(field => {
+                    field.value = '';
+                    field.disabled = true;
+                    field.style.backgroundColor = '#e9ecef';
+                });
+                
+                // Добавляем визуальную индикацию удаления для всей строки
+                const firstField = fieldsToClear[0];
+                const row = firstField.closest('tr');
                 if (row) {
                     row.style.opacity = '0.3';
                     row.style.backgroundColor = '#f8f9fa';
-                    
-                    // Добавляем стиль для отключенных полей
-                    myScoreField.disabled = true;
-                    opponentScoreField.disabled = true;
-                    myScoreField.style.backgroundColor = '#e9ecef';
-                    opponentScoreField.style.backgroundColor = '#e9ecef';
                 }
                 
-                console.log(`Раунд ${roundNumber} для судьи ${judgeNumber} удален из оценок`);
+                console.log(`Раунд ${roundNumber} удален из оценок всех судей`);
             } else {
-                console.warn(`Не найдены поля для раунда ${roundNumber} судьи ${judgeNumber}`);
+                console.warn(`Не найдены поля для раунда ${roundNumber}`);
             }
         }
     </script>
