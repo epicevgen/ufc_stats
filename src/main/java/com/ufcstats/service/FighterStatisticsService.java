@@ -114,7 +114,7 @@ public class FighterStatisticsService {
                             .lossRate(lossRate)
                             .build();
                 })
-                .filter(fighter -> fighter.getTotalFights() >= 3) // Минимум 3 боя для статистики
+                .filter(fighter -> fighter.getTotalFights() >= 1) // Минимум 1 бой для статистики
                 .sorted((a, b) -> Double.compare(b.getWinRate(), a.getWinRate()))
                 .limit(5)
                 .collect(Collectors.toList());
@@ -156,7 +156,7 @@ public class FighterStatisticsService {
                             .lossRate(lossRate)
                             .build();
                 })
-                .filter(fighter -> fighter.getTotalFights() >= 3) // Минимум 3 боя для статистики
+                .filter(fighter -> fighter.getTotalFights() >= 1) // Минимум 1 бой для статистики
                 .sorted((a, b) -> Double.compare(a.getWinRate(), b.getWinRate()))
                 .limit(5)
                 .collect(Collectors.toList());
@@ -234,7 +234,7 @@ public class FighterStatisticsService {
                             .lossRate(lossRate)
                             .build();
                 })
-                .filter(opponent -> opponent.getTotalFights() >= 2) // Минимум 2 боя с соперником
+                .filter(opponent -> opponent.getTotalFights() >= 1) // Минимум 1 бой с соперником
                 .filter(opponent -> opponent.getLosses() > 0) // Только те, от кого были поражения
                 .sorted((a, b) -> {
                     // Сначала по проценту поражений, потом по количеству поражений
