@@ -126,6 +126,10 @@ public class WebController {
         Fight fight = new Fight();
         fight.setFightDate(LocalDateTime.now()); // Устанавливаем текущую дату и время
         
+        // Устанавливаем сезон из последнего сохраненного боя
+        Integer lastSeason = fightService.getLastSeason();
+        fight.setSeason(lastSeason);
+        
         model.addAttribute("fight", fight);
         model.addAttribute("fightModes", FightMode.values());
         model.addAttribute("fightResults", FightResult.values());
