@@ -39,6 +39,9 @@ public class AdvancedStatisticsDto {
     // Статистика по времени контроля
     private ControlTimeStatisticsDto controlTime;
     
+    // Статистика по повреждениям
+    private DamageStatisticsDto damage;
+    
     // Статистика по судейским оценкам
     private JudgeScoreStatisticsDto judgeScores;
     
@@ -177,5 +180,36 @@ public class AdvancedStatisticsDto {
         private int change;
         private String fightResult;
         private String opponent;
+    }
+    
+    /**
+     * Статистика по повреждениям
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DamageStatisticsDto {
+        // Мои повреждения
+        private double avgMyHeadDamagePerFight;
+        private double avgMyBodyDamagePerFight;
+        private double avgMyLegDamagePerFight;
+        private double avgMyKnockdownsPerFight;
+        
+        // Повреждения соперника
+        private double avgOpponentHeadDamagePerFight;
+        private double avgOpponentBodyDamagePerFight;
+        private double avgOpponentLegDamagePerFight;
+        private double avgOpponentKnockdownsPerFight;
+        
+        // Общие показатели
+        private double totalMyHeadDamage;
+        private double totalMyBodyDamage;
+        private double totalMyLegDamage;
+        private double totalMyKnockdowns;
+        private double totalOpponentHeadDamage;
+        private double totalOpponentBodyDamage;
+        private double totalOpponentLegDamage;
+        private double totalOpponentKnockdowns;
     }
 }

@@ -60,6 +60,7 @@ public class AdvancedStatisticsService {
                 .strikes(calculateStrikeStatistics(filteredFights))
                 .takedowns(calculateTakedownStatistics(filteredFights))
                 .controlTime(calculateControlTimeStatistics(filteredFights))
+                .damage(calculateDamageStatistics(filteredFights))
                 .judgeScores(calculateJudgeScoreStatistics(filteredFights))
                 .ratingHistory(calculateRatingHistory(filteredFights))
                 .rankingHistory(calculateRankingHistory(filteredFights))
@@ -508,5 +509,77 @@ public class AdvancedStatisticsService {
                 .max(Comparator.comparing(Fight::getFightDate))
                 .map(Fight::getRankingPosition)
                 .orElse(50); // Начальное место
+    }
+    
+    /**
+     * Расчет статистики повреждений
+     */
+    private AdvancedStatisticsDto.DamageStatisticsDto calculateDamageStatistics(List<Fight> fights) {
+        List<FightRound> allRounds = fights.stream()
+                .flatMap(fight -> fight.getRounds().stream())
+                .collect(Collectors.toList());
+        
+        if (allRounds.isEmpty()) {
+            return AdvancedStatisticsDto.DamageStatisticsDto.builder()
+                    .avgMyHeadDamagePerFight(0.0)
+                    .avgMyBodyDamagePerFight(0.0)
+                    .avgMyLegDamagePerFight(0.0)
+                    .avgMyKnockdownsPerFight(0.0)
+                    .avgOpponentHeadDamagePerFight(0.0)
+                    .avgOpponentBodyDamagePerFight(0.0)
+                    .avgOpponentLegDamagePerFight(0.0)
+                    .avgOpponentKnockdownsPerFight(0.0)
+                    .totalMyHeadDamage(0.0)
+                    .totalMyBodyDamage(0.0)
+                    .totalMyLegDamage(0.0)
+                    .totalMyKnockdowns(0.0)
+                    .totalOpponentHeadDamage(0.0)
+                    .totalOpponentBodyDamage(0.0)
+                    .totalOpponentLegDamage(0.0)
+                    .totalOpponentKnockdowns(0.0)
+                    .build();
+        }
+        
+        // Мои повреждения
+        double totalMyHeadDamage = allRounds.stream().mapToDouble(FightRound::getMyHeadDamage).sum();
+        double totalMyBodyDamage = allRounds.stream().mapToDouble(FightRound::getMyBodyDamage).sum();
+        double totalMyLegDamage = allRounds.stream().mapToDouble(FightRound::getMyLegDamage).sum();
+        double totalMyKnockdowns = allRounds.stream().mapToDouble(FightRound::getMyKnockdowns).sum();
+        
+        // Повреждения соперника
+        double totalOpponentHeadDamage = allRounds.stream().mapToDouble(FightRound::getOpponentHeadDamage).sum();
+        double totalOpponentBodyDamage = allRounds.stream().mapToDouble(FightRound::getOpponentBodyDamage).sum();
+        double totalOpponentLegDamage = allRounds.stream().mapToDouble(FightRound::getOpponentLegDamage).sum();
+        double totalOpponentKnockdowns = allRounds.stream().mapToDouble(FightRound::getOpponentKnockdowns).sum();
+        
+        // Средние значения за бой
+        double avgMyHeadDamagePerFight = fights.size() > 0 ? totalMyHeadDamage / fights.size() : 0.0;
+        double avgMyBodyDamagePerFight = fights.size() > 0 ? totalMyBodyDamage / fights.size() : 0.0;
+        double avgMyLegDamagePerFight = fights.size() > 0 ? totalMyLegDamage / fights.size() : 0.0;
+        double avgMyKnockdownsPerFight = fights.size() > 0 ? totalMyKnockdowns / fights.size() : 0.0;
+        
+        double avgOpponentHeadDamagePerFight = fights.size() > 0 ? totalOpponentHeadDamage / fights.size() : 0.0;
+        double avgOpponentBodyDamagePerFight = fights.size() > 0 ? totalOpponentBodyDamage / fights.size() : 0.0;
+        double avgOpponentLegDamagePerFight = fights.size() > 0 ? totalOpponentLegDamage / fights.size() : 0.0;
+        double avgOpponentKnockdownsPerFight = fights.size() > 0 ? totalOpponentKnockdowns / fights.size() : 0.0;
+        
+        return AdvancedStatisticsDto.DamageStatisticsDto.builder()
+                .avgMyHeadDamagePerFight(avgMyHeadDamagePerFight)
+                .avgMyBodyDamagePerFight(avgMyBodyDamagePerFight)
+                .avgMyLegDamagePerFight(avgMyLegDamagePerFight)
+                .avgMyKnockdownsPerFight(avgMyKnockdownsPerFight)
+                .avgOpponentHeadDamagePerFight(avgOpponentHeadDamagePerFight)
+                .avgOpponentBodyDamagePerFight(avgOpponentBodyDamagePerFight)
+                .avgOpponentLegDamagePerFight(avgOpponentLegDamagePerFight)
+                .avgOpponentKnockdownsPerFight(avgOpponentKnockdownsPerFight)
+                .totalMyHeadDamage(totalMyHeadDamage)
+                .totalMyBodyDamage(totalMyBodyDamage)
+                .totalMyLegDamage(totalMyLegDamage)
+                .totalMyKnockdowns(totalMyKnockdowns)
+                .totalOpponentHeadDamage(totalOpponentHeadDamage)
+                .totalOpponentBodyDamage(totalOpponentBodyDamage)
+                .totalOpponentLegDamage(totalOpponentLegDamage)
+                .totalOpponentKnockdowns(totalOpponentKnockdowns)
+                .build();
     }
 }
