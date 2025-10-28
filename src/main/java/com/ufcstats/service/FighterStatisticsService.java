@@ -82,11 +82,10 @@ public class FighterStatisticsService {
      * Топ 5 лучших бойцов по проценту побед
      */
     private List<FighterStatisticsDto.FighterWinRateDto> calculateTopFightersByWinRate(List<Fight> fights) {
-        
         Map<String, List<Fight>> fightsByFighter = fights.stream()
                 .collect(Collectors.groupingBy(Fight::getMyFighter));
         
-        List<FighterStatisticsDto.FighterWinRateDto> allFighters = fightsByFighter.entrySet().stream()
+        return fightsByFighter.entrySet().stream()
                 .map(entry -> {
                     String fighterName = entry.getKey();
                     List<Fight> fighterFights = entry.getValue();
@@ -105,7 +104,6 @@ public class FighterStatisticsService {
                     double winRate = totalFights > 0 ? (double) wins / totalFights * 100 : 0.0;
                     double lossRate = totalFights > 0 ? (double) losses / totalFights * 100 : 0.0;
                     
-                    
                     return FighterStatisticsDto.FighterWinRateDto.builder()
                             .fighterName(fighterName)
                             .totalFights(totalFights)
@@ -116,20 +114,10 @@ public class FighterStatisticsService {
                             .lossRate(lossRate)
                             .build();
                 })
-                .filter(fighter -> fighter.getTotalFights() >= 1) // Минимум 1 бой для статистики
-                .sorted((a, b) -> {
-                    // Сначала по проценту побед (убывание)
-                    int winRateComparison = Double.compare(b.getWinRate(), a.getWinRate());
-                    if (winRateComparison != 0) {
-                        return winRateComparison;
-                    }
-                    // Если процент побед одинаковый, то по количеству боев (убывание)
-                    return Long.compare(b.getTotalFights(), a.getTotalFights());
-                })
+                .filter(fighter -> fighter.getTotalFights() >= 3) // Минимум 3 боя для статистики
+                .sorted((a, b) -> Double.compare(b.getWinRate(), a.getWinRate()))
                 .limit(5)
                 .collect(Collectors.toList());
-        
-        return allFighters;
     }
     
     /**
@@ -168,16 +156,8 @@ public class FighterStatisticsService {
                             .lossRate(lossRate)
                             .build();
                 })
-                .filter(fighter -> fighter.getTotalFights() >= 1) // Минимум 1 бой для статистики
-                .sorted((a, b) -> {
-                    // Сначала по проценту побед (возрастание для худших)
-                    int winRateComparison = Double.compare(a.getWinRate(), b.getWinRate());
-                    if (winRateComparison != 0) {
-                        return winRateComparison;
-                    }
-                    // Если процент побед одинаковый, то по количеству боев (убывание)
-                    return Long.compare(b.getTotalFights(), a.getTotalFights());
-                })
+                .filter(fighter -> fighter.getTotalFights() >= 3) // Минимум 3 боя для статистики
+                .sorted((a, b) -> Double.compare(a.getWinRate(), b.getWinRate()))
                 .limit(5)
                 .collect(Collectors.toList());
     }
@@ -254,7 +234,7 @@ public class FighterStatisticsService {
                             .lossRate(lossRate)
                             .build();
                 })
-                .filter(opponent -> opponent.getTotalFights() >= 1) // Минимум 1 бой с соперником
+                .filter(opponent -> opponent.getTotalFights() >= 2) // Минимум 2 боя с соперником
                 .filter(opponent -> opponent.getLosses() > 0) // Только те, от кого были поражения
                 .sorted((a, b) -> {
                     // Сначала по проценту поражений, потом по количеству поражений

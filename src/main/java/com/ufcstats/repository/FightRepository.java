@@ -79,11 +79,6 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
     Optional<Fight> findLatestFight();
 
     /**
-     * Найти последний бой (альтернативный метод)
-     */
-    Optional<Fight> findTopByOrderByFightDateDesc();
-
-    /**
      * Найти все уникальные имена бойцов (мой боец)
      */
     @Query("SELECT DISTINCT f.myFighter FROM Fight f ORDER BY f.myFighter")

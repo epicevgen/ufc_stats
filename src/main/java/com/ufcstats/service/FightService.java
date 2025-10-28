@@ -58,22 +58,6 @@ public class FightService {
     }
 
     /**
-     * Получить последний сезон из сохраненных боев
-     */
-    public Integer getLastSeason() {
-        log.debug("Получение последнего сезона");
-        Optional<Fight> lastFight = fightRepository.findTopByOrderByFightDateDesc();
-        if (lastFight.isPresent()) {
-            Integer lastSeason = lastFight.get().getSeason();
-            log.debug("Найден последний сезон: {}", lastSeason);
-            return lastSeason;
-        } else {
-            log.debug("Бои не найдены, возвращаем сезон по умолчанию: 1");
-            return 1; // Значение по умолчанию для первого боя
-        }
-    }
-
-    /**
      * Создать новый бой
      */
     @Transactional

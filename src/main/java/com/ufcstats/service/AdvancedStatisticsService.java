@@ -131,23 +131,12 @@ public class AdvancedStatisticsService {
                     result.put(weightClass, calculateBasicStatistics(fightList));
                 });
         
-        // Сортируем по убыванию процента побед, при равенстве - по количеству побед
+        // Сортируем по убыванию процента побед
         return result.entrySet().stream()
-                .sorted((entry1, entry2) -> {
-                    // Сначала по проценту побед (убывание)
-                    int winRateComparison = Double.compare(
-                        entry2.getValue().getWinRate(), 
-                        entry1.getValue().getWinRate()
-                    );
-                    if (winRateComparison != 0) {
-                        return winRateComparison;
-                    }
-                    // Если процент побед одинаковый, то по количеству побед (убывание)
-                    return Long.compare(
-                        entry2.getValue().getWins(), 
-                        entry1.getValue().getWins()
-                    );
-                })
+                .sorted((entry1, entry2) -> Double.compare(
+                    entry2.getValue().getWinRate(), 
+                    entry1.getValue().getWinRate()
+                ))
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
                     Map.Entry::getValue,

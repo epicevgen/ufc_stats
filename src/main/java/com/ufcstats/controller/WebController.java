@@ -17,6 +17,7 @@ import com.ufcstats.dto.AdvancedStatisticsDto;
 import com.ufcstats.dto.FighterStatisticsDto;
 import com.ufcstats.dto.StrikeMovementDto;
 import com.ufcstats.dto.AchievementStatisticsDto;
+import com.ufcstats.util.FightStatisticsUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -126,10 +127,6 @@ public class WebController {
         Fight fight = new Fight();
         fight.setFightDate(LocalDateTime.now()); // Устанавливаем текущую дату и время
         
-        // Устанавливаем сезон из последнего сохраненного боя
-        Integer lastSeason = fightService.getLastSeason();
-        fight.setSeason(lastSeason);
-        
         model.addAttribute("fight", fight);
         model.addAttribute("fightModes", FightMode.values());
         model.addAttribute("fightResults", FightResult.values());
@@ -144,7 +141,34 @@ public class WebController {
         model.addAttribute("title", "Детали боя");
         Optional<Fight> fightOpt = fightService.getFightById(id);
         if (fightOpt.isPresent()) {
-            model.addAttribute("fight", fightOpt.get());
+            Fight fight = fightOpt.get();
+            model.addAttribute("fight", fight);
+            
+            // Предварительно вычисляем статистику для передачи в шаблон
+            if (fight.getRounds() != null && !fight.getRounds().isEmpty()) {
+                model.addAttribute("totalMyHeadDamage", FightStatisticsUtil.calculateTotalMyHeadDamage(fight.getRounds()));
+                model.addAttribute("totalOpponentHeadDamage", FightStatisticsUtil.calculateTotalOpponentHeadDamage(fight.getRounds()));
+                model.addAttribute("totalMyBodyDamage", FightStatisticsUtil.calculateTotalMyBodyDamage(fight.getRounds()));
+                model.addAttribute("totalOpponentBodyDamage", FightStatisticsUtil.calculateTotalOpponentBodyDamage(fight.getRounds()));
+                model.addAttribute("totalMyLegDamage", FightStatisticsUtil.calculateTotalMyLegDamage(fight.getRounds()));
+                model.addAttribute("totalOpponentLegDamage", FightStatisticsUtil.calculateTotalOpponentLegDamage(fight.getRounds()));
+                model.addAttribute("totalMySignificantStrikesLanded", FightStatisticsUtil.calculateTotalMySignificantStrikesLanded(fight.getRounds()));
+                model.addAttribute("totalMySignificantStrikesAttempted", FightStatisticsUtil.calculateTotalMySignificantStrikesAttempted(fight.getRounds()));
+                model.addAttribute("totalOpponentSignificantStrikesLanded", FightStatisticsUtil.calculateTotalOpponentSignificantStrikesLanded(fight.getRounds()));
+                model.addAttribute("totalOpponentSignificantStrikesAttempted", FightStatisticsUtil.calculateTotalOpponentSignificantStrikesAttempted(fight.getRounds()));
+                model.addAttribute("totalMyTotalStrikesLanded", FightStatisticsUtil.calculateTotalMyTotalStrikesLanded(fight.getRounds()));
+                model.addAttribute("totalMyTotalStrikesAttempted", FightStatisticsUtil.calculateTotalMyTotalStrikesAttempted(fight.getRounds()));
+                model.addAttribute("totalOpponentTotalStrikesLanded", FightStatisticsUtil.calculateTotalOpponentTotalStrikesLanded(fight.getRounds()));
+                model.addAttribute("totalOpponentTotalStrikesAttempted", FightStatisticsUtil.calculateTotalOpponentTotalStrikesAttempted(fight.getRounds()));
+                model.addAttribute("totalMyTakedownsSuccessful", FightStatisticsUtil.calculateTotalMyTakedownsSuccessful(fight.getRounds()));
+                model.addAttribute("totalMyTakedownsAttempted", FightStatisticsUtil.calculateTotalMyTakedownsAttempted(fight.getRounds()));
+                model.addAttribute("totalOpponentTakedownsSuccessful", FightStatisticsUtil.calculateTotalOpponentTakedownsSuccessful(fight.getRounds()));
+                model.addAttribute("totalOpponentTakedownsAttempted", FightStatisticsUtil.calculateTotalOpponentTakedownsAttempted(fight.getRounds()));
+                model.addAttribute("totalMyKnockdowns", FightStatisticsUtil.calculateTotalMyKnockdowns(fight.getRounds()));
+                model.addAttribute("totalOpponentKnockdowns", FightStatisticsUtil.calculateTotalOpponentKnockdowns(fight.getRounds()));
+                model.addAttribute("totalMyControlTime", FightStatisticsUtil.calculateTotalMyControlTimeString(fight.getRounds()));
+                model.addAttribute("totalOpponentControlTime", FightStatisticsUtil.calculateTotalOpponentControlTimeString(fight.getRounds()));
+            }
         } else {
             // Если бой не найден, возвращаем ошибку
             throw new RuntimeException("Бой с ID " + id + " не найден");
@@ -199,12 +223,6 @@ public class WebController {
             }
             if (fight.getRoundsPlayed() == null || fight.getRoundsPlayed() < 1 || fight.getRoundsPlayed() > 5) {
                 throw new IllegalArgumentException("Количество раундов должно быть от 1 до 5");
-            }
-            if (fight.getRatingPoints() == null || fight.getRatingPoints() < 0) {
-                throw new IllegalArgumentException("Очки рейтинга обязательны и не могут быть отрицательными");
-            }
-            if (fight.getRankingPosition() == null || fight.getRankingPosition() < 1) {
-                throw new IllegalArgumentException("Место в рейтинге обязательно и должно быть больше 0");
             }
             
             // Обрабатываем дату боя
@@ -328,5 +346,4 @@ public class WebController {
     public String testDataPage() {
         return "test-data";
     }
-    
 }

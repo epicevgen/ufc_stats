@@ -98,31 +98,7 @@
                                 <h5 class="mb-0">📊 Суммированная статистика</h5>
                             </div>
                             <div class="card-body">
-                                <!-- Подсчитываем общую статистику -->
-                                <div th:with="
-                                    totalMyHeadDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyHeadDamage(fight.rounds)},
-                                    totalOpponentHeadDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentHeadDamage(fight.rounds)},
-                                    totalMyBodyDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyBodyDamage(fight.rounds)},
-                                    totalOpponentBodyDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentBodyDamage(fight.rounds)},
-                                    totalMyLegDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyLegDamage(fight.rounds)},
-                                    totalOpponentLegDamage=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentLegDamage(fight.rounds)},
-                                    totalMySignificantStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMySignificantStrikesLanded(fight.rounds)},
-                                    totalMySignificantStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMySignificantStrikesAttempted(fight.rounds)},
-                                    totalOpponentSignificantStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentSignificantStrikesLanded(fight.rounds)},
-                                    totalOpponentSignificantStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentSignificantStrikesAttempted(fight.rounds)},
-                                    totalMyTotalStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTotalStrikesLanded(fight.rounds)},
-                                    totalMyTotalStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTotalStrikesAttempted(fight.rounds)},
-                                    totalOpponentTotalStrikesLanded=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTotalStrikesLanded(fight.rounds)},
-                                    totalOpponentTotalStrikesAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTotalStrikesAttempted(fight.rounds)},
-                                    totalMyTakedownsSuccessful=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTakedownsSuccessful(fight.rounds)},
-                                    totalMyTakedownsAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyTakedownsAttempted(fight.rounds)},
-                                    totalOpponentTakedownsSuccessful=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTakedownsSuccessful(fight.rounds)},
-                                    totalOpponentTakedownsAttempted=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentTakedownsAttempted(fight.rounds)},
-                                    totalMyKnockdowns=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyKnockdowns(fight.rounds)},
-                                    totalOpponentKnockdowns=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentKnockdowns(fight.rounds)},
-                                    totalMyControlTime=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalMyControlTimeString(fight.rounds)},
-                                    totalOpponentControlTime=${T(com.ufcstats.util.FightStatisticsUtil).calculateTotalOpponentControlTimeString(fight.rounds)}
-                                ">
+                                <!-- Используем предварительно вычисленную статистику -->
                                     <!-- Статистика в столбиках -->
                                     <div class="row">
                                         <!-- Левый столбик - Мой боец -->

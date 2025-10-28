@@ -2,7 +2,7 @@ package com.ufcstats.util;
 
 import com.ufcstats.model.FightRound;
 import java.time.Duration;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Утилитарный класс для расчета статистики боев
@@ -12,7 +12,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общий урон по голове моего бойца
      */
-    public static int calculateTotalMyHeadDamage(List<FightRound> rounds) {
+    public static int calculateTotalMyHeadDamage(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyHeadDamage() != null ? r.getMyHeadDamage() : 0)
@@ -22,7 +22,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общий урон по голове соперника
      */
-    public static int calculateTotalOpponentHeadDamage(List<FightRound> rounds) {
+    public static int calculateTotalOpponentHeadDamage(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentHeadDamage() != null ? r.getOpponentHeadDamage() : 0)
@@ -32,7 +32,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общий урон по корпусу моего бойца
      */
-    public static int calculateTotalMyBodyDamage(List<FightRound> rounds) {
+    public static int calculateTotalMyBodyDamage(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyBodyDamage() != null ? r.getMyBodyDamage() : 0)
@@ -42,7 +42,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общий урон по корпусу соперника
      */
-    public static int calculateTotalOpponentBodyDamage(List<FightRound> rounds) {
+    public static int calculateTotalOpponentBodyDamage(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentBodyDamage() != null ? r.getOpponentBodyDamage() : 0)
@@ -52,7 +52,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общий урон по ногам моего бойца
      */
-    public static int calculateTotalMyLegDamage(List<FightRound> rounds) {
+    public static int calculateTotalMyLegDamage(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyLegDamage() != null ? r.getMyLegDamage() : 0)
@@ -62,7 +62,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общий урон по ногам соперника
      */
-    public static int calculateTotalOpponentLegDamage(List<FightRound> rounds) {
+    public static int calculateTotalOpponentLegDamage(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentLegDamage() != null ? r.getOpponentLegDamage() : 0)
@@ -72,7 +72,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество значимых ударов моего бойца
      */
-    public static int calculateTotalMySignificantStrikesLanded(List<FightRound> rounds) {
+    public static int calculateTotalMySignificantStrikesLanded(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMySignificantStrikesLanded() != null ? r.getMySignificantStrikesLanded() : 0)
@@ -82,7 +82,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество попыток значимых ударов моего бойца
      */
-    public static int calculateTotalMySignificantStrikesAttempted(List<FightRound> rounds) {
+    public static int calculateTotalMySignificantStrikesAttempted(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMySignificantStrikesAttempted() != null ? r.getMySignificantStrikesAttempted() : 0)
@@ -92,7 +92,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество значимых ударов соперника
      */
-    public static int calculateTotalOpponentSignificantStrikesLanded(List<FightRound> rounds) {
+    public static int calculateTotalOpponentSignificantStrikesLanded(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentSignificantStrikesLanded() != null ? r.getOpponentSignificantStrikesLanded() : 0)
@@ -102,7 +102,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество попыток значимых ударов соперника
      */
-    public static int calculateTotalOpponentSignificantStrikesAttempted(List<FightRound> rounds) {
+    public static int calculateTotalOpponentSignificantStrikesAttempted(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentSignificantStrikesAttempted() != null ? r.getOpponentSignificantStrikesAttempted() : 0)
@@ -112,7 +112,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество ударов моего бойца
      */
-    public static int calculateTotalMyTotalStrikesLanded(List<FightRound> rounds) {
+    public static int calculateTotalMyTotalStrikesLanded(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyTotalStrikesLanded() != null ? r.getMyTotalStrikesLanded() : 0)
@@ -122,7 +122,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество попыток ударов моего бойца
      */
-    public static int calculateTotalMyTotalStrikesAttempted(List<FightRound> rounds) {
+    public static int calculateTotalMyTotalStrikesAttempted(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyTotalStrikesAttempted() != null ? r.getMyTotalStrikesAttempted() : 0)
@@ -132,7 +132,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество ударов соперника
      */
-    public static int calculateTotalOpponentTotalStrikesLanded(List<FightRound> rounds) {
+    public static int calculateTotalOpponentTotalStrikesLanded(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentTotalStrikesLanded() != null ? r.getOpponentTotalStrikesLanded() : 0)
@@ -142,7 +142,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество попыток ударов соперника
      */
-    public static int calculateTotalOpponentTotalStrikesAttempted(List<FightRound> rounds) {
+    public static int calculateTotalOpponentTotalStrikesAttempted(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentTotalStrikesAttempted() != null ? r.getOpponentTotalStrikesAttempted() : 0)
@@ -152,7 +152,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество успешных тейкдаунов моего бойца
      */
-    public static int calculateTotalMyTakedownsSuccessful(List<FightRound> rounds) {
+    public static int calculateTotalMyTakedownsSuccessful(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyTakedownsSuccessful() != null ? r.getMyTakedownsSuccessful() : 0)
@@ -162,7 +162,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество попыток тейкдаунов моего бойца
      */
-    public static int calculateTotalMyTakedownsAttempted(List<FightRound> rounds) {
+    public static int calculateTotalMyTakedownsAttempted(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyTakedownsAttempted() != null ? r.getMyTakedownsAttempted() : 0)
@@ -172,7 +172,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество успешных тейкдаунов соперника
      */
-    public static int calculateTotalOpponentTakedownsSuccessful(List<FightRound> rounds) {
+    public static int calculateTotalOpponentTakedownsSuccessful(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentTakedownsSuccessful() != null ? r.getOpponentTakedownsSuccessful() : 0)
@@ -182,7 +182,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество попыток тейкдаунов соперника
      */
-    public static int calculateTotalOpponentTakedownsAttempted(List<FightRound> rounds) {
+    public static int calculateTotalOpponentTakedownsAttempted(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentTakedownsAttempted() != null ? r.getOpponentTakedownsAttempted() : 0)
@@ -192,7 +192,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество нокдаунов моего бойца
      */
-    public static int calculateTotalMyKnockdowns(List<FightRound> rounds) {
+    public static int calculateTotalMyKnockdowns(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getMyKnockdowns() != null ? r.getMyKnockdowns() : 0)
@@ -202,7 +202,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее количество нокдаунов соперника
      */
-    public static int calculateTotalOpponentKnockdowns(List<FightRound> rounds) {
+    public static int calculateTotalOpponentKnockdowns(Collection<FightRound> rounds) {
         if (rounds == null) return 0;
         return rounds.stream()
                 .mapToInt(r -> r.getOpponentKnockdowns() != null ? r.getOpponentKnockdowns() : 0)
@@ -212,7 +212,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее время контроля моего бойца
      */
-    public static Duration calculateTotalMyControlTime(List<FightRound> rounds) {
+    public static Duration calculateTotalMyControlTime(Collection<FightRound> rounds) {
         if (rounds == null || rounds.isEmpty()) return Duration.ZERO;
         return rounds.stream()
                 .filter(r -> r.getMyControlTime() != null)
@@ -223,7 +223,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее время контроля соперника
      */
-    public static Duration calculateTotalOpponentControlTime(List<FightRound> rounds) {
+    public static Duration calculateTotalOpponentControlTime(Collection<FightRound> rounds) {
         if (rounds == null || rounds.isEmpty()) return Duration.ZERO;
         return rounds.stream()
                 .filter(r -> r.getOpponentControlTime() != null)
@@ -234,7 +234,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее время контроля моего бойца в формате строки мм:сс
      */
-    public static String calculateTotalMyControlTimeString(List<FightRound> rounds) {
+    public static String calculateTotalMyControlTimeString(Collection<FightRound> rounds) {
         Duration total = calculateTotalMyControlTime(rounds);
         return formatDuration(total);
     }
@@ -242,7 +242,7 @@ public class FightStatisticsUtil {
     /**
      * Рассчитать общее время контроля соперника в формате строки мм:сс
      */
-    public static String calculateTotalOpponentControlTimeString(List<FightRound> rounds) {
+    public static String calculateTotalOpponentControlTimeString(Collection<FightRound> rounds) {
         Duration total = calculateTotalOpponentControlTime(rounds);
         return formatDuration(total);
     }

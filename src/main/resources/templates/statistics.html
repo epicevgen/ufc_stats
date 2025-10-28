@@ -568,7 +568,7 @@
                     </div>
                     <div class="card-body">
                         <div th:if="${#lists.isEmpty(fighterStatistics.topFightersByWinRate)}" class="text-muted">Нет данных</div>
-                        <div th:each="fighter, iterStat : ${fighterStatistics.topFightersByWinRate}">
+                        <div th:each="fighter, iterStat : ${fighterStatistics.topFightersByWinRate}" th:if="${!iterStat.last}">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div>
                                     <span class="fw-bold" th:text="${fighter.fighterName}">Боец</span>
@@ -600,7 +600,7 @@
                     </div>
                     <div class="card-body">
                         <div th:if="${#lists.isEmpty(fighterStatistics.worstFightersByWinRate)}" class="text-muted">Нет данных</div>
-                        <div th:each="fighter, iterStat : ${fighterStatistics.worstFightersByWinRate}">
+                        <div th:each="fighter, iterStat : ${fighterStatistics.worstFightersByWinRate}" th:if="${!iterStat.last}">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div>
                                     <span class="fw-bold" th:text="${fighter.fighterName}">Боец</span>
@@ -663,7 +663,7 @@
                     </div>
                     <div class="card-body">
                         <div th:if="${#lists.isEmpty(fighterStatistics.toughestOpponents)}" class="text-muted">Нет данных</div>
-                        <div th:each="opponent, iterStat : ${fighterStatistics.toughestOpponents}">
+                        <div th:each="opponent, iterStat : ${fighterStatistics.toughestOpponents}" th:if="${!iterStat.last}">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div>
                                     <span class="fw-bold" th:text="${opponent.opponentName}">Соперник</span>
