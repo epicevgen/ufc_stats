@@ -7,6 +7,7 @@ import com.ufcstats.model.enums.FightMode;
 import com.ufcstats.model.enums.FightResult;
 import com.ufcstats.model.enums.FightMethod;
 import com.ufcstats.model.enums.WeightClass;
+import com.ufcstats.repository.FightRepository;
 import com.ufcstats.service.FightService;
 import com.ufcstats.service.RatingChangeService;
 import com.ufcstats.service.AdvancedStatisticsService;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Slf4j
 public class WebController {
 
+    private final FightRepository fightRepository;
     private final FightService fightService;
     private final RatingChangeService ratingChangeService;
     private final AdvancedStatisticsService advancedStatisticsService;
@@ -126,6 +128,18 @@ public class WebController {
         
         Fight fight = new Fight();
         fight.setFightDate(LocalDateTime.now()); // Устанавливаем текущую дату и время
+        
+        // Автоматически проставляем сезон из последнего боя
+        Optional<Fight> lastFightOpt = fightRepository.findLatestFight();
+        if (lastFightOpt.isPresent()) {
+            Fight lastFight = lastFightOpt.get();
+            fight.setSeason(lastFight.getSeason());
+            log.debug("Автоматически проставлен сезон {} из последнего боя", lastFight.getSeason());
+        } else {
+            // Если нет предыдущих боев, устанавливаем сезон по умолчанию
+            fight.setSeason(1);
+            log.debug("Установлен сезон по умолчанию: 1");
+        }
         
         model.addAttribute("fight", fight);
         model.addAttribute("fightModes", FightMode.values());

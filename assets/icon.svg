@@ -1,0 +1,34 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон -->
+  <rect width="512" height="512" fill="#1a365d" rx="80"/>
+  
+  <!-- Перчатки UFC -->
+  <g transform="translate(256, 200)">
+    <!-- Левая перчатка -->
+    <ellipse cx="-60" cy="0" rx="40" ry="60" fill="#f6ad55" stroke="#fff" stroke-width="4"/>
+    <ellipse cx="-60" cy="-20" rx="25" ry="35" fill="#fff"/>
+    
+    <!-- Правая перчатка -->
+    <ellipse cx="60" cy="0" rx="40" ry="60" fill="#f6ad55" stroke="#fff" stroke-width="4"/>
+    <ellipse cx="60" cy="-20" rx="25" ry="35" fill="#fff"/>
+  </g>
+  
+  <!-- График статистики -->
+  <g transform="translate(256, 350)">
+    <!-- Столбцы графика -->
+    <rect x="-80" y="-40" width="20" height="80" fill="#f6ad55"/>
+    <rect x="-40" y="-60" width="20" height="100" fill="#f6ad55"/>
+    <rect x="0" y="-30" width="20" height="70" fill="#f6ad55"/>
+    <rect x="40" y="-50" width="20" height="90" fill="#f6ad55"/>
+    <rect x="80" y="-70" width="20" height="110" fill="#f6ad55"/>
+  </g>
+  
+  <!-- Текст UFC Stats -->
+  <text x="256" y="120" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="48" font-weight="bold">UFC</text>
+  <text x="256" y="160" text-anchor="middle" fill="#f6ad55" font-family="Arial, sans-serif" font-size="32" font-weight="bold">Stats</text>
+</svg>
+
+
+
+
+
