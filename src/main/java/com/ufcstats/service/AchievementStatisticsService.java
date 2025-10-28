@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,9 +28,14 @@ public class AchievementStatisticsService {
     }
     
     public AchievementStatisticsDto getAchievementStatistics(String fightModeFilter, Integer seasonFilter) {
-        log.debug("Получение статистики достижений с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
+        return getAchievementStatistics(fightModeFilter, seasonFilter, null, null);
+    }
+    
+    public AchievementStatisticsDto getAchievementStatistics(String fightModeFilter, Integer seasonFilter, String startDate, String endDate) {
+        log.debug("Получение статистики достижений с фильтрами: fightMode={}, season={}, startDate={}, endDate={}", 
+                  fightModeFilter, seasonFilter, startDate, endDate);
         
-        List<Fight> filteredFights = getFilteredFights(fightModeFilter, seasonFilter);
+        List<Fight> filteredFights = getFilteredFights(fightModeFilter, seasonFilter, startDate, endDate);
 
         return AchievementStatisticsDto.builder()
                 .maxRatingPoints(calculateMaxRatingPoints(filteredFights))
@@ -57,6 +63,10 @@ public class AchievementStatisticsService {
      * Получить отфильтрованные бои
      */
     private List<Fight> getFilteredFights(String fightModeFilter, Integer seasonFilter) {
+        return getFilteredFights(fightModeFilter, seasonFilter, null, null);
+    }
+    
+    private List<Fight> getFilteredFights(String fightModeFilter, Integer seasonFilter, String startDate, String endDate) {
         List<Fight> allFights = fightRepository.findAll().stream()
                 .sorted((f1, f2) -> f1.getFightDate().compareTo(f2.getFightDate()))
                 .collect(Collectors.toList());
@@ -64,9 +74,17 @@ public class AchievementStatisticsService {
         // Конвертируем строку в enum
         final FightMode fightMode = parseFightMode(fightModeFilter);
         
+        // Парсим даты
+        final LocalDateTime startDateTime = (startDate != null && !startDate.isEmpty()) ? 
+            parseDateTime(startDate + "T00:00:00", "начальной") : null;
+        final LocalDateTime endDateTime = (endDate != null && !endDate.isEmpty()) ? 
+            parseDateTime(endDate + "T23:59:59", "конечной") : null;
+        
         return allFights.stream()
                 .filter(fight -> fightMode == null || fight.getFightMode() == fightMode)
                 .filter(fight -> seasonFilter == null || fight.getSeason().equals(seasonFilter))
+                .filter(fight -> startDateTime == null || fight.getFightDate().isAfter(startDateTime) || fight.getFightDate().isEqual(startDateTime))
+                .filter(fight -> endDateTime == null || fight.getFightDate().isBefore(endDateTime) || fight.getFightDate().isEqual(endDateTime))
                 .collect(Collectors.toList());
     }
     
@@ -81,6 +99,18 @@ public class AchievementStatisticsService {
             return FightMode.valueOf(fightModeFilter);
         } catch (IllegalArgumentException e) {
             log.warn("Неверный режим боя: {}", fightModeFilter);
+            return null;
+        }
+    }
+    
+    /**
+     * Парсинг даты с обработкой ошибок
+     */
+    private LocalDateTime parseDateTime(String dateTimeString, String dateType) {
+        try {
+            return LocalDateTime.parse(dateTimeString);
+        } catch (Exception e) {
+            log.warn("Неверный формат {} даты: {}", dateType, dateTimeString);
             return null;
         }
     }

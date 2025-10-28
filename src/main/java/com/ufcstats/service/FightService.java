@@ -213,7 +213,15 @@ public class FightService {
      * Получить статистику боев с фильтрацией
      */
     public FightStatistics getFightStatistics(String fightModeFilter, Integer seasonFilter) {
-        log.debug("Получение статистики боев с фильтрами: fightMode={}, season={}", fightModeFilter, seasonFilter);
+        return getFightStatistics(fightModeFilter, seasonFilter, null, null);
+    }
+    
+    /**
+     * Получить статистику боев с фильтрацией по дате
+     */
+    public FightStatistics getFightStatistics(String fightModeFilter, Integer seasonFilter, String startDate, String endDate) {
+        log.debug("Получение статистики боев с фильтрами: fightMode={}, season={}, startDate={}, endDate={}", 
+                  fightModeFilter, seasonFilter, startDate, endDate);
         
         // Конвертируем строку в enum
         FightMode fightMode = null;
@@ -225,10 +233,30 @@ public class FightService {
             }
         }
         
-        long totalFights = fightRepository.countFightsWithFilters(fightMode, seasonFilter);
-        long wins = fightRepository.countWinsWithFilters(fightMode, seasonFilter);
-        long losses = fightRepository.countLossesWithFilters(fightMode, seasonFilter);
-        long draws = fightRepository.countDrawsWithFilters(fightMode, seasonFilter);
+        // Парсим даты
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+        
+        if (startDate != null && !startDate.isEmpty()) {
+            try {
+                startDateTime = LocalDateTime.parse(startDate + "T00:00:00");
+            } catch (Exception e) {
+                log.warn("Неверный формат начальной даты: {}", startDate);
+            }
+        }
+        
+        if (endDate != null && !endDate.isEmpty()) {
+            try {
+                endDateTime = LocalDateTime.parse(endDate + "T23:59:59");
+            } catch (Exception e) {
+                log.warn("Неверный формат конечной даты: {}", endDate);
+            }
+        }
+        
+        long totalFights = fightRepository.countFightsWithFilters(fightMode, seasonFilter, startDateTime, endDateTime);
+        long wins = fightRepository.countWinsWithFilters(fightMode, seasonFilter, startDateTime, endDateTime);
+        long losses = fightRepository.countLossesWithFilters(fightMode, seasonFilter, startDateTime, endDateTime);
+        long draws = fightRepository.countDrawsWithFilters(fightMode, seasonFilter, startDateTime, endDateTime);
         
         return FightStatistics.builder()
                 .totalFights(totalFights)

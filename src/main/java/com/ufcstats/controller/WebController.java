@@ -284,15 +284,17 @@ public class WebController {
     @GetMapping("/statistics")
     public String statistics(Model model,
                            @RequestParam(required = false) String fightModeFilter,
-                           @RequestParam(required = false) Integer seasonFilter) {
+                           @RequestParam(required = false) Integer seasonFilter,
+                           @RequestParam(required = false) String startDate,
+                           @RequestParam(required = false) String endDate) {
         model.addAttribute("title", "Статистика");
         
         // Получаем статистику с учетом фильтров
-        FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, seasonFilter);
-        AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, seasonFilter);
-        FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, seasonFilter);
-        StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, seasonFilter);
-        AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, seasonFilter);
+        FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+        AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+        FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+        StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, seasonFilter, startDate, endDate);
+        AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, seasonFilter, startDate, endDate);
         
         model.addAttribute("statistics", stats);
         model.addAttribute("advancedStatistics", advancedStats);
@@ -305,6 +307,8 @@ public class WebController {
         model.addAttribute("seasons", fightService.getDistinctSeasons());
         model.addAttribute("selectedFightMode", fightModeFilter);
         model.addAttribute("selectedSeason", seasonFilter);
+        model.addAttribute("selectedStartDate", startDate);
+        model.addAttribute("selectedEndDate", endDate);
         
         return "statistics";
     }

@@ -130,6 +130,19 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
                                 @Param("seasonFilter") Integer seasonFilter);
 
     /**
+     * Подсчитать общее количество боев с фильтрами по дате
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter) AND " +
+           "(:startDate IS NULL OR f.fightDate >= :startDate) AND " +
+           "(:endDate IS NULL OR f.fightDate <= :endDate)")
+    long countFightsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
+                                @Param("seasonFilter") Integer seasonFilter,
+                                @Param("startDate") LocalDateTime startDate,
+                                @Param("endDate") LocalDateTime endDate);
+
+    /**
      * Подсчитать количество побед с фильтрами
      */
     @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'WIN' AND " +
@@ -137,6 +150,19 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
            "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
     long countWinsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
                               @Param("seasonFilter") Integer seasonFilter);
+
+    /**
+     * Подсчитать количество побед с фильтрами по дате
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'WIN' AND " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter) AND " +
+           "(:startDate IS NULL OR f.fightDate >= :startDate) AND " +
+           "(:endDate IS NULL OR f.fightDate <= :endDate)")
+    long countWinsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
+                              @Param("seasonFilter") Integer seasonFilter,
+                              @Param("startDate") LocalDateTime startDate,
+                              @Param("endDate") LocalDateTime endDate);
 
     /**
      * Подсчитать количество поражений с фильтрами
@@ -148,6 +174,19 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
                                 @Param("seasonFilter") Integer seasonFilter);
 
     /**
+     * Подсчитать количество поражений с фильтрами по дате
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'LOSS' AND " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter) AND " +
+           "(:startDate IS NULL OR f.fightDate >= :startDate) AND " +
+           "(:endDate IS NULL OR f.fightDate <= :endDate)")
+    long countLossesWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
+                                @Param("seasonFilter") Integer seasonFilter,
+                                @Param("startDate") LocalDateTime startDate,
+                                @Param("endDate") LocalDateTime endDate);
+
+    /**
      * Подсчитать количество ничьих с фильтрами
      */
     @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'DRAW' AND " +
@@ -155,6 +194,19 @@ public interface FightRepository extends JpaRepository<Fight, Long> {
            "(:seasonFilter IS NULL OR f.season = :seasonFilter)")
     long countDrawsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
                                @Param("seasonFilter") Integer seasonFilter);
+
+    /**
+     * Подсчитать количество ничьих с фильтрами по дате
+     */
+    @Query("SELECT COUNT(f) FROM Fight f WHERE f.result = 'DRAW' AND " +
+           "(:fightModeFilter IS NULL OR f.fightMode = :fightModeFilter) AND " +
+           "(:seasonFilter IS NULL OR f.season = :seasonFilter) AND " +
+           "(:startDate IS NULL OR f.fightDate >= :startDate) AND " +
+           "(:endDate IS NULL OR f.fightDate <= :endDate)")
+    long countDrawsWithFilters(@Param("fightModeFilter") FightMode fightModeFilter, 
+                               @Param("seasonFilter") Integer seasonFilter,
+                               @Param("startDate") LocalDateTime startDate,
+                               @Param("endDate") LocalDateTime endDate);
 
     /**
      * Найти бои с рейтингом (не null)
