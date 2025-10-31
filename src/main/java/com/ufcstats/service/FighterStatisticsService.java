@@ -151,7 +151,14 @@ public class FighterStatisticsService {
                             .build();
                 })
                 .filter(fighter -> fighter.getTotalFights() >= 3) // Минимум 3 боя для статистики
-                .sorted((a, b) -> Double.compare(b.getWinRate(), a.getWinRate()))
+                .sorted((a, b) -> {
+                    // Сначала по проценту побед, затем по количеству побед
+                    int winRateComparison = Double.compare(b.getWinRate(), a.getWinRate());
+                    if (winRateComparison != 0) {
+                        return winRateComparison;
+                    }
+                    return Long.compare(b.getWins(), a.getWins());
+                })
                 .limit(5)
                 .collect(Collectors.toList());
     }
@@ -193,7 +200,14 @@ public class FighterStatisticsService {
                             .build();
                 })
                 .filter(fighter -> fighter.getTotalFights() >= 3) // Минимум 3 боя для статистики
-                .sorted((a, b) -> Double.compare(a.getWinRate(), b.getWinRate()))
+                .sorted((a, b) -> {
+                    // Сначала по проценту побед (по возрастанию - худшие), затем по количеству поражений (по убыванию - больше поражений)
+                    int winRateComparison = Double.compare(a.getWinRate(), b.getWinRate());
+                    if (winRateComparison != 0) {
+                        return winRateComparison;
+                    }
+                    return Long.compare(b.getLosses(), a.getLosses());
+                })
                 .limit(5)
                 .collect(Collectors.toList());
     }
