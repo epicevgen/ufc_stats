@@ -56,6 +56,12 @@ public class AchievementStatisticsService {
                 .currentLossStreak(calculateCurrentLossStreak(filteredFights))
                 .currentWinStreakStartDate(findCurrentWinStreakStartDate(filteredFights))
                 .currentLossStreakStartDate(findCurrentLossStreakStartDate(filteredFights))
+                .avgRatingPoints(calculateAvgRatingPoints(filteredFights))
+                .ratingPointsQ1(calculateRatingPointsQ1(filteredFights))
+                .ratingPointsQ3(calculateRatingPointsQ3(filteredFights))
+                .avgRankingPosition(calculateAvgRankingPosition(filteredFights))
+                .rankingPositionQ1(calculateRankingPositionQ1(filteredFights))
+                .rankingPositionQ3(calculateRankingPositionQ3(filteredFights))
                 .build();
     }
     
@@ -369,5 +375,115 @@ public class AchievementStatisticsService {
         }
         
         return "N/A";
+    }
+    
+    /**
+     * Расчет среднего значения рейтинга
+     */
+    private Double calculateAvgRatingPoints(List<Fight> fights) {
+        List<Integer> ratingValues = fights.stream()
+                .filter(f -> f.getRatingPoints() != null && f.getRatingPoints() > 0)
+                .map(Fight::getRatingPoints)
+                .collect(Collectors.toList());
+        
+        if (ratingValues.isEmpty()) {
+            return 0.0;
+        }
+        
+        return ratingValues.stream()
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0.0);
+    }
+    
+    /**
+     * Расчет первого квартиля для рейтинга (Q1)
+     */
+    private Integer calculateRatingPointsQ1(List<Fight> fights) {
+        List<Integer> ratingValues = fights.stream()
+                .filter(f -> f.getRatingPoints() != null && f.getRatingPoints() > 0)
+                .map(Fight::getRatingPoints)
+                .sorted()
+                .collect(Collectors.toList());
+        
+        if (ratingValues.isEmpty()) {
+            return 0;
+        }
+        
+        int q1Index = (int) Math.floor(ratingValues.size() * 0.25);
+        return ratingValues.get(q1Index);
+    }
+    
+    /**
+     * Расчет третьего квартиля для рейтинга (Q3)
+     */
+    private Integer calculateRatingPointsQ3(List<Fight> fights) {
+        List<Integer> ratingValues = fights.stream()
+                .filter(f -> f.getRatingPoints() != null && f.getRatingPoints() > 0)
+                .map(Fight::getRatingPoints)
+                .sorted()
+                .collect(Collectors.toList());
+        
+        if (ratingValues.isEmpty()) {
+            return 0;
+        }
+        
+        int q3Index = (int) Math.floor(ratingValues.size() * 0.75);
+        return ratingValues.get(q3Index);
+    }
+    
+    /**
+     * Расчет среднего значения места в рейтинге
+     */
+    private Double calculateAvgRankingPosition(List<Fight> fights) {
+        List<Integer> rankingValues = fights.stream()
+                .filter(f -> f.getRankingPosition() != null && f.getRankingPosition() > 0)
+                .map(Fight::getRankingPosition)
+                .collect(Collectors.toList());
+        
+        if (rankingValues.isEmpty()) {
+            return 0.0;
+        }
+        
+        return rankingValues.stream()
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0.0);
+    }
+    
+    /**
+     * Расчет первого квартиля для места в рейтинге (Q1)
+     */
+    private Integer calculateRankingPositionQ1(List<Fight> fights) {
+        List<Integer> rankingValues = fights.stream()
+                .filter(f -> f.getRankingPosition() != null && f.getRankingPosition() > 0)
+                .map(Fight::getRankingPosition)
+                .sorted()
+                .collect(Collectors.toList());
+        
+        if (rankingValues.isEmpty()) {
+            return 0;
+        }
+        
+        int q1Index = (int) Math.floor(rankingValues.size() * 0.25);
+        return rankingValues.get(q1Index);
+    }
+    
+    /**
+     * Расчет третьего квартиля для места в рейтинге (Q3)
+     */
+    private Integer calculateRankingPositionQ3(List<Fight> fights) {
+        List<Integer> rankingValues = fights.stream()
+                .filter(f -> f.getRankingPosition() != null && f.getRankingPosition() > 0)
+                .map(Fight::getRankingPosition)
+                .sorted()
+                .collect(Collectors.toList());
+        
+        if (rankingValues.isEmpty()) {
+            return 0;
+        }
+        
+        int q3Index = (int) Math.floor(rankingValues.size() * 0.75);
+        return rankingValues.get(q3Index);
     }
 }

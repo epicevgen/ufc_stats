@@ -36,4 +36,14 @@ public class AchievementStatisticsDto {
     private Integer currentLossStreak;
     private String currentWinStreakStartDate;
     private String currentLossStreakStartDate;
+    
+    // Средние значения рейтинга
+    private Double avgRatingPoints;
+    private Integer ratingPointsQ1;
+    private Integer ratingPointsQ3;
+    
+    // Средние значения места
+    private Double avgRankingPosition;
+    private Integer rankingPositionQ1;
+    private Integer rankingPositionQ3;
 }

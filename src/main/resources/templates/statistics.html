@@ -1056,6 +1056,70 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Средние значения рейтинга -->
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📊 Средние значения рейтинга</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="achievement-item">
+                                    <h6 class="text-primary mb-2">Среднее значение</h6>
+                                    <p class="mb-1">
+                                        <span class="fs-5 fw-bold" th:text="${achievementStatistics.avgRatingPoints != null ? #numbers.formatDecimal(achievementStatistics.avgRatingPoints, 1, 1) : '0.0'}">0.0</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="achievement-item">
+                                    <h6 class="text-info mb-2">Средний диапазон</h6>
+                                    <p class="mb-1">
+                                        <span class="fs-5" th:text="${achievementStatistics.ratingPointsQ1 != null ? achievementStatistics.ratingPointsQ1 : 0}">0</span>
+                                        <span> - </span>
+                                        <span class="fs-5" th:text="${achievementStatistics.ratingPointsQ3 != null ? achievementStatistics.ratingPointsQ3 : 0}">0</span>
+                                    </p>
+                                    <small class="text-muted">(Q1 - Q3, исключая экстремумы)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Средние значения места -->
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📊 Средние значения места</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="achievement-item">
+                                    <h6 class="text-success mb-2">Среднее значение</h6>
+                                    <p class="mb-1">
+                                        <span class="fs-5 fw-bold" th:text="${achievementStatistics.avgRankingPosition != null ? #numbers.formatDecimal(achievementStatistics.avgRankingPosition, 1, 1) : '0.0'}">0.0</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="achievement-item">
+                                    <h6 class="text-info mb-2">Средний диапазон</h6>
+                                    <p class="mb-1">
+                                        <span class="fs-5" th:text="${achievementStatistics.rankingPositionQ1 != null ? achievementStatistics.rankingPositionQ1 : 0}">0</span>
+                                        <span> - </span>
+                                        <span class="fs-5" th:text="${achievementStatistics.rankingPositionQ3 != null ? achievementStatistics.rankingPositionQ3 : 0}">0</span>
+                                    </p>
+                                    <small class="text-muted">(Q1 - Q3, исключая экстремумы)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                         </div>
                     </div>
                 </div>
