@@ -680,6 +680,16 @@
                     <div class="card-body">
                         <canvas id="ratingChart" width="800" height="300" style="cursor: grab; touch-action: none;"></canvas>
                         <div class="mt-2 small text-muted" id="ratingChangeAverages" style="display:none"></div>
+                        <div class="mt-2 p-2 bg-light rounded" id="ratingStatistics" style="display:none">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Среднее количество очков:</strong> <span id="ratingAverage">—</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Диапазон значений очков:</strong> <span id="ratingRange">—</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="d-flex align-items-center gap-2 mt-2">
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRating('out')" title="Уменьшить">−</button>
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRating('in')" title="Увеличить">+</button>
@@ -697,6 +707,16 @@
                     <div class="card-body">
                         <canvas id="rankingChart" width="800" height="300" style="cursor: grab; touch-action: none;"></canvas>
                         <div class="mt-2 small text-muted" id="rankingChangeAverages" style="display:none"></div>
+                        <div class="mt-2 p-2 bg-light rounded" id="rankingStatistics" style="display:none">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Среднее место:</strong> <span id="rankingAverage">—</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Диапазон значений места:</strong> <span id="rankingRange">—</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="d-flex align-items-center gap-2 mt-2">
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRanking('out')" title="Уменьшить">−</button>
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="zoomRanking('in')" title="Увеличить">+</button>
@@ -1213,6 +1233,54 @@
                         }
                     }
 
+                    // Функция для расчета квартилей (исключает экстремумы)
+                    function calculateQuartiles(values) {
+                        if (values.length === 0) return { q1: 0, q3: 0 };
+                        
+                        // Сортируем значения по возрастанию
+                        const sorted = [...values].sort((a, b) => a - b);
+                        
+                        // Расчет Q1 (первый квартиль - 25-й процентиль)
+                        const q1Index = Math.floor(sorted.length * 0.25);
+                        const q1 = sorted[q1Index] || sorted[0];
+                        
+                        // Расчет Q3 (третий квартиль - 75-й процентиль)
+                        const q3Index = Math.floor(sorted.length * 0.75);
+                        const q3 = sorted[q3Index] || sorted[sorted.length - 1];
+                        
+                        return { q1, q3 };
+                    }
+
+                    // Расчет средних значений и диапазонов для очков рейтинга
+                    const ratingStatsEl = document.getElementById('ratingStatistics');
+                    const ratingAverageEl = document.getElementById('ratingAverage');
+                    const ratingRangeEl = document.getElementById('ratingRange');
+                    if (ratingStatsEl && ratingAverageEl && ratingRangeEl) {
+                        if (hasRatingData && ratingData.length > 0) {
+                            // Получаем все значения очков рейтинга
+                            const ratingValues = ratingData
+                                .filter(item => item && typeof item.rating === 'number' && item.rating > 0)
+                                .map(item => item.rating);
+                            
+                            if (ratingValues.length > 0) {
+                                // Среднее значение
+                                const avgRating = ratingValues.reduce((a, b) => a + b, 0) / ratingValues.length;
+                                
+                                // Расчет диапазона через квартили (исключаем экстремумы)
+                                const quartiles = calculateQuartiles(ratingValues);
+                                
+                                // Отображаем результаты
+                                ratingAverageEl.textContent = avgRating.toFixed(1);
+                                ratingRangeEl.textContent = `${quartiles.q1.toFixed(0)} - ${quartiles.q3.toFixed(0)}`;
+                                ratingStatsEl.style.display = 'block';
+                            } else {
+                                ratingStatsEl.style.display = 'none';
+                            }
+                        } else {
+                            ratingStatsEl.style.display = 'none';
+                        }
+                    }
+
                 console.log('[Debug] Creating rating chart with data:', ratingData.length, 'points');
                 try {
                 const ratingChart = new Chart(ratingCtx, {
@@ -1526,6 +1594,36 @@
                         } else {
                             rankingAvgEl.style.display = 'block';
                             rankingAvgEl.innerText = 'Нет данных для отображения графика';
+                        }
+                    }
+
+                    // Расчет средних значений и диапазонов для места в рейтинге
+                    const rankingStatsEl = document.getElementById('rankingStatistics');
+                    const rankingAverageEl = document.getElementById('rankingAverage');
+                    const rankingRangeEl = document.getElementById('rankingRange');
+                    if (rankingStatsEl && rankingAverageEl && rankingRangeEl) {
+                        if (hasRankingData && rankingData.length > 0) {
+                            // Получаем все значения места в рейтинге
+                            const rankingValues = rankingData
+                                .filter(item => item && typeof item.ranking === 'number' && item.ranking > 0)
+                                .map(item => item.ranking);
+                            
+                            if (rankingValues.length > 0) {
+                                // Среднее значение
+                                const avgRanking = rankingValues.reduce((a, b) => a + b, 0) / rankingValues.length;
+                                
+                                // Расчет диапазона через квартили (исключаем экстремумы)
+                                const quartiles = calculateQuartiles(rankingValues);
+                                
+                                // Отображаем результаты
+                                rankingAverageEl.textContent = avgRanking.toFixed(1);
+                                rankingRangeEl.textContent = `${quartiles.q1.toFixed(0)} - ${quartiles.q3.toFixed(0)}`;
+                                rankingStatsEl.style.display = 'block';
+                            } else {
+                                rankingStatsEl.style.display = 'none';
+                            }
+                        } else {
+                            rankingStatsEl.style.display = 'none';
                         }
                     }
 
