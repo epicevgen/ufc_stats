@@ -62,6 +62,7 @@ public class AdvancedStatisticsService {
                 .controlTime(calculateControlTimeStatistics(filteredFights))
                 .damage(calculateDamageStatistics(filteredFights))
                 .judgeScores(calculateJudgeScoreStatistics(filteredFights))
+                .highAccuracyStrikes(calculateHighAccuracyStrikesStatistics(filteredFights))
                 .ratingHistory(calculateRatingHistory(filteredFights))
                 .rankingHistory(calculateRankingHistory(filteredFights))
                 .build();
@@ -364,6 +365,107 @@ public class AdvancedStatisticsService {
                 .avgMyControlTimeFormatted(formatControlTime(avgMyControlTimeSeconds))
                 .avgOpponentControlTimeFormatted(formatControlTime(avgOpponentControlTimeSeconds))
                 .build();
+    }
+    
+    /**
+     * Расчет статистики боев с точностью ударов 50% и выше
+     */
+    private AdvancedStatisticsDto.HighAccuracyStrikesStatisticsDto calculateHighAccuracyStrikesStatistics(List<Fight> fights) {
+        long totalFights = fights.size();
+        
+        if (totalFights == 0) {
+            return AdvancedStatisticsDto.HighAccuracyStrikesStatisticsDto.builder()
+                    .myTotalStrikesHighAccuracyCount(0L)
+                    .opponentTotalStrikesHighAccuracyCount(0L)
+                    .myTotalStrikesHighAccuracyPercent(0.0)
+                    .opponentTotalStrikesHighAccuracyPercent(0.0)
+                    .mySignificantStrikesHighAccuracyCount(0L)
+                    .opponentSignificantStrikesHighAccuracyCount(0L)
+                    .mySignificantStrikesHighAccuracyPercent(0.0)
+                    .opponentSignificantStrikesHighAccuracyPercent(0.0)
+                    .totalFights(0L)
+                    .build();
+        }
+        
+        // Подсчет боев с точностью общих ударов >= 50%
+        long myTotalStrikesHighAccuracyCount = fights.stream()
+                .mapToLong(fight -> {
+                    double myTotalAccuracy = calculateFightTotalStrikesAccuracy(fight, true);
+                    return myTotalAccuracy >= 50.0 ? 1 : 0;
+                })
+                .sum();
+        
+        long opponentTotalStrikesHighAccuracyCount = fights.stream()
+                .mapToLong(fight -> {
+                    double opponentTotalAccuracy = calculateFightTotalStrikesAccuracy(fight, false);
+                    return opponentTotalAccuracy >= 50.0 ? 1 : 0;
+                })
+                .sum();
+        
+        // Подсчет боев с точностью значимых ударов >= 50%
+        long mySignificantStrikesHighAccuracyCount = fights.stream()
+                .mapToLong(fight -> {
+                    double mySignificantAccuracy = calculateFightSignificantStrikesAccuracy(fight, true);
+                    return mySignificantAccuracy >= 50.0 ? 1 : 0;
+                })
+                .sum();
+        
+        long opponentSignificantStrikesHighAccuracyCount = fights.stream()
+                .mapToLong(fight -> {
+                    double opponentSignificantAccuracy = calculateFightSignificantStrikesAccuracy(fight, false);
+                    return opponentSignificantAccuracy >= 50.0 ? 1 : 0;
+                })
+                .sum();
+        
+        return AdvancedStatisticsDto.HighAccuracyStrikesStatisticsDto.builder()
+                .myTotalStrikesHighAccuracyCount(myTotalStrikesHighAccuracyCount)
+                .opponentTotalStrikesHighAccuracyCount(opponentTotalStrikesHighAccuracyCount)
+                .myTotalStrikesHighAccuracyPercent(totalFights > 0 ? (double) myTotalStrikesHighAccuracyCount / totalFights * 100 : 0.0)
+                .opponentTotalStrikesHighAccuracyPercent(totalFights > 0 ? (double) opponentTotalStrikesHighAccuracyCount / totalFights * 100 : 0.0)
+                .mySignificantStrikesHighAccuracyCount(mySignificantStrikesHighAccuracyCount)
+                .opponentSignificantStrikesHighAccuracyCount(opponentSignificantStrikesHighAccuracyCount)
+                .mySignificantStrikesHighAccuracyPercent(totalFights > 0 ? (double) mySignificantStrikesHighAccuracyCount / totalFights * 100 : 0.0)
+                .opponentSignificantStrikesHighAccuracyPercent(totalFights > 0 ? (double) opponentSignificantStrikesHighAccuracyCount / totalFights * 100 : 0.0)
+                .totalFights(totalFights)
+                .build();
+    }
+    
+    /**
+     * Расчет точности общих ударов для боя
+     */
+    private double calculateFightTotalStrikesAccuracy(Fight fight, boolean isMyFighter) {
+        int totalLanded = fight.getRounds().stream()
+                .mapToInt(round -> isMyFighter ? 
+                    round.getMyTotalStrikesLanded() : 
+                    round.getOpponentTotalStrikesLanded())
+                .sum();
+        
+        int totalAttempted = fight.getRounds().stream()
+                .mapToInt(round -> isMyFighter ? 
+                    round.getMyTotalStrikesAttempted() : 
+                    round.getOpponentTotalStrikesAttempted())
+                .sum();
+        
+        return totalAttempted > 0 ? (double) totalLanded / totalAttempted * 100 : 0.0;
+    }
+    
+    /**
+     * Расчет точности значимых ударов для боя
+     */
+    private double calculateFightSignificantStrikesAccuracy(Fight fight, boolean isMyFighter) {
+        int significantLanded = fight.getRounds().stream()
+                .mapToInt(round -> isMyFighter ? 
+                    round.getMySignificantStrikesLanded() : 
+                    round.getOpponentSignificantStrikesLanded())
+                .sum();
+        
+        int significantAttempted = fight.getRounds().stream()
+                .mapToInt(round -> isMyFighter ? 
+                    round.getMySignificantStrikesAttempted() : 
+                    round.getOpponentSignificantStrikesAttempted())
+                .sum();
+        
+        return significantAttempted > 0 ? (double) significantLanded / significantAttempted * 100 : 0.0;
     }
     
     /**

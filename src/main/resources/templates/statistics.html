@@ -352,23 +352,35 @@
                 </div>
             </div>
             
-            <!-- Статистика по тейкдаунам -->
+            <!-- Количество боев с точностью ударов 50% и выше -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">🤼 Статистика тейкдаунов (ММА)</h5>
+                        <h5 class="mb-0">🎯 Количество боев с точностью ударов 50% и выше</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="text-success">Мои тейкдауны</h6>
-                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.myTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
-                                <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgMyTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
+                                <h6 class="text-success">Мой боец</h6>
+                                <p class="mb-1">Общие удары: 
+                                    <span th:text="${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                                <p class="mb-1">Значимые удары: 
+                                    <span th:text="${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.opponentTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
-                                <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgOpponentTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
+                                <p class="mb-1">Общие удары: 
+                                    <span th:text="${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                                <p class="mb-1">Значимые удары: 
+                                    <span th:text="${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -399,23 +411,23 @@
                 </div>
             </div>
             
-            <!-- Судейские оценки -->
+            <!-- Статистика по тейкдаунам -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">⚖️ Судейские оценки</h5>
+                        <h5 class="mb-0">🤼 Статистика тейкдаунов (ММА)</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="text-success">Победы по судьям</h6>
-                                <p class="mb-1">Боев выиграно: <span th:text="${advancedStatistics.judgeScores.fightsWonByJudges}">0</span></p>
-                                <p class="mb-1">Процент: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.judgeWinRate, 1, 1)}">0</span>%</p>
+                                <h6 class="text-success">Мои тейкдауны</h6>
+                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.myTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgMyTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
                             </div>
                             <div class="col-6">
-                                <h6 class="text-info">Средние оценки</h6>
-                                <p class="mb-1">Мои: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgMyScore, 1, 1)}">0</span></p>
-                                <p class="mb-1">Соперник: <span th:text="${#numbers.formatDecimal(advancedStatistics.judgeScores.avgOpponentScore, 1, 1)}">0</span></p>
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.opponentTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgOpponentTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
                             </div>
                         </div>
                     </div>

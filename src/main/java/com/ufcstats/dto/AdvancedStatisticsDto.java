@@ -45,6 +45,9 @@ public class AdvancedStatisticsDto {
     // Статистика по судейским оценкам
     private JudgeScoreStatisticsDto judgeScores;
     
+    // Статистика боев с высокой точностью ударов
+    private HighAccuracyStrikesStatisticsDto highAccuracyStrikes;
+    
     // Движение рейтинга
     private List<RatingHistoryDto> ratingHistory;
     
@@ -180,6 +183,30 @@ public class AdvancedStatisticsDto {
         private int change;
         private String fightResult;
         private String opponent;
+    }
+    
+    /**
+     * Статистика боев с точностью ударов 50% и выше
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HighAccuracyStrikesStatisticsDto {
+        // Общие удары
+        private long myTotalStrikesHighAccuracyCount;
+        private long opponentTotalStrikesHighAccuracyCount;
+        private double myTotalStrikesHighAccuracyPercent;
+        private double opponentTotalStrikesHighAccuracyPercent;
+        
+        // Значимые удары
+        private long mySignificantStrikesHighAccuracyCount;
+        private long opponentSignificantStrikesHighAccuracyCount;
+        private double mySignificantStrikesHighAccuracyPercent;
+        private double opponentSignificantStrikesHighAccuracyPercent;
+        
+        // Общее количество боев для расчета процентов
+        private long totalFights;
     }
     
     /**
