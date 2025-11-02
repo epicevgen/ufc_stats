@@ -25,17 +25,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.util.Map;
-import java.util.Optional;
-import com.ufcstats.dto.RatingChangeDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import java.time.LocalDateTime;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Optional;
+import com.ufcstats.dto.RatingChangeDto;
 
 /**
  * Контроллер для веб-страниц
@@ -300,21 +301,142 @@ public class WebController {
                            @RequestParam(required = false) String fightModeFilter,
                            @RequestParam(required = false) Integer seasonFilter,
                            @RequestParam(required = false) String startDate,
-                           @RequestParam(required = false) String endDate) {
+                           @RequestParam(required = false) String endDate,
+                           @RequestParam(required = false) String comparisonFilter,
+                           @RequestParam(required = false) Integer periodDays,
+                           @RequestParam(required = false) Boolean compareWithAverage,
+                           @RequestParam(required = false) Integer displaySeason,
+                           @RequestParam(required = false) Integer compareSeason) {
         model.addAttribute("title", "Статистика");
         
-        // Получаем статистику с учетом фильтров
-        FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, seasonFilter, startDate, endDate);
-        AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, seasonFilter, startDate, endDate);
-        FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, seasonFilter, startDate, endDate);
-        StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, seasonFilter, startDate, endDate);
-        AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, seasonFilter, startDate, endDate);
-        
-        model.addAttribute("statistics", stats);
-        model.addAttribute("advancedStatistics", advancedStats);
-        model.addAttribute("fighterStatistics", fighterStats);
-        model.addAttribute("strikeMovement", strikeMovement);
-        model.addAttribute("achievementStatistics", achievementStats);
+        // Если выбран режим сравнения, обрабатываем параметры по-другому
+        if (comparisonFilter != null && !comparisonFilter.isEmpty()) {
+            if ("periods".equals(comparisonFilter) && periodDays != null && periodDays > 0) {
+                // Режим сравнения периодов
+                // Используем LocalDate для корректной работы с датами без времени
+                LocalDate today = LocalDate.now();
+                LocalDate periodEnd = today;
+                LocalDate periodStart = today.minusDays(periodDays - 1); // Включаем сегодняшний день
+                
+                String periodStartStr = periodStart.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+                String periodEndStr = periodEnd.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+                
+                // Получаем статистику за выбранный период
+                FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, null, periodStartStr, periodEndStr);
+                AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, null, periodStartStr, periodEndStr);
+                FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, null, periodStartStr, periodEndStr);
+                StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, null, periodStartStr, periodEndStr);
+                AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, null, periodStartStr, periodEndStr);
+                
+                // Получаем данные для сравнения
+                FightService.FightStatistics compareStats = null;
+                AdvancedStatisticsDto compareAdvancedStats = null;
+                FighterStatisticsDto compareFighterStats = null;
+                StrikeMovementDto compareStrikeMovement = null;
+                AchievementStatisticsDto compareAchievementStats = null;
+                boolean comparisonDataFound = false;
+                
+                if (compareWithAverage != null && compareWithAverage) {
+                    // Сравнение с общим средним (до начала периода)
+                    LocalDate compareEndDate = periodStart.minusDays(1);
+                    String compareEndStr = compareEndDate.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+                    compareStats = fightService.getFightStatistics(fightModeFilter, null, null, compareEndStr);
+                    compareAdvancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, null, null, compareEndStr);
+                    compareFighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, null, null, compareEndStr);
+                    compareStrikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, null, null, compareEndStr);
+                    compareAchievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, null, null, compareEndStr);
+                    comparisonDataFound = (compareStats != null && compareStats.getTotalFights() > 0);
+                } else {
+                    // Сравнение с предыдущим аналогичным периодом
+                    // Предыдущий период должен быть строго такого же размера
+                    LocalDate comparePeriodEnd = periodStart.minusDays(1); // День перед началом текущего периода
+                    LocalDate comparePeriodStart = comparePeriodEnd.minusDays(periodDays - 1); // Начало предыдущего периода (того же размера)
+                    
+                    String compareStartStr = comparePeriodStart.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+                    String compareEndStr = comparePeriodEnd.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+                    
+                    compareStats = fightService.getFightStatistics(fightModeFilter, null, compareStartStr, compareEndStr);
+                    compareAdvancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, null, compareStartStr, compareEndStr);
+                    compareFighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, null, compareStartStr, compareEndStr);
+                    compareStrikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, null, compareStartStr, compareEndStr);
+                    compareAchievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, null, compareStartStr, compareEndStr);
+                    comparisonDataFound = (compareStats != null && compareStats.getTotalFights() > 0);
+                }
+                
+                model.addAttribute("statistics", stats);
+                model.addAttribute("advancedStatistics", advancedStats);
+                model.addAttribute("fighterStatistics", fighterStats);
+                model.addAttribute("strikeMovement", strikeMovement);
+                model.addAttribute("achievementStatistics", achievementStats);
+                
+                if (comparisonDataFound) {
+                    model.addAttribute("compareStatistics", compareStats);
+                    model.addAttribute("compareAdvancedStatistics", compareAdvancedStats);
+                    model.addAttribute("compareFighterStatistics", compareFighterStats);
+                    model.addAttribute("compareStrikeMovement", compareStrikeMovement);
+                    model.addAttribute("compareAchievementStatistics", compareAchievementStats);
+                } else {
+                    // Проверяем, что есть хотя бы данные для текущего периода
+                    if (stats.getTotalFights() == 0) {
+                        model.addAttribute("comparisonError", "Не найдено данных за выбранный период");
+                    } else {
+                        model.addAttribute("comparisonError", "Не найдено данных для сравнения");
+                    }
+                }
+            } else if ("seasons".equals(comparisonFilter) && displaySeason != null && compareSeason != null) {
+                // Режим сравнения сезонов
+                FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, displaySeason, null, null);
+                AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, displaySeason, null, null);
+                FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, displaySeason, null, null);
+                StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, displaySeason, null, null);
+                AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, displaySeason, null, null);
+                
+                // Получаем данные для сравнения
+                FightService.FightStatistics compareStats = fightService.getFightStatistics(fightModeFilter, compareSeason, null, null);
+                AdvancedStatisticsDto compareAdvancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, compareSeason, null, null);
+                FighterStatisticsDto compareFighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, compareSeason, null, null);
+                StrikeMovementDto compareStrikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, compareSeason, null, null);
+                AchievementStatisticsDto compareAchievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, compareSeason, null, null);
+                
+                model.addAttribute("statistics", stats);
+                model.addAttribute("advancedStatistics", advancedStats);
+                model.addAttribute("fighterStatistics", fighterStats);
+                model.addAttribute("strikeMovement", strikeMovement);
+                model.addAttribute("achievementStatistics", achievementStats);
+                
+                model.addAttribute("compareStatistics", compareStats);
+                model.addAttribute("compareAdvancedStatistics", compareAdvancedStats);
+                model.addAttribute("compareFighterStatistics", compareFighterStats);
+                model.addAttribute("compareStrikeMovement", compareStrikeMovement);
+                model.addAttribute("compareAchievementStatistics", compareAchievementStats);
+            } else {
+                // Недостаточно данных для сравнения - показываем обычную статистику
+                FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+                AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+                FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+                StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, seasonFilter, startDate, endDate);
+                AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+                
+                model.addAttribute("statistics", stats);
+                model.addAttribute("advancedStatistics", advancedStats);
+                model.addAttribute("fighterStatistics", fighterStats);
+                model.addAttribute("strikeMovement", strikeMovement);
+                model.addAttribute("achievementStatistics", achievementStats);
+            }
+        } else {
+            // Стандартный режим без сравнения
+            FightService.FightStatistics stats = fightService.getFightStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+            AdvancedStatisticsDto advancedStats = advancedStatisticsService.getAdvancedStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+            FighterStatisticsDto fighterStats = fighterStatisticsService.getFighterStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+            StrikeMovementDto strikeMovement = strikeMovementService.getStrikeMovementData(fightModeFilter, seasonFilter, startDate, endDate);
+            AchievementStatisticsDto achievementStats = achievementStatisticsService.getAchievementStatistics(fightModeFilter, seasonFilter, startDate, endDate);
+            
+            model.addAttribute("statistics", stats);
+            model.addAttribute("advancedStatistics", advancedStats);
+            model.addAttribute("fighterStatistics", fighterStats);
+            model.addAttribute("strikeMovement", strikeMovement);
+            model.addAttribute("achievementStatistics", achievementStats);
+        }
         
         // Добавляем данные для фильтров
         model.addAttribute("fightModes", FightMode.values());
@@ -323,6 +445,11 @@ public class WebController {
         model.addAttribute("selectedSeason", seasonFilter);
         model.addAttribute("selectedStartDate", startDate);
         model.addAttribute("selectedEndDate", endDate);
+        model.addAttribute("selectedComparison", comparisonFilter);
+        model.addAttribute("selectedPeriodDays", periodDays);
+        model.addAttribute("selectedCompareWithAverage", compareWithAverage);
+        model.addAttribute("selectedDisplaySeason", displaySeason);
+        model.addAttribute("selectedCompareSeason", compareSeason);
         
         return "statistics";
     }

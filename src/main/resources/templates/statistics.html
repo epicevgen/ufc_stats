@@ -85,6 +85,13 @@
             font-size: 0.85rem;
             font-weight: 500;
         }
+        
+        /* Стили для карточек с тултипом сравнения */
+        .card[title]:hover {
+            cursor: help;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transition: box-shadow 0.2s ease;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -155,6 +162,60 @@
                                    th:value="${selectedEndDate}" onchange="submitForm()">
                         </div>
                     </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <label for="comparisonFilter" class="form-label"><strong>Сравнение</strong></label>
+                            <select class="form-select" id="comparisonFilter" name="comparisonFilter" onchange="handleComparisonChange()">
+                                <option value="">Не выбрано</option>
+                                <option value="seasons" th:selected="${selectedComparison == 'seasons'}">Сезонов</option>
+                                <option value="periods" th:selected="${selectedComparison == 'periods'}">Периодов</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Поля для сравнения периодов -->
+                    <div class="row mt-3" id="periodComparisonFields" style="display: none;">
+                        <div class="col-md-4">
+                            <label for="periodDays" class="form-label">Количество дней периода</label>
+                            <input type="number" class="form-control" id="periodDays" name="periodDays" 
+                                   min="1" th:value="${selectedPeriodDays != null ? selectedPeriodDays : ''}" 
+                                   placeholder="Например: 7">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="compareWithAverage" name="compareWithAverage" 
+                                       th:checked="${selectedCompareWithAverage == true}">
+                                <label class="form-check-label" for="compareWithAverage">
+                                    Сравнить с общим средним
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Поля для сравнения сезонов -->
+                    <div class="row mt-3" id="seasonComparisonFields" style="display: none;">
+                        <div class="col-md-6">
+                            <label for="displaySeason" class="form-label">Отображаемый сезон</label>
+                            <select class="form-select" id="displaySeason" name="displaySeason">
+                                <option value="">Выберите сезон</option>
+                                <option th:each="season : ${seasons}" 
+                                        th:value="${season}" 
+                                        th:text="'Сезон ' + ${season}"
+                                        th:selected="${selectedDisplaySeason == season}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="compareSeason" class="form-label">Сезон для сравнения</label>
+                            <select class="form-select" id="compareSeason" name="compareSeason">
+                                <option value="">Выберите сезон</option>
+                                <option th:each="season : ${seasons}" 
+                                        th:value="${season}" 
+                                        th:text="'Сезон ' + ${season}"
+                                        th:selected="${selectedCompareSeason == season}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="row mt-2">
                         <div class="col-12">
                             <a href="#" class="btn btn-outline-secondary btn-sm" onclick="resetFilters(); return false;">
@@ -164,6 +225,12 @@
                     </div>
                 </form>
             </div>
+        </div>
+
+        <!-- Блок ошибки сравнения -->
+        <div th:if="${comparisonError}" class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+            <strong>⚠️ Ошибка:</strong> <span th:text="${comparisonError}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
         <!-- Sticky кнопка "Свернуть все" - всегда видимая -->
@@ -183,10 +250,24 @@
                 </h2>
                 <div id="collapseBasic" class="accordion-collapse collapse" aria-labelledby="headingBasic">
                     <div class="accordion-body">
+                        <!-- Блок сравнения (если включен режим сравнения) -->
+                        <div th:if="${compareStatistics != null}" class="alert alert-info mb-4">
+                            <h5 class="mb-3"><i class="fas fa-balance-scale me-2"></i> Режим сравнения активен</h5>
+                            <p class="mb-2">Наведите курсор на виджет, чтобы увидеть текущее значение, значение для сравнения и разницу</p>
+                        </div>
+                        
                         <!-- Первый ряд: Основные показатели -->
                         <div class="row mb-3">
                             <div class="col">
-                                <div class="card text-center">
+                                <div class="card text-center" 
+                                     th:if="${compareStatistics != null}"
+                                     th:attr="title='Текущее: ' + ${statistics.totalFights} + ' | Для сравнения: ' + ${compareStatistics.totalFights} + ' | Разница: ' + (${statistics.totalFights - compareStatistics.totalFights > 0 ? '+' : ''}) + (${statistics.totalFights - compareStatistics.totalFights})">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary">Всего боев</h5>
+                                        <h2 class="card-text" th:text="${statistics.totalFights}">0</h2>
+                                    </div>
+                                </div>
+                                <div class="card text-center" th:if="${compareStatistics == null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-primary">Всего боев</h5>
                                         <h2 class="card-text" th:text="${statistics.totalFights}">0</h2>
@@ -194,7 +275,15 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-center">
+                                <div class="card text-center" 
+                                     th:if="${compareStatistics != null}"
+                                     th:attr="title='Текущее: ' + ${statistics.wins} + ' | Для сравнения: ' + ${compareStatistics.wins} + ' | Разница: ' + (${statistics.wins - compareStatistics.wins > 0 ? '+' : ''}) + (${statistics.wins - compareStatistics.wins})">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-success">Побед</h5>
+                                        <h2 class="card-text" th:text="${statistics.wins}">0</h2>
+                                    </div>
+                                </div>
+                                <div class="card text-center" th:if="${compareStatistics == null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-success">Побед</h5>
                                         <h2 class="card-text" th:text="${statistics.wins}">0</h2>
@@ -202,7 +291,15 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-center">
+                                <div class="card text-center" 
+                                     th:if="${compareStatistics != null}"
+                                     th:attr="title='Текущее: ' + ${statistics.losses} + ' | Для сравнения: ' + ${compareStatistics.losses} + ' | Разница: ' + (${statistics.losses - compareStatistics.losses < 0 ? '' : '+'}) + (${statistics.losses - compareStatistics.losses})">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-danger">Поражений</h5>
+                                        <h2 class="card-text" th:text="${statistics.losses}">0</h2>
+                                    </div>
+                                </div>
+                                <div class="card text-center" th:if="${compareStatistics == null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-danger">Поражений</h5>
                                         <h2 class="card-text" th:text="${statistics.losses}">0</h2>
@@ -210,7 +307,15 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-center">
+                                <div class="card text-center" 
+                                     th:if="${compareStatistics != null}"
+                                     th:attr="title='Текущее: ' + ${statistics.draws} + ' | Для сравнения: ' + ${compareStatistics.draws} + ' | Разница: ' + (${statistics.draws - compareStatistics.draws > 0 ? '+' : ''}) + (${statistics.draws - compareStatistics.draws})">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-info">Ничьих</h5>
+                                        <h2 class="card-text" th:text="${statistics.draws}">0</h2>
+                                    </div>
+                                </div>
+                                <div class="card text-center" th:if="${compareStatistics == null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-info">Ничьих</h5>
                                         <h2 class="card-text" th:text="${statistics.draws}">0</h2>
@@ -218,7 +323,15 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="card text-center">
+                                <div class="card text-center" 
+                                     th:if="${compareStatistics != null}"
+                                     th:attr="title='Текущее: ' + ${#numbers.formatDecimal(statistics.winRate, 1, 1)} + '% | Для сравнения: ' + ${#numbers.formatDecimal(compareStatistics.winRate, 1, 1)} + '% | Разница: ' + (${statistics.winRate - compareStatistics.winRate > 0 ? '+' : ''}) + ${#numbers.formatDecimal(statistics.winRate - compareStatistics.winRate, 1, 1)} + '%'">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-warning">Процент побед</h5>
+                                        <h2 class="card-text" th:text="${#numbers.formatDecimal(statistics.winRate, 1, 1)} + '%'">0%</h2>
+                                    </div>
+                                </div>
+                                <div class="card text-center" th:if="${compareStatistics == null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-warning">Процент побед</h5>
                                         <h2 class="card-text" th:text="${#numbers.formatDecimal(statistics.winRate, 1, 1)} + '%'">0%</h2>
@@ -2361,6 +2474,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             const fightModeSelect = document.getElementById('fightModeFilter');
             const seasonSelect = document.getElementById('seasonFilter');
+            const comparisonFilterSelect = document.getElementById('comparisonFilter');
+            const periodDaysInput = document.getElementById('periodDays');
+            const compareWithAverageCheckbox = document.getElementById('compareWithAverage');
+            const displaySeasonSelect = document.getElementById('displaySeason');
+            const compareSeasonSelect = document.getElementById('compareSeason');
             
             if (fightModeSelect) {
                 fightModeSelect.addEventListener('change', function() {
@@ -2368,8 +2486,45 @@
                 });
             }
             
-            if (seasonSelect) {
+            if (seasonSelect && !seasonSelect.disabled) {
                 seasonSelect.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
+            
+            if (comparisonFilterSelect) {
+                comparisonFilterSelect.addEventListener('change', function() {
+                    handleComparisonChange();
+                    // Применяем фильтры только если не выбрано сравнение или если выбраны все необходимые параметры
+                    if (this.value === '' || (this.value === 'periods' && !document.getElementById('periodDays').value) || 
+                        (this.value === 'seasons' && (!document.getElementById('displaySeason').value || !document.getElementById('compareSeason').value))) {
+                        // Не применяем - ждем ввода параметров
+                    } else {
+                        applyFilters();
+                    }
+                });
+            }
+            
+            if (periodDaysInput) {
+                periodDaysInput.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
+            
+            if (compareWithAverageCheckbox) {
+                compareWithAverageCheckbox.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
+            
+            if (displaySeasonSelect) {
+                displaySeasonSelect.addEventListener('change', function() {
+                    applyFilters();
+                });
+            }
+            
+            if (compareSeasonSelect) {
+                compareSeasonSelect.addEventListener('change', function() {
                     applyFilters();
                 });
             }
@@ -2377,7 +2532,17 @@
 
         function applyFilters() {
             const fightMode = document.getElementById('fightModeFilter').value;
-            const season = document.getElementById('seasonFilter').value;
+            const seasonFilter = document.getElementById('seasonFilter');
+            const season = seasonFilter.value;
+            const startDateInput = document.getElementById('startDate');
+            const startDate = startDateInput.value;
+            const endDateInput = document.getElementById('endDate');
+            const endDate = endDateInput.value;
+            const comparisonFilter = document.getElementById('comparisonFilter').value;
+            const periodDays = document.getElementById('periodDays').value;
+            const compareWithAverage = document.getElementById('compareWithAverage').checked;
+            const displaySeason = document.getElementById('displaySeason').value;
+            const compareSeason = document.getElementById('compareSeason').value;
             
             // Строим URL с параметрами
             let url = '/statistics';
@@ -2386,8 +2551,30 @@
             if (fightMode) {
                 params.append('fightModeFilter', fightMode);
             }
-            if (season) {
+            if (season && !seasonFilter.disabled) {
                 params.append('seasonFilter', season);
+            }
+            if (startDate && !startDateInput.disabled) {
+                params.append('startDate', startDate);
+            }
+            if (endDate && !endDateInput.disabled) {
+                params.append('endDate', endDate);
+            }
+            if (comparisonFilter) {
+                params.append('comparisonFilter', comparisonFilter);
+                if (comparisonFilter === 'periods' && periodDays) {
+                    params.append('periodDays', periodDays);
+                    if (compareWithAverage) {
+                        params.append('compareWithAverage', 'true');
+                    }
+                } else if (comparisonFilter === 'seasons') {
+                    if (displaySeason) {
+                        params.append('displaySeason', displaySeason);
+                    }
+                    if (compareSeason) {
+                        params.append('compareSeason', compareSeason);
+                    }
+                }
             }
             
             // Сохраняем состояние аккордеонов
@@ -2452,16 +2639,85 @@
             }
         }
 
+        // Функция для обработки изменения фильтра сравнения
+        function handleComparisonChange() {
+            const comparisonFilter = document.getElementById('comparisonFilter');
+            const comparisonValue = comparisonFilter.value;
+            
+            // Получаем элементы фильтров
+            const seasonFilter = document.getElementById('seasonFilter');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+            const periodFields = document.getElementById('periodComparisonFields');
+            const seasonFields = document.getElementById('seasonComparisonFields');
+            
+            if (comparisonValue === '') {
+                // Не выбрано - разблокируем все фильтры
+                seasonFilter.disabled = false;
+                startDate.disabled = false;
+                endDate.disabled = false;
+                periodFields.style.display = 'none';
+                seasonFields.style.display = 'none';
+            } else {
+                // Выбрано сравнение - блокируем сезон и даты
+                seasonFilter.disabled = true;
+                seasonFilter.value = '';
+                startDate.disabled = true;
+                startDate.value = '';
+                endDate.disabled = true;
+                endDate.value = '';
+                
+                if (comparisonValue === 'periods') {
+                    // Показываем поля для периодов
+                    periodFields.style.display = 'flex';
+                    seasonFields.style.display = 'none';
+                    // Очищаем поля сезонов
+                    document.getElementById('displaySeason').value = '';
+                    document.getElementById('compareSeason').value = '';
+                } else if (comparisonValue === 'seasons') {
+                    // Показываем поля для сезонов
+                    seasonFields.style.display = 'flex';
+                    periodFields.style.display = 'none';
+                    // Очищаем поля периодов
+                    document.getElementById('periodDays').value = '';
+                    document.getElementById('compareWithAverage').checked = false;
+                }
+            }
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, если фильтр сравнения уже выбран при загрузке
+            const comparisonFilter = document.getElementById('comparisonFilter');
+            if (comparisonFilter && comparisonFilter.value !== '') {
+                handleComparisonChange();
+                // Показываем соответствующие поля
+                if (comparisonFilter.value === 'periods') {
+                    document.getElementById('periodComparisonFields').style.display = 'flex';
+                } else if (comparisonFilter.value === 'seasons') {
+                    document.getElementById('seasonComparisonFields').style.display = 'flex';
+                }
+            }
+        });
+        
         // Функция для сброса фильтров с сохранением состояния аккордеонов
         function resetFilters() {
-            const accordionStates = getAccordionStates();
-            let url = '/statistics';
+            // Сбрасываем все поля фильтров
+            document.getElementById('fightModeFilter').value = '';
+            document.getElementById('seasonFilter').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('comparisonFilter').value = '';
+            document.getElementById('periodDays').value = '';
+            document.getElementById('compareWithAverage').checked = false;
+            document.getElementById('displaySeason').value = '';
+            document.getElementById('compareSeason').value = '';
             
-            if (accordionStates) {
-                url += '?accordionStates=' + accordionStates;
-            }
+            // Вызываем handleComparisonChange для разблокировки фильтров
+            handleComparisonChange();
             
-            window.location.href = url;
+            // Применяем фильтры (без параметров)
+            applyFilters();
         }
 
         // Функция для отправки формы с сохранением состояния аккордеонов
