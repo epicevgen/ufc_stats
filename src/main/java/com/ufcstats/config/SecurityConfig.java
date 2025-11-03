@@ -21,6 +21,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .anyRequest().permitAll()
             )
+            .formLogin(formLogin -> formLogin.disable())
+            .httpBasic(httpBasic -> httpBasic.disable())
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/h2-console/**", "/api/**", "/fights/new", "/fights/*/edit")
             )

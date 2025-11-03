@@ -267,3 +267,5 @@ chmod +x dist-electron/UFC\ Stats-1.0.0.AppImage
 
 
 
+
+
