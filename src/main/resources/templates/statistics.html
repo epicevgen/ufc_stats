@@ -1017,19 +1017,7 @@
             <!-- Статистика нанесенных повреждений -->
             <div class="col-md-12">
                 <div class="card" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (голова):</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0, 1, 1) + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? compareAdvancedStatistics.damage.avgMyHeadDamagePerFight : 0.0, 1, 1) + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница (голова):</span>' +
-                       ((advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) > (compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? compareAdvancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : ((advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) < (compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? compareAdvancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + ((advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) > (compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? compareAdvancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) ? 'diff-positive' : ((advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) < (compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? compareAdvancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       ((advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) > (compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? compareAdvancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) ? '+' : '') + #numbers.formatDecimal((advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0) - (compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? compareAdvancedStatistics.damage.avgMyHeadDamagePerFight : 0.0), 1, 1) +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">💥 Статистика нанесенных повреждений</h5>
                     </div>
@@ -1043,7 +1031,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">🥊</div>
-                                                <h4 class="text-danger mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-danger mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgMyHeadDamagePerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgMyHeadDamagePerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgMyHeadDamagePerFight, 1, 1) : '0.0'},
+                                                             data-label='Мои — Голова'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyHeadDamagePerFight != null ? advancedStatistics.damage.avgMyHeadDamagePerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Повреждения головы</p>
                                             </div>
                                         </div>
@@ -1052,7 +1045,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">🫁</div>
-                                                <h4 class="text-warning mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyBodyDamagePerFight != null ? advancedStatistics.damage.avgMyBodyDamagePerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-warning mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgMyBodyDamagePerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgMyBodyDamagePerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgMyBodyDamagePerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgMyBodyDamagePerFight, 1, 1) : '0.0'},
+                                                             data-label='Мои — Корпус'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyBodyDamagePerFight != null ? advancedStatistics.damage.avgMyBodyDamagePerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Повреждения корпуса</p>
                                             </div>
                                         </div>
@@ -1061,7 +1059,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">🦵</div>
-                                                <h4 class="text-info mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyLegDamagePerFight != null ? advancedStatistics.damage.avgMyLegDamagePerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-info mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgMyLegDamagePerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgMyLegDamagePerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgMyLegDamagePerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgMyLegDamagePerFight, 1, 1) : '0.0'},
+                                                             data-label='Мои — Ноги'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyLegDamagePerFight != null ? advancedStatistics.damage.avgMyLegDamagePerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Повреждения ног</p>
                                             </div>
                                         </div>
@@ -1070,7 +1073,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">💥</div>
-                                                <h4 class="text-danger mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyKnockdownsPerFight != null ? advancedStatistics.damage.avgMyKnockdownsPerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-danger mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgMyKnockdownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgMyKnockdownsPerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgMyKnockdownsPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgMyKnockdownsPerFight, 1, 1) : '0.0'},
+                                                             data-label='Мои — Нокдауны'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgMyKnockdownsPerFight != null ? advancedStatistics.damage.avgMyKnockdownsPerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Нокдауны</p>
                                             </div>
                                         </div>
@@ -1086,7 +1094,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">🥊</div>
-                                                <h4 class="text-danger mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentHeadDamagePerFight != null ? advancedStatistics.damage.avgOpponentHeadDamagePerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-danger mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgOpponentHeadDamagePerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgOpponentHeadDamagePerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgOpponentHeadDamagePerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgOpponentHeadDamagePerFight, 1, 1) : '0.0'},
+                                                             data-label='Соперник — Голова'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentHeadDamagePerFight != null ? advancedStatistics.damage.avgOpponentHeadDamagePerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Повреждения головы</p>
                                             </div>
                                         </div>
@@ -1095,7 +1108,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">🫁</div>
-                                                <h4 class="text-warning mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentBodyDamagePerFight != null ? advancedStatistics.damage.avgOpponentBodyDamagePerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-warning mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgOpponentBodyDamagePerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgOpponentBodyDamagePerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgOpponentBodyDamagePerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgOpponentBodyDamagePerFight, 1, 1) : '0.0'},
+                                                             data-label='Соперник — Корпус'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentBodyDamagePerFight != null ? advancedStatistics.damage.avgOpponentBodyDamagePerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Повреждения корпуса</p>
                                             </div>
                                         </div>
@@ -1104,7 +1122,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">🦵</div>
-                                                <h4 class="text-info mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentLegDamagePerFight != null ? advancedStatistics.damage.avgOpponentLegDamagePerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-info mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgOpponentLegDamagePerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgOpponentLegDamagePerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgOpponentLegDamagePerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgOpponentLegDamagePerFight, 1, 1) : '0.0'},
+                                                             data-label='Соперник — Ноги'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentLegDamagePerFight != null ? advancedStatistics.damage.avgOpponentLegDamagePerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Повреждения ног</p>
                                             </div>
                                         </div>
@@ -1113,7 +1136,12 @@
                                         <div class="text-center mb-3">
                                             <div class="damage-stat-item">
                                                 <div class="damage-icon">💥</div>
-                                                <h4 class="text-danger mb-1" th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentKnockdownsPerFight != null ? advancedStatistics.damage.avgOpponentKnockdownsPerFight : 0.0, 1, 1)}">0.0</h4>
+                                                <h4 class="text-danger mb-1"><span
+                                                    class="dmg-tip"
+                                                    th:attr="data-current=${advancedStatistics.damage?.avgOpponentKnockdownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.damage.avgOpponentKnockdownsPerFight, 1, 1) : '0.0'},
+                                                             data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.damage?.avgOpponentKnockdownsPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.damage.avgOpponentKnockdownsPerFight, 1, 1) : '0.0'},
+                                                             data-label='Соперник — Нокдауны'"
+                                                    th:text="${#numbers.formatDecimal(advancedStatistics.damage?.avgOpponentKnockdownsPerFight != null ? advancedStatistics.damage.avgOpponentKnockdownsPerFight : 0.0, 1, 1)}">0.0</span></h4>
                                                 <p class="mb-0 small text-muted">Нокдауны</p>
                                             </div>
                                         </div>
@@ -3348,6 +3376,47 @@
                 });
             });
 
+        });
+
+        // Инициализация тултипов для нанесенных повреждений (числа с 1 знаком, дельта)
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
+            if (!compareOn || typeof bootstrap === 'undefined') {
+                return;
+            }
+            const parseNum = (val) => {
+                const s = (val == null ? '0' : String(val)).trim().replace(',', '.');
+                const n = parseFloat(s);
+                return isNaN(n) ? 0 : n;
+            };
+            const fmt1 = (num) => String(Math.round(num * 10) / 10).replace('.', ',');
+            document.querySelectorAll('.dmg-tip').forEach(function(el) {
+                const currentStr = el.getAttribute('data-current') || '0';
+                const compareStr = el.getAttribute('data-compare') || '0';
+                const label = el.getAttribute('data-label') || '';
+                const current = parseNum(currentStr);
+                const compare = parseNum(compareStr);
+                if (isNaN(current) || isNaN(compare)) {
+                    return;
+                }
+                const delta = current - compare;
+                const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
+                const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
+                const title = `
+                    <div class="comparison-tooltip">
+                      ${label ? `<div class=\"comparison-row\"><span class=\"comparison-label\">${label}:</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${fmt1(current)}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${fmt1(compare)}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${diffClass}">${sign}${fmt1(Math.abs(delta))}</span></div>
+                    </div>`;
+                const target = el.closest('.damage-stat-item') || el.closest('p') || el;
+                if (target.dataset.dmgTipInit === '1') {
+                    return;
+                }
+                new bootstrap.Tooltip(target, { html: true, title: title, placement: 'top' });
+                target.dataset.dmgTipInit = '1';
+            });
         });
 
         // Инициализация Bootstrap Tooltip для тултипов сравнения
