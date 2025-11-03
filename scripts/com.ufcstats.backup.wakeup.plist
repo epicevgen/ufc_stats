@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.ufcstats.backup.wakeup</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/evgenijstolarov/Documents/JavaProjects/ufc_stats/scripts/backup-on-wake.sh</string>
+    </array>
+    
+    <!-- Запускаем при подключении дисков/сети (происходит при пробуждении) -->
+    <key>StartOnMount</key>
+    <true/>
+    
+    <!-- НЕ запускаем при загрузке системы (только при пробуждении) -->
+    <key>RunAtLoad</key>
+    <false/>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/evgenijstolarov/Documents/JavaProjects/ufc_stats/backups/launchd-wakeup.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/evgenijstolarov/Documents/JavaProjects/ufc_stats/backups/launchd-wakeup-error.log</string>
+    
+    <!-- Не запускать слишком часто (минимум час между запусками) -->
+    <key>ThrottleInterval</key>
+    <integer>3600</integer>
+    
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
+
