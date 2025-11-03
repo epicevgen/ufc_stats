@@ -220,23 +220,47 @@ public class AdvancedStatisticsDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class StrikeAdvantageStatisticsDto {
-        // Бои где выброшено ударов больше чем у противника
-        private long myAttemptedStrikesAdvantageCount;
-        private long opponentAttemptedStrikesAdvantageCount;
-        private double myAttemptedStrikesAdvantagePercent;
-        private double opponentAttemptedStrikesAdvantagePercent;
+        // Бои где выброшено общих ударов больше чем у противника
+        private long myAttemptedTotalStrikesAdvantageCount;
+        private long opponentAttemptedTotalStrikesAdvantageCount;
+        private double myAttemptedTotalStrikesAdvantagePercent;
+        private double opponentAttemptedTotalStrikesAdvantagePercent;
         
-        // Бои где донесено ударов больше чем у противника
-        private long myLandedStrikesAdvantageCount;
-        private long opponentLandedStrikesAdvantageCount;
-        private double myLandedStrikesAdvantagePercent;
-        private double opponentLandedStrikesAdvantagePercent;
+        // Бои где выброшено значимых ударов больше чем у противника
+        private long myAttemptedSignificantStrikesAdvantageCount;
+        private long opponentAttemptedSignificantStrikesAdvantageCount;
+        private double myAttemptedSignificantStrikesAdvantagePercent;
+        private double opponentAttemptedSignificantStrikesAdvantagePercent;
         
-        // Бои где процент попадания больше чем у противника
-        private long myAccuracyAdvantageCount;
-        private long opponentAccuracyAdvantageCount;
-        private double myAccuracyAdvantagePercent;
-        private double opponentAccuracyAdvantagePercent;
+        // Бои где донесено общих ударов больше чем у противника
+        private long myLandedTotalStrikesAdvantageCount;
+        private long opponentLandedTotalStrikesAdvantageCount;
+        private double myLandedTotalStrikesAdvantagePercent;
+        private double opponentLandedTotalStrikesAdvantagePercent;
+        
+        // Бои где донесено значимых ударов больше чем у противника
+        private long myLandedSignificantStrikesAdvantageCount;
+        private long opponentLandedSignificantStrikesAdvantageCount;
+        private double myLandedSignificantStrikesAdvantagePercent;
+        private double opponentLandedSignificantStrikesAdvantagePercent;
+        
+        // Бои где донесено общих И значимых ударов больше чем у противника
+        private long myLandedBothStrikesAdvantageCount;
+        private long opponentLandedBothStrikesAdvantageCount;
+        private double myLandedBothStrikesAdvantagePercent;
+        private double opponentLandedBothStrikesAdvantagePercent;
+        
+        // Бои где процент попадания общих ударов больше чем у противника
+        private long myAccuracyTotalStrikesAdvantageCount;
+        private long opponentAccuracyTotalStrikesAdvantageCount;
+        private double myAccuracyTotalStrikesAdvantagePercent;
+        private double opponentAccuracyTotalStrikesAdvantagePercent;
+        
+        // Бои где процент попадания значимых ударов больше чем у противника
+        private long myAccuracySignificantStrikesAdvantageCount;
+        private long opponentAccuracySignificantStrikesAdvantageCount;
+        private double myAccuracySignificantStrikesAdvantagePercent;
+        private double opponentAccuracySignificantStrikesAdvantagePercent;
         
         // Общее количество боев для расчета процентов
         private long totalFights;
