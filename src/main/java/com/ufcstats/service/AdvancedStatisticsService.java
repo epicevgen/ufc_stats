@@ -767,11 +767,19 @@ public class AdvancedStatisticsService {
      * Расчет истории рейтинга
      */
     private List<AdvancedStatisticsDto.RatingHistoryDto> calculateRatingHistory(List<Fight> fights) {
-        return fights.stream()
+        List<Fight> sortedFights = fights.stream()
                 .sorted(Comparator.comparing(Fight::getFightDate))
+                .collect(Collectors.toList());
+        
+        return sortedFights.stream()
                 .map(fight -> {
-                    int previousRating = getPreviousRating(fights, fight);
-                    int change = fight.getRatingPoints() - previousRating;
+                    int previousRating = getPreviousRating(sortedFights, fight);
+                    // Если это первый бой (previousRating == 100 и нет предыдущих боев), 
+                    // то change = 0, чтобы не искажать средний прирост
+                    boolean isFirstFight = previousRating == 100 && 
+                            sortedFights.stream()
+                                    .noneMatch(f -> f.getFightDate().isBefore(fight.getFightDate()));
+                    int change = isFirstFight ? 0 : fight.getRatingPoints() - previousRating;
                     
                     return AdvancedStatisticsDto.RatingHistoryDto.builder()
                             .date(fight.getFightDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
@@ -789,11 +797,19 @@ public class AdvancedStatisticsService {
      * Расчет истории места в рейтинге
      */
     private List<AdvancedStatisticsDto.RankingHistoryDto> calculateRankingHistory(List<Fight> fights) {
-        return fights.stream()
+        List<Fight> sortedFights = fights.stream()
                 .sorted(Comparator.comparing(Fight::getFightDate))
+                .collect(Collectors.toList());
+        
+        return sortedFights.stream()
                 .map(fight -> {
-                    int previousRanking = getPreviousRanking(fights, fight);
-                    int change = previousRanking - fight.getRankingPosition(); // Обратный порядок - меньше место = лучше
+                    int previousRanking = getPreviousRanking(sortedFights, fight);
+                    // Если это первый бой (previousRanking == 50 и нет предыдущих боев), 
+                    // то change = 0, чтобы не искажать средний подъем
+                    boolean isFirstFight = previousRanking == 50 && 
+                            sortedFights.stream()
+                                    .noneMatch(f -> f.getFightDate().isBefore(fight.getFightDate()));
+                    int change = isFirstFight ? 0 : previousRanking - fight.getRankingPosition(); // Обратный порядок - меньше место = лучше
                     
                     return AdvancedStatisticsDto.RankingHistoryDto.builder()
                             .date(fight.getFightDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
