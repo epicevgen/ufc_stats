@@ -1571,26 +1571,17 @@
             <!-- Максимальные значения -->
             <div class="col-md-6 mb-3">
                 <div class="card" 
-                     th:if="${compareAchievementStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (макс. очки):</span><span class=&quot;comparison-value&quot;>' + achievementStatistics.maxRatingPoints + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareAchievementStatistics.maxRatingPoints + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       (achievementStatistics.maxRatingPoints > compareAchievementStatistics.maxRatingPoints ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (achievementStatistics.maxRatingPoints < compareAchievementStatistics.maxRatingPoints ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (achievementStatistics.maxRatingPoints > compareAchievementStatistics.maxRatingPoints ? 'diff-positive' : (achievementStatistics.maxRatingPoints < compareAchievementStatistics.maxRatingPoints ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (achievementStatistics.maxRatingPoints > compareAchievementStatistics.maxRatingPoints ? '+' : '') + (achievementStatistics.maxRatingPoints - compareAchievementStatistics.maxRatingPoints) +
-                       '</span></div></div>'}">
+                     th:if="${compareAchievementStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">📈 Максимальные значения</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.maxRatingPoints},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.maxRatingPoints : 0},
+                                             data-label='Максимальные очки рейтинга'">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-primary mb-1">Максимальные очки рейтинга</h6>
@@ -1603,7 +1594,11 @@
                                 </div>
                             </div>
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.minRankingPosition},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.minRankingPosition : 0},
+                                             data-label='Самое высокое место в рейтинге',
+                                             data-inverse=true">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-success mb-1">Самое высокое место в рейтинге</h6>
@@ -1658,26 +1653,17 @@
             <!-- Минимальные значения -->
             <div class="col-md-6 mb-3">
                 <div class="card" 
-                     th:if="${compareAchievementStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (мин. очки):</span><span class=&quot;comparison-value&quot;>' + achievementStatistics.minRatingPoints + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareAchievementStatistics.minRatingPoints + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       (achievementStatistics.minRatingPoints > compareAchievementStatistics.minRatingPoints ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (achievementStatistics.minRatingPoints < compareAchievementStatistics.minRatingPoints ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (achievementStatistics.minRatingPoints > compareAchievementStatistics.minRatingPoints ? 'diff-positive' : (achievementStatistics.minRatingPoints < compareAchievementStatistics.minRatingPoints ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (achievementStatistics.minRatingPoints > compareAchievementStatistics.minRatingPoints ? '+' : '') + (achievementStatistics.minRatingPoints - compareAchievementStatistics.minRatingPoints) +
-                       '</span></div></div>'}">
+                     th:if="${compareAchievementStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">📉 Минимальные значения</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.minRatingPoints},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.minRatingPoints : 0},
+                                             data-label='Минимальные очки рейтинга'">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-warning mb-1">Минимальные очки рейтинга</h6>
@@ -1690,7 +1676,11 @@
                                 </div>
                             </div>
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.maxRankingPosition},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.maxRankingPosition : 0},
+                                             data-label='Самое низкое место в рейтинге',
+                                             data-inverse=true">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-danger mb-1">Самое низкое место в рейтинге</h6>
@@ -1745,26 +1735,17 @@
             <!-- Серии побед -->
             <div class="col-md-6 mb-3">
                 <div class="card" 
-                     th:if="${compareAchievementStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (макс. серия):</span><span class=&quot;comparison-value&quot;>' + achievementStatistics.maxWinStreak + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareAchievementStatistics.maxWinStreak + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       (achievementStatistics.maxWinStreak > compareAchievementStatistics.maxWinStreak ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (achievementStatistics.maxWinStreak < compareAchievementStatistics.maxWinStreak ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (achievementStatistics.maxWinStreak > compareAchievementStatistics.maxWinStreak ? 'diff-positive' : (achievementStatistics.maxWinStreak < compareAchievementStatistics.maxWinStreak ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (achievementStatistics.maxWinStreak > compareAchievementStatistics.maxWinStreak ? '+' : '') + (achievementStatistics.maxWinStreak - compareAchievementStatistics.maxWinStreak) +
-                       '</span></div></div>'}">
+                     th:if="${compareAchievementStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">🔥 Серии побед</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.maxWinStreak},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.maxWinStreak : 0},
+                                             data-label='Максимальная серия побед'">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-success mb-1">Максимальная серия побед</h6>
@@ -1777,7 +1758,10 @@
                                 </div>
                             </div>
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.currentWinStreak},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.currentWinStreak : 0},
+                                             data-label='Текущая серия побед'">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-info mb-1">Текущая серия побед</h6>
@@ -1832,26 +1816,18 @@
             <!-- Серии поражений -->
             <div class="col-md-6 mb-3">
                 <div class="card" 
-                     th:if="${compareAchievementStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (макс. серия):</span><span class=&quot;comparison-value&quot;>' + achievementStatistics.maxLossStreak + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareAchievementStatistics.maxLossStreak + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       (achievementStatistics.maxLossStreak < compareAchievementStatistics.maxLossStreak ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (achievementStatistics.maxLossStreak > compareAchievementStatistics.maxLossStreak ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (achievementStatistics.maxLossStreak < compareAchievementStatistics.maxLossStreak ? 'diff-positive' : (achievementStatistics.maxLossStreak > compareAchievementStatistics.maxLossStreak ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (achievementStatistics.maxLossStreak < compareAchievementStatistics.maxLossStreak ? '' : '+') + (achievementStatistics.maxLossStreak - compareAchievementStatistics.maxLossStreak) +
-                       '</span></div></div>'}">
+                     th:if="${compareAchievementStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">💔 Серии поражений</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.maxLossStreak},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.maxLossStreak : 0},
+                                             data-label='Максимальная серия поражений',
+                                             data-inverse=true">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-danger mb-1">Максимальная серия поражений</h6>
@@ -1864,7 +1840,11 @@
                                 </div>
                             </div>
                             <div class="col-6 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.currentLossStreak},
+                                             data-compare=${compareAchievementStatistics != null ? compareAchievementStatistics.currentLossStreak : 0},
+                                             data-label='Текущая серия поражений',
+                                             data-inverse=true">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-warning mb-1">Текущая серия поражений</h6>
@@ -1919,26 +1899,17 @@
             <!-- Средние значения рейтинга -->
             <div class="col-md-6 mb-3">
                 <div class="card" 
-                     th:if="${compareAchievementStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (среднее):</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(achievementStatistics.avgRatingPoints != null ? achievementStatistics.avgRatingPoints : 0.0, 1, 1) + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAchievementStatistics.avgRatingPoints != null ? compareAchievementStatistics.avgRatingPoints : 0.0, 1, 1) + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       ((achievementStatistics.avgRatingPoints != null ? achievementStatistics.avgRatingPoints : 0.0) > (compareAchievementStatistics.avgRatingPoints != null ? compareAchievementStatistics.avgRatingPoints : 0.0) ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : ((achievementStatistics.avgRatingPoints != null ? achievementStatistics.avgRatingPoints : 0.0) < (compareAchievementStatistics.avgRatingPoints != null ? compareAchievementStatistics.avgRatingPoints : 0.0) ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + ((achievementStatistics.avgRatingPoints != null ? achievementStatistics.avgRatingPoints : 0.0) > (compareAchievementStatistics.avgRatingPoints != null ? compareAchievementStatistics.avgRatingPoints : 0.0) ? 'diff-positive' : ((achievementStatistics.avgRatingPoints != null ? achievementStatistics.avgRatingPoints : 0.0) < (compareAchievementStatistics.avgRatingPoints != null ? compareAchievementStatistics.avgRatingPoints : 0.0) ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       ((achievementStatistics.avgRatingPoints != null ? achievementStatistics.avgRatingPoints : 0.0) > (compareAchievementStatistics.avgRatingPoints != null ? compareAchievementStatistics.avgRatingPoints : 0.0) ? '+' : '') + #numbers.formatDecimal((achievementStatistics.avgRatingPoints != null ? achievementStatistics.avgRatingPoints : 0.0) - (compareAchievementStatistics.avgRatingPoints != null ? compareAchievementStatistics.avgRatingPoints : 0.0), 1, 1) +
-                       '</span></div></div>'}">
+                     th:if="${compareAchievementStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">📊 Средние значения рейтинга</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.avgRatingPoints != null ? #numbers.formatDecimal(achievementStatistics.avgRatingPoints, 1, 1) : '0.0'},
+                                             data-compare=${compareAchievementStatistics != null && compareAchievementStatistics.avgRatingPoints != null ? #numbers.formatDecimal(compareAchievementStatistics.avgRatingPoints, 1, 1) : '0.0'},
+                                             data-label='Среднее значение рейтинга'">
                                     <h6 class="text-primary mb-2">Среднее значение</h6>
                                     <p class="mb-1">
                                         <span class="fs-5 fw-bold" th:text="${achievementStatistics.avgRatingPoints != null ? #numbers.formatDecimal(achievementStatistics.avgRatingPoints, 1, 1) : '0.0'}">0.0</span>
@@ -1992,26 +1963,18 @@
             <!-- Средние значения места -->
             <div class="col-md-6 mb-3">
                 <div class="card" 
-                     th:if="${compareAchievementStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (среднее место):</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(achievementStatistics.avgRankingPosition != null ? achievementStatistics.avgRankingPosition : 0.0, 1, 1) + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAchievementStatistics.avgRankingPosition != null ? compareAchievementStatistics.avgRankingPosition : 0.0, 1, 1) + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       ((achievementStatistics.avgRankingPosition != null ? achievementStatistics.avgRankingPosition : 0.0) < (compareAchievementStatistics.avgRankingPosition != null ? compareAchievementStatistics.avgRankingPosition : 0.0) ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : ((achievementStatistics.avgRankingPosition != null ? achievementStatistics.avgRankingPosition : 0.0) > (compareAchievementStatistics.avgRankingPosition != null ? compareAchievementStatistics.avgRankingPosition : 0.0) ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + ((achievementStatistics.avgRankingPosition != null ? achievementStatistics.avgRankingPosition : 0.0) < (compareAchievementStatistics.avgRankingPosition != null ? compareAchievementStatistics.avgRankingPosition : 0.0) ? 'diff-positive' : ((achievementStatistics.avgRankingPosition != null ? achievementStatistics.avgRankingPosition : 0.0) > (compareAchievementStatistics.avgRankingPosition != null ? compareAchievementStatistics.avgRankingPosition : 0.0) ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       ((achievementStatistics.avgRankingPosition != null ? achievementStatistics.avgRankingPosition : 0.0) < (compareAchievementStatistics.avgRankingPosition != null ? compareAchievementStatistics.avgRankingPosition : 0.0) ? '' : '+') + #numbers.formatDecimal((achievementStatistics.avgRankingPosition != null ? achievementStatistics.avgRankingPosition : 0.0) - (compareAchievementStatistics.avgRankingPosition != null ? compareAchievementStatistics.avgRankingPosition : 0.0), 1, 1) +
-                       '</span></div></div>'}">
+                     th:if="${compareAchievementStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">📊 Средние значения места</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 mb-3">
-                                <div class="achievement-item">
+                                <div class="achievement-item achievement-tip"
+                                    th:attr="data-current=${achievementStatistics.avgRankingPosition != null ? #numbers.formatDecimal(achievementStatistics.avgRankingPosition, 1, 1) : '0.0'},
+                                             data-compare=${compareAchievementStatistics != null && compareAchievementStatistics.avgRankingPosition != null ? #numbers.formatDecimal(compareAchievementStatistics.avgRankingPosition, 1, 1) : '0.0'},
+                                             data-label='Среднее значение места',
+                                             data-inverse=true">
                                     <h6 class="text-success mb-2">Среднее значение</h6>
                                     <p class="mb-1">
                                         <span class="fs-5 fw-bold" th:text="${achievementStatistics.avgRankingPosition != null ? #numbers.formatDecimal(achievementStatistics.avgRankingPosition, 1, 1) : '0.0'}">0.0</span>
@@ -3973,6 +3936,68 @@
                 }
                 new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
                 el.dataset.methodRowTipInit = '1';
+            });
+        });
+
+        // Инициализация тултипов для достижений (с поддержкой обратной логики для места/поражений)
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
+            if (!compareOn || typeof bootstrap === 'undefined') {
+                return;
+            }
+            const parseNum = (val) => {
+                const s = (val == null ? '0' : String(val)).trim().replace(',', '.');
+                const n = parseFloat(s);
+                return isNaN(n) ? 0 : n;
+            };
+            const fmt1 = (num) => {
+                const v = Math.round(num * 10) / 10;
+                return String(v).replace('.', ',');
+            };
+            
+            document.querySelectorAll('.achievement-tip').forEach(function(el) {
+                const currentStr = el.getAttribute('data-current') || '0';
+                const compareStr = el.getAttribute('data-compare') || '0';
+                const label = el.getAttribute('data-label') || '';
+                const isInverse = el.getAttribute('data-inverse') === 'true';
+                
+                const currentRaw = parseNum(currentStr);
+                const compareRaw = parseNum(compareStr);
+                
+                if (isNaN(currentRaw) || isNaN(compareRaw)) {
+                    return;
+                }
+                
+                // Округляем до 1 знака после запятой (как отображается на экране)
+                const current = Math.round(currentRaw * 10) / 10;
+                const compare = Math.round(compareRaw * 10) / 10;
+                
+                // Вычисляем дельту из округленных значений
+                const delta = current - compare;
+                // Для обратной логики (место, поражения) - инвертируем знак для цвета
+                const effectiveDelta = isInverse ? -delta : delta;
+                const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
+                const diffClass = effectiveDelta > 0 ? 'diff-positive' : (effectiveDelta < 0 ? 'diff-negative' : 'diff-neutral');
+                
+                // Форматируем значение для отображения
+                const currentDisplay = current % 1 === 0 ? String(Math.round(current)) : fmt1(current);
+                const compareDisplay = compare % 1 === 0 ? String(Math.round(compare)) : fmt1(compare);
+                const deltaDisplay = Math.abs(delta) % 1 === 0 ? String(Math.round(Math.abs(delta))) : fmt1(Math.abs(delta));
+                
+                const title = `
+                    <div class="comparison-tooltip">
+                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentDisplay}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareDisplay}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${diffClass}">${sign}${deltaDisplay}</span></div>
+                    </div>`;
+
+                if (el.dataset.achievementTipInit === '1') {
+                    return;
+                }
+                new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
+                el.dataset.achievementTipInit = '1';
             });
         });
     </script>
