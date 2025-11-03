@@ -685,19 +685,7 @@
             <!-- Статистика по ударам -->
             <div class="col-md-6">
                 <div class="card" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (знач. удары):</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(advancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1) + ' (' + #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) + '%)</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1) + ' (' + #numbers.formatDecimal(compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) + '%)</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница (знач. удары):</span>' +
-                       (advancedStatistics.strikes.avgMySignificantStrikesPerFight > compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (advancedStatistics.strikes.avgMySignificantStrikesPerFight < compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (advancedStatistics.strikes.avgMySignificantStrikesPerFight > compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight ? 'diff-positive' : (advancedStatistics.strikes.avgMySignificantStrikesPerFight < compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (advancedStatistics.strikes.avgMySignificantStrikesPerFight > compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight ? '+' : '') + #numbers.formatDecimal(advancedStatistics.strikes.avgMySignificantStrikesPerFight - compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1) +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">🥊 Статистика ударов</h5>
                     </div>
@@ -707,22 +695,58 @@
                                 <h6 class="text-success">Мои удары</h6>
                                 <p class="mb-1">Значимые: 
                                     <span th:text="${advancedStatistics.strikes?.avgMySignificantStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    (<span th:text="${advancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-label='Мои — Значимые',
+                                                 data-unit='%'
+                                        "
+                                        th:text="${advancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'}">
+                                        0
+                                    </span>%)
                                 </p>
                                 <p class="mb-1">Общие: 
                                     <span th:text="${advancedStatistics.strikes?.avgMyTotalStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgMyTotalStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    (<span th:text="${advancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-label='Мои — Общие',
+                                                 data-unit='%'
+                                        "
+                                        th:text="${advancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'}">
+                                        0
+                                    </span>%)
                                 </p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
                                 <p class="mb-1">Значимые: 
                                     <span th:text="${advancedStatistics.strikes?.avgOpponentSignificantStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgOpponentSignificantStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    (<span th:text="${advancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-label='Соперник — Значимые',
+                                                 data-unit='%'
+                                        "
+                                        th:text="${advancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'}">
+                                        0
+                                    </span>%)
                                 </p>
                                 <p class="mb-1">Общие: 
                                     <span th:text="${advancedStatistics.strikes?.avgOpponentTotalStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgOpponentTotalStrikesPerFight, 1, 1) : '0.0'}">0</span>
-                                    (<span th:text="${advancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-label='Соперник — Общие',
+                                                 data-unit='%'
+                                        "
+                                        th:text="${advancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'}">
+                                        0
+                                    </span>%)
                                 </p>
                             </div>
                         </div>
@@ -764,19 +788,7 @@
             <!-- Количество боев с точностью ударов 50% и выше -->
             <div class="col-md-6">
                 <div class="card" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (общ.):</span><span class=&quot;comparison-value&quot;>' + (advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) + ' (' + #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent : 0.0, 1, 1) + '%)</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + (compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) + ' (' + #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent : 0.0, 1, 1) + '%)</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница (общ.):</span>' +
-                       ((advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) > (compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : ((advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) < (compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + ((advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) > (compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) ? 'diff-positive' : ((advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) < (compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       ((advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) > (compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) ? '+' : '') + ((advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0) - (compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0)) +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">🎯 Количество боев с точностью ударов 50% и выше</h5>
                     </div>
@@ -786,22 +798,46 @@
                                 <h6 class="text-success">Мой боец</h6>
                                 <p class="mb-1">Общие удары: 
                                     <span th:text="${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0}">0</span>
-                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-label='Мои (общие)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                                 <p class="mb-1">Значимые удары: 
                                     <span th:text="${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyCount : 0}">0</span>
-                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-label='Мои (значимые)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
                                 <p class="mb-1">Общие удары: 
                                     <span th:text="${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyCount : 0}">0</span>
-                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-label='Соперник (общие)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                                 <p class="mb-1">Значимые удары: 
                                     <span th:text="${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyCount : 0}">0</span>
-                                    (<span th:text="${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-label='Соперник (значимые)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
                                 </p>
                             </div>
                         </div>
@@ -3598,6 +3634,41 @@
         // Восстанавливаем состояние аккордеонов при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             restoreAccordionStates();
+        });
+
+        // Инициализация тултипов сравнения на конкретных значениях (%), собираем содержимое в JS
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
+            if (!compareOn || typeof bootstrap === 'undefined') {
+                return;
+            }
+            document.querySelectorAll('.cmp-tip').forEach(function(el) {
+                const current = parseFloat(el.getAttribute('data-current') || '0');
+                const compare = parseFloat(el.getAttribute('data-compare') || '0');
+                const unit = el.getAttribute('data-unit') || '%';
+                const label = el.getAttribute('data-label') || '';
+
+                if (isNaN(current) || isNaN(compare)) {
+                    return;
+                }
+
+                const delta = current - compare;
+                const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
+                const arrow = delta > 0 ? '<span class="comparison-arrow arrow-up">↑</span>' : (delta < 0 ? '<span class="comparison-arrow arrow-down">↓</span>' : '<span class="comparison-arrow arrow-equal">=</span>');
+                const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
+
+                const title = `
+                    <div class="comparison-tooltip">
+                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${current.toFixed(1)}${unit}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compare.toFixed(1)}${unit}</span></div>
+                      <hr>
+                      <div class="comparison-row"><span class="comparison-label">Δ:</span>${arrow}<span class="comparison-diff ${diffClass}">${sign}${Math.abs(delta).toFixed(1)}${unit}</span></div>
+                    </div>`;
+
+                new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
+            });
         });
     </script>
 </body>
