@@ -20,11 +20,11 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$BACKUP_DIR/backup.log"
 }
 
-# Функция для очистки старых бэкапов (оставляем последние 10)
+# Функция для очистки старых бэкапов (оставляем последние 3)
 cleanup_old_backups() {
     log "Очистка старых бэкапов..."
     cd "$BACKUP_DIR"
-    ls -t ${DB_NAME}_backup_*.zip | tail -n +11 | xargs -r rm
+    ls -t ${DB_NAME}_backup_*.zip | tail -n +4 | xargs -r rm
     log "Старые бэкапы удалены"
 }
 
