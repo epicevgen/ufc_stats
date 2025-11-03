@@ -48,6 +48,9 @@ public class AdvancedStatisticsDto {
     // Статистика боев с высокой точностью ударов
     private HighAccuracyStrikesStatisticsDto highAccuracyStrikes;
     
+    // Статистика боев с преимуществом по ударам
+    private StrikeAdvantageStatisticsDto strikeAdvantage;
+    
     // Движение рейтинга
     private List<RatingHistoryDto> ratingHistory;
     
@@ -204,6 +207,36 @@ public class AdvancedStatisticsDto {
         private long opponentSignificantStrikesHighAccuracyCount;
         private double mySignificantStrikesHighAccuracyPercent;
         private double opponentSignificantStrikesHighAccuracyPercent;
+        
+        // Общее количество боев для расчета процентов
+        private long totalFights;
+    }
+    
+    /**
+     * Статистика боев с преимуществом по ударам
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StrikeAdvantageStatisticsDto {
+        // Бои где выброшено ударов больше чем у противника
+        private long myAttemptedStrikesAdvantageCount;
+        private long opponentAttemptedStrikesAdvantageCount;
+        private double myAttemptedStrikesAdvantagePercent;
+        private double opponentAttemptedStrikesAdvantagePercent;
+        
+        // Бои где донесено ударов больше чем у противника
+        private long myLandedStrikesAdvantageCount;
+        private long opponentLandedStrikesAdvantageCount;
+        private double myLandedStrikesAdvantagePercent;
+        private double opponentLandedStrikesAdvantagePercent;
+        
+        // Бои где процент попадания больше чем у противника
+        private long myAccuracyAdvantageCount;
+        private long opponentAccuracyAdvantageCount;
+        private double myAccuracyAdvantagePercent;
+        private double opponentAccuracyAdvantagePercent;
         
         // Общее количество боев для расчета процентов
         private long totalFights;

@@ -827,6 +827,207 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Количество боев с выброшенными ударами больше чем у противника -->
+            <div class="col-md-6 mb-3">
+                <div class="card" 
+                     th:if="${compareAdvancedStatistics != null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">📊 Количество боев с выброшенными ударами больше чем у противника</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мой боец</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantageCount : 0}">0</span>
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantageCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantageCount != null ? compareAdvancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantageCount : 0},
+                                                 data-label='Мои выброшенные удары',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantageCount : 0}">0</span>
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantageCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantageCount != null ? compareAdvancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantageCount : 0},
+                                                 data-label='Соперник (выброшенные удары)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" th:if="${compareAdvancedStatistics == null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">📊 Количество боев с выброшенными ударами больше чем у противника</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мой боец</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantageCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.strikeAdvantage?.myAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantageCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.strikeAdvantage?.opponentAttemptedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentAttemptedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Количество боев с донесенными ударами больше чем у противника -->
+            <div class="col-md-6 mb-3">
+                <div class="card" 
+                     th:if="${compareAdvancedStatistics != null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">💥 Количество боев с донесенными ударами больше чем у противника</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мой боец</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.myLandedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.myLandedStrikesAdvantageCount : 0}">0</span>
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikeAdvantage?.myLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myLandedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.myLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikeAdvantage.myLandedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikeAdvantage?.myLandedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.myLandedStrikesAdvantageCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.myLandedStrikesAdvantageCount != null ? compareAdvancedStatistics.strikeAdvantage.myLandedStrikesAdvantageCount : 0},
+                                                 data-label='Мои донесенные удары',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.strikeAdvantage?.myLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myLandedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantageCount : 0}">0</span>
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantageCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantageCount != null ? compareAdvancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantageCount : 0},
+                                                 data-label='Соперник (донесенные удары)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" th:if="${compareAdvancedStatistics == null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">💥 Количество боев с донесенными ударами больше чем у противника</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мой боец</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.myLandedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.myLandedStrikesAdvantageCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.strikeAdvantage?.myLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myLandedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantageCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.strikeAdvantage?.opponentLandedStrikesAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentLandedStrikesAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Количество боев с процентом попадания больше чем у противника -->
+            <div class="col-md-6 mb-3">
+                <div class="card" 
+                     th:if="${compareAdvancedStatistics != null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">🎯 Количество боев с процентом попадания больше чем у противника</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мой боец</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.myAccuracyAdvantageCount != null ? advancedStatistics.strikeAdvantage.myAccuracyAdvantageCount : 0}">0</span>
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikeAdvantage?.myAccuracyAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myAccuracyAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.myAccuracyAdvantagePercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikeAdvantage.myAccuracyAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikeAdvantage?.myAccuracyAdvantageCount != null ? advancedStatistics.strikeAdvantage.myAccuracyAdvantageCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.myAccuracyAdvantageCount != null ? compareAdvancedStatistics.strikeAdvantage.myAccuracyAdvantageCount : 0},
+                                                 data-label='Мои (точность)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.strikeAdvantage?.myAccuracyAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myAccuracyAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.opponentAccuracyAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentAccuracyAdvantageCount : 0}">0</span>
+                                    (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.strikeAdvantage?.opponentAccuracyAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentAccuracyAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.opponentAccuracyAdvantagePercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikeAdvantage.opponentAccuracyAdvantagePercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikeAdvantage?.opponentAccuracyAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentAccuracyAdvantageCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikeAdvantage?.opponentAccuracyAdvantageCount != null ? compareAdvancedStatistics.strikeAdvantage.opponentAccuracyAdvantageCount : 0},
+                                                 data-label='Соперник (точность)',
+                                                 data-unit='%'"
+                                        th:text="${advancedStatistics.strikeAdvantage?.opponentAccuracyAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentAccuracyAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" th:if="${compareAdvancedStatistics == null}">
+                    <div class="card-header">
+                        <h5 class="mb-0">🎯 Количество боев с процентом попадания больше чем у противника</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h6 class="text-success">Мой боец</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.myAccuracyAdvantageCount != null ? advancedStatistics.strikeAdvantage.myAccuracyAdvantageCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.strikeAdvantage?.myAccuracyAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.myAccuracyAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-danger">Соперник</h6>
+                                <p class="mb-1">Количество: 
+                                    <span th:text="${advancedStatistics.strikeAdvantage?.opponentAccuracyAdvantageCount != null ? advancedStatistics.strikeAdvantage.opponentAccuracyAdvantageCount : 0}">0</span>
+                                    (<span th:text="${advancedStatistics.strikeAdvantage?.opponentAccuracyAdvantagePercent != null ? #numbers.formatDecimal(advancedStatistics.strikeAdvantage.opponentAccuracyAdvantagePercent, 1, 1) : '0.0'}">0</span>%)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Второй ряд виджетов боевой активности -->

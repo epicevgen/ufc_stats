@@ -63,6 +63,7 @@ public class AdvancedStatisticsService {
                 .damage(calculateDamageStatistics(filteredFights))
                 .judgeScores(calculateJudgeScoreStatistics(filteredFights))
                 .highAccuracyStrikes(calculateHighAccuracyStrikesStatistics(filteredFights))
+                .strikeAdvantage(calculateStrikeAdvantageStatistics(filteredFights))
                 .ratingHistory(calculateRatingHistory(filteredFights))
                 .rankingHistory(calculateRankingHistory(filteredFights))
                 .build();
@@ -466,6 +467,120 @@ public class AdvancedStatisticsService {
                 .sum();
         
         return significantAttempted > 0 ? (double) significantLanded / significantAttempted * 100 : 0.0;
+    }
+    
+    /**
+     * Расчет статистики боев с преимуществом по ударам
+     */
+    private AdvancedStatisticsDto.StrikeAdvantageStatisticsDto calculateStrikeAdvantageStatistics(List<Fight> fights) {
+        long totalFights = fights.size();
+        
+        if (totalFights == 0) {
+            return AdvancedStatisticsDto.StrikeAdvantageStatisticsDto.builder()
+                    .myAttemptedStrikesAdvantageCount(0L)
+                    .opponentAttemptedStrikesAdvantageCount(0L)
+                    .myAttemptedStrikesAdvantagePercent(0.0)
+                    .opponentAttemptedStrikesAdvantagePercent(0.0)
+                    .myLandedStrikesAdvantageCount(0L)
+                    .opponentLandedStrikesAdvantageCount(0L)
+                    .myLandedStrikesAdvantagePercent(0.0)
+                    .opponentLandedStrikesAdvantagePercent(0.0)
+                    .myAccuracyAdvantageCount(0L)
+                    .opponentAccuracyAdvantageCount(0L)
+                    .myAccuracyAdvantagePercent(0.0)
+                    .opponentAccuracyAdvantagePercent(0.0)
+                    .totalFights(0L)
+                    .build();
+        }
+        
+        // Подсчет боев где выброшено ударов больше чем у противника
+        long myAttemptedStrikesAdvantageCount = fights.stream()
+                .mapToLong(fight -> {
+                    int myAttempted = calculateFightTotalAttemptedStrikes(fight, true);
+                    int opponentAttempted = calculateFightTotalAttemptedStrikes(fight, false);
+                    return myAttempted > opponentAttempted ? 1 : 0;
+                })
+                .sum();
+        
+        long opponentAttemptedStrikesAdvantageCount = fights.stream()
+                .mapToLong(fight -> {
+                    int myAttempted = calculateFightTotalAttemptedStrikes(fight, true);
+                    int opponentAttempted = calculateFightTotalAttemptedStrikes(fight, false);
+                    return opponentAttempted > myAttempted ? 1 : 0;
+                })
+                .sum();
+        
+        // Подсчет боев где донесено ударов больше чем у противника
+        long myLandedStrikesAdvantageCount = fights.stream()
+                .mapToLong(fight -> {
+                    int myLanded = calculateFightTotalLandedStrikes(fight, true);
+                    int opponentLanded = calculateFightTotalLandedStrikes(fight, false);
+                    return myLanded > opponentLanded ? 1 : 0;
+                })
+                .sum();
+        
+        long opponentLandedStrikesAdvantageCount = fights.stream()
+                .mapToLong(fight -> {
+                    int myLanded = calculateFightTotalLandedStrikes(fight, true);
+                    int opponentLanded = calculateFightTotalLandedStrikes(fight, false);
+                    return opponentLanded > myLanded ? 1 : 0;
+                })
+                .sum();
+        
+        // Подсчет боев где процент попадания больше чем у противника
+        long myAccuracyAdvantageCount = fights.stream()
+                .mapToLong(fight -> {
+                    double myAccuracy = calculateFightTotalStrikesAccuracy(fight, true);
+                    double opponentAccuracy = calculateFightTotalStrikesAccuracy(fight, false);
+                    return myAccuracy > opponentAccuracy ? 1 : 0;
+                })
+                .sum();
+        
+        long opponentAccuracyAdvantageCount = fights.stream()
+                .mapToLong(fight -> {
+                    double myAccuracy = calculateFightTotalStrikesAccuracy(fight, true);
+                    double opponentAccuracy = calculateFightTotalStrikesAccuracy(fight, false);
+                    return opponentAccuracy > myAccuracy ? 1 : 0;
+                })
+                .sum();
+        
+        return AdvancedStatisticsDto.StrikeAdvantageStatisticsDto.builder()
+                .myAttemptedStrikesAdvantageCount(myAttemptedStrikesAdvantageCount)
+                .opponentAttemptedStrikesAdvantageCount(opponentAttemptedStrikesAdvantageCount)
+                .myAttemptedStrikesAdvantagePercent(totalFights > 0 ? (double) myAttemptedStrikesAdvantageCount / totalFights * 100 : 0.0)
+                .opponentAttemptedStrikesAdvantagePercent(totalFights > 0 ? (double) opponentAttemptedStrikesAdvantageCount / totalFights * 100 : 0.0)
+                .myLandedStrikesAdvantageCount(myLandedStrikesAdvantageCount)
+                .opponentLandedStrikesAdvantageCount(opponentLandedStrikesAdvantageCount)
+                .myLandedStrikesAdvantagePercent(totalFights > 0 ? (double) myLandedStrikesAdvantageCount / totalFights * 100 : 0.0)
+                .opponentLandedStrikesAdvantagePercent(totalFights > 0 ? (double) opponentLandedStrikesAdvantageCount / totalFights * 100 : 0.0)
+                .myAccuracyAdvantageCount(myAccuracyAdvantageCount)
+                .opponentAccuracyAdvantageCount(opponentAccuracyAdvantageCount)
+                .myAccuracyAdvantagePercent(totalFights > 0 ? (double) myAccuracyAdvantageCount / totalFights * 100 : 0.0)
+                .opponentAccuracyAdvantagePercent(totalFights > 0 ? (double) opponentAccuracyAdvantageCount / totalFights * 100 : 0.0)
+                .totalFights(totalFights)
+                .build();
+    }
+    
+    /**
+     * Расчет общего количества выброшенных ударов для боя
+     */
+    private int calculateFightTotalAttemptedStrikes(Fight fight, boolean isMyFighter) {
+        return fight.getRounds().stream()
+                .mapToInt(round -> isMyFighter ? 
+                    round.getMyTotalStrikesAttempted() : 
+                    round.getOpponentTotalStrikesAttempted())
+                .sum();
+    }
+    
+    /**
+     * Расчет общего количества донесенных ударов для боя
+     */
+    private int calculateFightTotalLandedStrikes(Fight fight, boolean isMyFighter) {
+        return fight.getRounds().stream()
+                .mapToInt(round -> isMyFighter ? 
+                    round.getMyTotalStrikesLanded() : 
+                    round.getOpponentTotalStrikesLanded())
+                .sum();
     }
     
     /**
