@@ -699,6 +699,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.mySignificantStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikes?.avgMySignificantStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1) : '0.0'},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.avgMySignificantStrikesPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.avgMySignificantStrikesPerFight, 1, 1) : '0.0'},
                                                  data-label='Мои — Значимые',
                                                  data-unit='%'
                                         "
@@ -712,6 +714,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.myTotalStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikes?.avgMyTotalStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgMyTotalStrikesPerFight, 1, 1) : '0.0'},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.avgMyTotalStrikesPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.avgMyTotalStrikesPerFight, 1, 1) : '0.0'},
                                                  data-label='Мои — Общие',
                                                  data-unit='%'
                                         "
@@ -728,6 +732,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.opponentSignificantStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.opponentSignificantStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikes?.avgOpponentSignificantStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgOpponentSignificantStrikesPerFight, 1, 1) : '0.0'},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.avgOpponentSignificantStrikesPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.avgOpponentSignificantStrikesPerFight, 1, 1) : '0.0'},
                                                  data-label='Соперник — Значимые',
                                                  data-unit='%'
                                         "
@@ -741,6 +747,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(advancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.opponentTotalStrikesAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.opponentTotalStrikesAccuracy, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.strikes?.avgOpponentTotalStrikesPerFight != null ? #numbers.formatDecimal(advancedStatistics.strikes.avgOpponentTotalStrikesPerFight, 1, 1) : '0.0'},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.strikes?.avgOpponentTotalStrikesPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.strikes.avgOpponentTotalStrikesPerFight, 1, 1) : '0.0'},
                                                  data-label='Соперник — Общие',
                                                  data-unit='%'
                                         "
@@ -802,6 +810,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyCount : 0},
                                                  data-label='Мои (общие)',
                                                  data-unit='%'"
                                         th:text="${advancedStatistics.highAccuracyStrikes?.myTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.myTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
@@ -812,6 +822,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyCount : 0},
                                                  data-label='Мои (значимые)',
                                                  data-unit='%'"
                                         th:text="${advancedStatistics.highAccuracyStrikes?.mySignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.mySignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
@@ -825,6 +837,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyCount : 0},
                                                  data-label='Соперник (общие)',
                                                  data-unit='%'"
                                         th:text="${advancedStatistics.highAccuracyStrikes?.opponentTotalStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentTotalStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
@@ -835,6 +849,8 @@
                                         class="cmp-tip"
                                         th:attr="data-current=${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
                                                  data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(compareAdvancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyCount != null ? advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyCount : 0},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyCount != null ? compareAdvancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyCount : 0},
                                                  data-label='Соперник (значимые)',
                                                  data-unit='%'"
                                         th:text="${advancedStatistics.highAccuracyStrikes?.opponentSignificantStrikesHighAccuracyPercent != null ? #numbers.formatDecimal(advancedStatistics.highAccuracyStrikes.opponentSignificantStrikesHighAccuracyPercent, 1, 1) : '0.0'}">0</span>%)
@@ -3636,38 +3652,80 @@
             restoreAccordionStates();
         });
 
-        // Инициализация тултипов сравнения на конкретных значениях (%), собираем содержимое в JS
+        // Инициализация тултипов сравнения (процент + количество) на строках показателей
         document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams(window.location.search);
             const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
             if (!compareOn || typeof bootstrap === 'undefined') {
                 return;
             }
+            const parseNum = (val) => {
+                const s = (val == null ? '0' : String(val)).trim().replace(',', '.');
+                const n = parseFloat(s);
+                return isNaN(n) ? 0 : n;
+            };
+            const fmt = (num, preferInt = false) => {
+                if (preferInt && Number.isInteger(num)) {
+                    return String(num);
+                }
+                const v = Math.round(num * 10) / 10; // 1 знак после запятой
+                return String(v).replace('.', ',');
+            };
             document.querySelectorAll('.cmp-tip').forEach(function(el) {
-                const current = parseFloat(el.getAttribute('data-current') || '0');
-                const compare = parseFloat(el.getAttribute('data-compare') || '0');
                 const unit = el.getAttribute('data-unit') || '%';
                 const label = el.getAttribute('data-label') || '';
 
-                if (isNaN(current) || isNaN(compare)) {
+                // Проценты
+                const currentPctStr = el.getAttribute('data-current') || '0';
+                const comparePctStr = el.getAttribute('data-compare') || '0';
+                const currentPct = parseNum(currentPctStr);
+                const comparePct = parseNum(comparePctStr);
+
+                // Количества (если заданы)
+                const currentCntStr = el.getAttribute('data-current-count');
+                const compareCntStr = el.getAttribute('data-compare-count');
+                const hasCounts = currentCntStr != null && compareCntStr != null;
+                const currentCnt = hasCounts ? parseNum(currentCntStr) : null;
+                const compareCnt = hasCounts ? parseNum(compareCntStr) : null;
+
+                if (isNaN(currentPct) || isNaN(comparePct)) {
                     return;
                 }
 
-                const delta = current - compare;
-                const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
-                const arrow = delta > 0 ? '<span class="comparison-arrow arrow-up">↑</span>' : (delta < 0 ? '<span class="comparison-arrow arrow-down">↓</span>' : '<span class="comparison-arrow arrow-equal">=</span>');
-                const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
+                // Дельты
+                const deltaPct = currentPct - comparePct;
+                const pctSign = deltaPct > 0 ? '+' : (deltaPct < 0 ? '−' : '');
+                const pctArrow = deltaPct > 0 ? '<span class="comparison-arrow arrow-up">↑</span>' : (deltaPct < 0 ? '<span class="comparison-arrow arrow-down">↓</span>' : '<span class="comparison-arrow arrow-equal">=</span>');
+                const pctDiffClass = deltaPct > 0 ? 'diff-positive' : (deltaPct < 0 ? 'diff-negative' : 'diff-neutral');
+
+                let countBlock = '';
+                if (hasCounts && currentCnt != null && compareCnt != null) {
+                    const deltaCnt = currentCnt - compareCnt;
+                    const cntSign = deltaCnt > 0 ? '+' : (deltaCnt < 0 ? '−' : '');
+                    const cntArrow = deltaCnt > 0 ? '<span class="comparison-arrow arrow-up">↑</span>' : (deltaCnt < 0 ? '<span class="comparison-arrow arrow-down">↓</span>' : '<span class="comparison-arrow arrow-equal">=</span>');
+                    const cntDiffClass = deltaCnt > 0 ? 'diff-positive' : (deltaCnt < 0 ? 'diff-negative' : 'diff-neutral');
+                    countBlock = `
+                      <hr>
+                      <div class="comparison-row"><span class="comparison-label">Текущее (шт):</span><span class="comparison-value">${fmt(currentCnt)}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение (шт):</span><span class="comparison-value">${fmt(compareCnt)}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Δ (шт):</span>${cntArrow}<span class="comparison-diff ${cntDiffClass}">${cntSign}${fmt(Math.abs(deltaCnt))}</span></div>`;
+                }
 
                 const title = `
                     <div class="comparison-tooltip">
-                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}</span></div>` : ''}
-                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${current.toFixed(1)}${unit}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compare.toFixed(1)}${unit}</span></div>
-                      <hr>
-                      <div class="comparison-row"><span class="comparison-label">Δ:</span>${arrow}<span class="comparison-diff ${diffClass}">${sign}${Math.abs(delta).toFixed(1)}${unit}</span></div>
+                      ${label ? `<div class=\"comparison-row\"><span class=\"comparison-label\">${label}</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${String(currentPctStr)}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${String(comparePctStr)}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Δ:</span>${pctArrow}<span class="comparison-diff ${pctDiffClass}">${pctSign}${fmt(Math.abs(deltaPct))}${unit}</span></div>
+                      ${countBlock}
                     </div>`;
 
-                new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
+                const target = el.closest('p') || el;
+                if (target.dataset.cmpTipInit === '1') {
+                    return;
+                }
+                new bootstrap.Tooltip(target, { html: true, title: title, placement: 'top' });
+                target.dataset.cmpTipInit = '1';
             });
         });
     </script>
