@@ -1109,25 +1109,23 @@
             <div class="col-md-6">
                 <!-- Статистика по режимам боев -->
                 <div class="card mb-3" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (всего побед):</span><span class=&quot;comparison-value&quot;>' + statistics.wins + ' (' + #numbers.formatDecimal(statistics.winRate, 1, 1) + '%)</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareStatistics.wins + ' (' + #numbers.formatDecimal(compareStatistics.winRate, 1, 1) + '%)</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница (% побед):</span>' +
-                       (statistics.winRate > compareStatistics.winRate ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.winRate < compareStatistics.winRate ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (statistics.winRate > compareStatistics.winRate ? 'diff-positive' : (statistics.winRate < compareStatistics.winRate ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (statistics.winRate > compareStatistics.winRate ? '+' : '') + #numbers.formatDecimal(statistics.winRate - compareStatistics.winRate, 1, 1) + '%' +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">🎯 Статистика по режимам</h5>
                     </div>
                     <div class="card-body">
                         <div th:each="mode : ${advancedStatistics.byFightMode}">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2 mode-row-tip"
+                                th:attr="data-mode-key=${mode.key},
+                                         data-current-wins=${mode.value.wins},
+                                         data-current-losses=${mode.value.losses},
+                                         data-current-draws=${mode.value.draws},
+                                         data-current-pct=${#numbers.formatDecimal(mode.value.winRate, 1, 1)},
+                                         data-compare-wins=${compareAdvancedStatistics != null && compareAdvancedStatistics.byFightMode != null && compareAdvancedStatistics.byFightMode.containsKey(mode.key) ? compareAdvancedStatistics.byFightMode[mode.key].wins : 0},
+                                         data-compare-losses=${compareAdvancedStatistics != null && compareAdvancedStatistics.byFightMode != null && compareAdvancedStatistics.byFightMode.containsKey(mode.key) ? compareAdvancedStatistics.byFightMode[mode.key].losses : 0},
+                                         data-compare-draws=${compareAdvancedStatistics != null && compareAdvancedStatistics.byFightMode != null && compareAdvancedStatistics.byFightMode.containsKey(mode.key) ? compareAdvancedStatistics.byFightMode[mode.key].draws : 0},
+                                         data-compare-pct=${compareAdvancedStatistics != null && compareAdvancedStatistics.byFightMode != null && compareAdvancedStatistics.byFightMode.containsKey(mode.key) ? #numbers.formatDecimal(compareAdvancedStatistics.byFightMode[mode.key].winRate, 1, 1) : '0.0'}"
+                                th:data-label="${mode.key == 'MMA' ? 'ММА' : (mode.key == 'STANCE' ? 'Стойка' : mode.key)}">
                                 <div>
                                     <span th:text="${mode.key == 'MMA' ? 'ММА' : (mode.key == 'STANCE' ? 'Стойка' : mode.key)}">Режим</span>
                                     <small class="text-muted d-block">Побед: <span th:text="${#numbers.formatDecimal(mode.value.winRate, 1, 1)}">0</span>%</small>
@@ -1174,19 +1172,7 @@
 
                 <!-- Методы побед -->
                 <div class="card mb-3" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (всего побед):</span><span class=&quot;comparison-value&quot;>' + statistics.wins + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareStatistics.wins + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       (statistics.wins > compareStatistics.wins ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.wins < compareStatistics.wins ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (statistics.wins > compareStatistics.wins ? 'diff-positive' : (statistics.wins < compareStatistics.wins ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (statistics.wins > compareStatistics.wins ? '+' : '') + (statistics.wins - compareStatistics.wins) +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">🏅 Методы побед</h5>
                     </div>
@@ -1194,7 +1180,13 @@
                         <div th:if="${#maps.isEmpty(advancedStatistics.winMethods)}">Нет данных</div>
                         <div th:if="${!#maps.isEmpty(advancedStatistics.winMethods)}">
                             <div th:each="method : ${advancedStatistics.winMethods}">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1 method-row-tip"
+                                    th:attr="data-method-key=${method.key},
+                                             data-current-count=${method.value},
+                                             data-current-pct=${#numbers.formatDecimal(statistics.wins > 0 ? (method.value * 100.0 / statistics.wins) : 0, 1, 1)},
+                                             data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.winMethods != null && compareAdvancedStatistics.winMethods.containsKey(method.key) ? compareAdvancedStatistics.winMethods[method.key] : 0},
+                                             data-compare-pct=${compareAdvancedStatistics != null && compareAdvancedStatistics.winMethods != null && compareAdvancedStatistics.winMethods.containsKey(method.key) && compareStatistics.wins > 0 ? #numbers.formatDecimal((compareAdvancedStatistics.winMethods[method.key] * 100.0 / compareStatistics.wins), 1, 1) : '0.0'}"
+                                    th:data-label="${method.key == 'DECISION' ? 'Решение' : (method.key == 'SUBMISSION' ? 'Сабмишен' : (method.key == 'KNOCKOUT' ? 'Нокаут' : (method.key == 'EARLY_EXIT' ? 'Досрочный выход' : method.key)))}">
                                     <div>
                                         <span th:text="${method.key == 'DECISION' ? 'Решение' : (method.key == 'SUBMISSION' ? 'Сабмишен' : (method.key == 'KNOCKOUT' ? 'Нокаут' : (method.key == 'EARLY_EXIT' ? 'Досрочный выход' : method.key)))}">Метод</span>
                                         <small class="text-muted d-block">
@@ -1243,19 +1235,7 @@
 
                 <!-- Методы поражений -->
                 <div class="card" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (всего поражений):</span><span class=&quot;comparison-value&quot;>' + statistics.losses + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareStatistics.losses + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       (statistics.losses < compareStatistics.losses ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.losses > compareStatistics.losses ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (statistics.losses < compareStatistics.losses ? 'diff-positive' : (statistics.losses > compareStatistics.losses ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (statistics.losses < compareStatistics.losses ? '' : '+') + (statistics.losses - compareStatistics.losses) +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">💥 Методы поражений</h5>
                     </div>
@@ -1263,7 +1243,13 @@
                         <div th:if="${#maps.isEmpty(advancedStatistics.lossMethods)}">Нет данных</div>
                         <div th:if="${!#maps.isEmpty(advancedStatistics.lossMethods)}">
                             <div th:each="method : ${advancedStatistics.lossMethods}">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1 method-row-tip"
+                                    th:attr="data-method-key=${method.key},
+                                             data-current-count=${method.value},
+                                             data-current-pct=${#numbers.formatDecimal(statistics.losses > 0 ? (method.value * 100.0 / statistics.losses) : 0, 1, 1)},
+                                             data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.lossMethods != null && compareAdvancedStatistics.lossMethods.containsKey(method.key) ? compareAdvancedStatistics.lossMethods[method.key] : 0},
+                                             data-compare-pct=${compareAdvancedStatistics != null && compareAdvancedStatistics.lossMethods != null && compareAdvancedStatistics.lossMethods.containsKey(method.key) && compareStatistics.losses > 0 ? #numbers.formatDecimal((compareAdvancedStatistics.lossMethods[method.key] * 100.0 / compareStatistics.losses), 1, 1) : '0.0'}"
+                                    th:data-label="${method.key == 'DECISION' ? 'Решение' : (method.key == 'SUBMISSION' ? 'Сабмишен' : (method.key == 'KNOCKOUT' ? 'Нокаут' : (method.key == 'EARLY_EXIT' ? 'Досрочный выход' : method.key)))}">
                                     <div>
                                         <span th:text="${method.key == 'DECISION' ? 'Решение' : (method.key == 'SUBMISSION' ? 'Сабмишен' : (method.key == 'KNOCKOUT' ? 'Нокаут' : (method.key == 'EARLY_EXIT' ? 'Досрочный выход' : method.key)))}">Метод</span>
                                         <small class="text-muted d-block">
@@ -1287,19 +1273,7 @@
             <!-- Правая колонка: Статистика по весам -->
             <div class="col-md-6">
                 <div class="card" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (% побед):</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(statistics.winRate, 1, 1) + '%</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareStatistics.winRate, 1, 1) + '%</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       (statistics.winRate > compareStatistics.winRate ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.winRate < compareStatistics.winRate ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + (statistics.winRate > compareStatistics.winRate ? 'diff-positive' : (statistics.winRate < compareStatistics.winRate ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       (statistics.winRate > compareStatistics.winRate ? '+' : '') + #numbers.formatDecimal(statistics.winRate - compareStatistics.winRate, 1, 1) + '%' +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">⚖️ Статистика по весам</h5>
                     </div>
@@ -3809,40 +3783,186 @@
                 return String(v).replace('.', ',');
             };
             document.querySelectorAll('.basic-tip').forEach(function(el) {
-                const currentStr = el.getAttribute('data-current') || '0';
-                const compareStr = el.getAttribute('data-compare') || '0';
-                const label = el.getAttribute('data-label') || '';
-                const unit = el.getAttribute('data-unit') || '';
-                const isPct = el.classList.contains('basic-tip-pct');
+                const isMode = el.classList.contains('basic-tip-mode');
                 
-                const current = parseNum(currentStr);
-                const compare = parseNum(compareStr);
+                let title;
                 
-                if (isNaN(current) || isNaN(compare)) {
-                    return;
+                if (isMode) {
+                    // Специальная обработка для "Статистика по режимам" (победы + процент)
+                    // Получаем отображаемые значения (уже округленные)
+                    const currentWinsStr = el.getAttribute('data-current-wins') || '0';
+                    const compareWinsStr = el.getAttribute('data-compare-wins') || '0';
+                    const currentPctStr = el.getAttribute('data-current-pct') || '0';
+                    const comparePctStr = el.getAttribute('data-compare-pct') || '0';
+                    const label = el.getAttribute('data-label') || '';
+                    
+                    // Парсим для вычисления дельты
+                    const currentWins = parseNum(currentWinsStr);
+                    const compareWins = parseNum(compareWinsStr);
+                    const currentPct = parseNum(currentPctStr);
+                    const comparePct = parseNum(comparePctStr);
+                    
+                    if (isNaN(currentWins) || isNaN(compareWins) || isNaN(currentPct) || isNaN(comparePct)) {
+                        return;
+                    }
+                    
+                    // Дельты вычисляются из отображаемых значений
+                    const deltaWins = currentWins - compareWins;
+                    const deltaPct = currentPct - comparePct;
+                    const winsSign = deltaWins > 0 ? '+' : (deltaWins < 0 ? '−' : '');
+                    const pctSign = deltaPct > 0 ? '+' : (deltaPct < 0 ? '−' : '');
+                    const winsDiffClass = deltaWins > 0 ? 'diff-positive' : (deltaWins < 0 ? 'diff-negative' : 'diff-neutral');
+                    const pctDiffClass = deltaPct > 0 ? 'diff-positive' : (deltaPct < 0 ? 'diff-negative' : 'diff-neutral');
+                    
+                    title = `
+                        <div class="comparison-tooltip">
+                          ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                          <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentWinsStr} (${currentPctStr}%)</span></div>
+                          <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareWinsStr} (${comparePctStr}%)</span></div>
+                          <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${winsDiffClass}">${winsSign}${Math.abs(deltaWins)}</span>, <span class="comparison-diff ${pctDiffClass}">${pctSign}${fmt1(Math.abs(deltaPct))}%</span></div>
+                        </div>`;
+                } else {
+                    // Обычная обработка для остальных виджетов
+                    const currentStr = el.getAttribute('data-current') || '0';
+                    const compareStr = el.getAttribute('data-compare') || '0';
+                    const label = el.getAttribute('data-label') || '';
+                    const unit = el.getAttribute('data-unit') || '';
+                    const isPct = el.classList.contains('basic-tip-pct');
+                    
+                    const current = parseNum(currentStr);
+                    const compare = parseNum(compareStr);
+                    
+                    if (isNaN(current) || isNaN(compare)) {
+                        return;
+                    }
+                    
+                    const delta = current - compare;
+                    const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
+                    const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
+                    
+                    const currentDisplay = isPct ? (currentStr + unit) : currentStr;
+                    const compareDisplay = isPct ? (compareStr + unit) : compareStr;
+                    const deltaDisplay = isPct ? (fmt1(Math.abs(delta)) + unit) : String(Math.abs(delta));
+                    
+                    title = `
+                        <div class="comparison-tooltip">
+                          ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                          <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentDisplay}</span></div>
+                          <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareDisplay}</span></div>
+                          <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${diffClass}">${sign}${deltaDisplay}</span></div>
+                        </div>`;
                 }
-                
-                const delta = current - compare;
-                const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
-                const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
-                
-                const currentDisplay = isPct ? (currentStr + unit) : currentStr;
-                const compareDisplay = isPct ? (compareStr + unit) : compareStr;
-                const deltaDisplay = isPct ? (fmt1(Math.abs(delta)) + unit) : String(Math.abs(delta));
-                
-                const title = `
-                    <div class="comparison-tooltip">
-                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
-                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentDisplay}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareDisplay}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${diffClass}">${sign}${deltaDisplay}</span></div>
-                    </div>`;
 
                 if (el.dataset.basicTipInit === '1') {
                     return;
                 }
                 new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
                 el.dataset.basicTipInit = '1';
+            });
+        });
+
+        // Инициализация тултипов для строк режимов (поб/пор/ничьи, процент, дельта только по проценту)
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
+            if (!compareOn || typeof bootstrap === 'undefined') {
+                return;
+            }
+            const parseNum = (val) => {
+                const s = (val == null ? '0' : String(val)).trim().replace(',', '.');
+                const n = parseFloat(s);
+                return isNaN(n) ? 0 : n;
+            };
+            const fmt1 = (num) => String(Math.round(num * 10) / 10).replace('.', ',');
+            
+            document.querySelectorAll('.mode-row-tip').forEach(function(el) {
+                const label = el.getAttribute('data-label') || '';
+                const currentWins = parseInt(el.getAttribute('data-current-wins') || '0', 10);
+                const currentLosses = parseInt(el.getAttribute('data-current-losses') || '0', 10);
+                const currentDraws = parseInt(el.getAttribute('data-current-draws') || '0', 10);
+                const currentPctStr = el.getAttribute('data-current-pct') || '0';
+                const compareWins = parseInt(el.getAttribute('data-compare-wins') || '0', 10);
+                const compareLosses = parseInt(el.getAttribute('data-compare-losses') || '0', 10);
+                const compareDraws = parseInt(el.getAttribute('data-compare-draws') || '0', 10);
+                const comparePctStr = el.getAttribute('data-compare-pct') || '0';
+                
+                const currentPct = parseNum(currentPctStr);
+                const comparePct = parseNum(comparePctStr);
+                
+                if (isNaN(currentPct) || isNaN(comparePct)) {
+                    return;
+                }
+                
+                const deltaPct = currentPct - comparePct;
+                const pctSign = deltaPct > 0 ? '+' : (deltaPct < 0 ? '−' : '');
+                const pctDiffClass = deltaPct > 0 ? 'diff-positive' : (deltaPct < 0 ? 'diff-negative' : 'diff-neutral');
+                
+                const title = `
+                    <div class="comparison-tooltip">
+                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentWins}/${currentLosses}/${currentDraws} (${currentPctStr}%)</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareWins}/${compareLosses}/${compareDraws} (${comparePctStr}%)</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${pctDiffClass}">${pctSign}${fmt1(Math.abs(deltaPct))}%</span></div>
+                    </div>`;
+
+                if (el.dataset.modeRowTipInit === '1') {
+                    return;
+                }
+                new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
+                el.dataset.modeRowTipInit = '1';
+            });
+        });
+
+        // Инициализация тултипов для строк методов (количество и процент, дельта по обоим)
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
+            if (!compareOn || typeof bootstrap === 'undefined') {
+                return;
+            }
+            const parseNum = (val) => {
+                const s = (val == null ? '0' : String(val)).trim().replace(',', '.');
+                const n = parseFloat(s);
+                return isNaN(n) ? 0 : n;
+            };
+            const fmt1 = (num) => String(Math.round(num * 10) / 10).replace('.', ',');
+            
+            document.querySelectorAll('.method-row-tip').forEach(function(el) {
+                const label = el.getAttribute('data-label') || '';
+                const currentCountStr = el.getAttribute('data-current-count') || '0';
+                const currentPctStr = el.getAttribute('data-current-pct') || '0';
+                const compareCountStr = el.getAttribute('data-compare-count') || '0';
+                const comparePctStr = el.getAttribute('data-compare-pct') || '0';
+                
+                const currentCount = parseInt(currentCountStr, 10);
+                const compareCount = parseInt(compareCountStr, 10);
+                const currentPct = parseNum(currentPctStr);
+                const comparePct = parseNum(comparePctStr);
+                
+                if (isNaN(currentCount) || isNaN(compareCount) || isNaN(currentPct) || isNaN(comparePct)) {
+                    return;
+                }
+                
+                const deltaCount = currentCount - compareCount;
+                const deltaPct = currentPct - comparePct;
+                const countSign = deltaCount > 0 ? '+' : (deltaCount < 0 ? '−' : '');
+                const pctSign = deltaPct > 0 ? '+' : (deltaPct < 0 ? '−' : '');
+                const countDiffClass = deltaCount > 0 ? 'diff-positive' : (deltaCount < 0 ? 'diff-negative' : 'diff-neutral');
+                const pctDiffClass = deltaPct > 0 ? 'diff-positive' : (deltaPct < 0 ? 'diff-negative' : 'diff-neutral');
+                
+                const title = `
+                    <div class="comparison-tooltip">
+                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentCountStr} (${currentPctStr}%)</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareCountStr} (${comparePctStr}%)</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${countDiffClass}">${countSign}${Math.abs(deltaCount)}</span>, <span class="comparison-diff ${pctDiffClass}">${pctSign}${fmt1(Math.abs(deltaPct))}%</span></div>
+                    </div>`;
+
+                if (el.dataset.methodRowTipInit === '1') {
+                    return;
+                }
+                new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
+                el.dataset.methodRowTipInit = '1';
             });
         });
     </script>
