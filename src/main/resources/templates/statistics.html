@@ -1279,7 +1279,17 @@
                     </div>
                     <div class="card-body">
                         <div th:each="weight : ${advancedStatistics.byWeightClass}" class="weight-item" th:data-weight="__${weight.key}__" th:data-win-rate="__${weight.value.winRate}__">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2 mode-row-tip"
+                                th:attr="data-weight-key=${weight.key},
+                                         data-current-wins=${weight.value.wins},
+                                         data-current-losses=${weight.value.losses},
+                                         data-current-draws=${weight.value.draws},
+                                         data-current-pct=${#numbers.formatDecimal(weight.value.winRate, 1, 1)},
+                                         data-compare-wins=${compareAdvancedStatistics != null && compareAdvancedStatistics.byWeightClass != null && compareAdvancedStatistics.byWeightClass.containsKey(weight.key) ? compareAdvancedStatistics.byWeightClass[weight.key].wins : 0},
+                                         data-compare-losses=${compareAdvancedStatistics != null && compareAdvancedStatistics.byWeightClass != null && compareAdvancedStatistics.byWeightClass.containsKey(weight.key) ? compareAdvancedStatistics.byWeightClass[weight.key].losses : 0},
+                                         data-compare-draws=${compareAdvancedStatistics != null && compareAdvancedStatistics.byWeightClass != null && compareAdvancedStatistics.byWeightClass.containsKey(weight.key) ? compareAdvancedStatistics.byWeightClass[weight.key].draws : 0},
+                                         data-compare-pct=${compareAdvancedStatistics != null && compareAdvancedStatistics.byWeightClass != null && compareAdvancedStatistics.byWeightClass.containsKey(weight.key) ? #numbers.formatDecimal(compareAdvancedStatistics.byWeightClass[weight.key].winRate, 1, 1) : '0.0'}"
+                                th:data-label="${weight.key == 'HEAVYWEIGHT' ? 'Супертяжелый' : (weight.key == 'LIGHT_HEAVYWEIGHT' ? 'Полутяжелый' : (weight.key == 'MIDDLEWEIGHT' ? 'Средний' : (weight.key == 'WELTERWEIGHT' ? 'Полусредний' : (weight.key == 'LIGHTWEIGHT' ? 'Легкий' : (weight.key == 'FEATHERWEIGHT' ? 'Полулегкий' : (weight.key == 'BANTAMWEIGHT' ? 'Легчайший' : (weight.key == 'FLYWEIGHT' ? 'Наилегчайший' : (weight.key == 'MINIMUM' ? 'Минимальный' : (weight.key == 'STRAWWEIGHT' ? 'Минимальный' : weight.key)))))))))}">
                                 <div>
                                     <span th:text="${weight.key == 'HEAVYWEIGHT' ? 'Супертяжелый' : (weight.key == 'LIGHT_HEAVYWEIGHT' ? 'Полутяжелый' : (weight.key == 'MIDDLEWEIGHT' ? 'Средний' : (weight.key == 'WELTERWEIGHT' ? 'Полусредний' : (weight.key == 'LIGHTWEIGHT' ? 'Легкий' : (weight.key == 'FEATHERWEIGHT' ? 'Полулегкий' : (weight.key == 'BANTAMWEIGHT' ? 'Легчайший' : (weight.key == 'FLYWEIGHT' ? 'Наилегчайший' : (weight.key == 'MINIMUM' ? 'Минимальный' : (weight.key == 'STRAWWEIGHT' ? 'Минимальный' : weight.key)))))))))}">Вес</span>
                                     <small class="text-muted d-block">Побед: <span th:text="${#numbers.formatDecimal(weight.value.winRate, 1, 1)}">0</span>%</small>
