@@ -949,19 +949,7 @@
             <!-- Статистика по тейкдаунам -->
             <div class="col-md-6">
                 <div class="card" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее (точность):</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(advancedStatistics.takedowns?.myTakedownAccuracy != null ? advancedStatistics.takedowns.myTakedownAccuracy : 0.0, 1, 1) + '%</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? compareAdvancedStatistics.takedowns.myTakedownAccuracy : 0.0, 1, 1) + '%</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница (точность):</span>' +
-                       ((advancedStatistics.takedowns?.myTakedownAccuracy != null ? advancedStatistics.takedowns.myTakedownAccuracy : 0.0) > (compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? compareAdvancedStatistics.takedowns.myTakedownAccuracy : 0.0) ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : ((advancedStatistics.takedowns?.myTakedownAccuracy != null ? advancedStatistics.takedowns.myTakedownAccuracy : 0.0) < (compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? compareAdvancedStatistics.takedowns.myTakedownAccuracy : 0.0) ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + ((advancedStatistics.takedowns?.myTakedownAccuracy != null ? advancedStatistics.takedowns.myTakedownAccuracy : 0.0) > (compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? compareAdvancedStatistics.takedowns.myTakedownAccuracy : 0.0) ? 'diff-positive' : ((advancedStatistics.takedowns?.myTakedownAccuracy != null ? advancedStatistics.takedowns.myTakedownAccuracy : 0.0) < (compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? compareAdvancedStatistics.takedowns.myTakedownAccuracy : 0.0) ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       ((advancedStatistics.takedowns?.myTakedownAccuracy != null ? advancedStatistics.takedowns.myTakedownAccuracy : 0.0) > (compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? compareAdvancedStatistics.takedowns.myTakedownAccuracy : 0.0) ? '+' : '') + #numbers.formatDecimal((advancedStatistics.takedowns?.myTakedownAccuracy != null ? advancedStatistics.takedowns.myTakedownAccuracy : 0.0) - (compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? compareAdvancedStatistics.takedowns.myTakedownAccuracy : 0.0), 1, 1) + '%' +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">🤼 Статистика тейкдаунов (ММА)</h5>
                     </div>
@@ -969,12 +957,30 @@
                         <div class="row">
                             <div class="col-6">
                                 <h6 class="text-success">Мои тейкдауны</h6>
-                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.myTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">Точность: (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.takedowns?.myTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.takedowns?.myTakedownAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.takedowns.myTakedownAccuracy, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.takedowns?.avgMyTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1) : '0.0'},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.takedowns?.avgMyTakedownsPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1) : '0.0'},
+                                                 data-label='Мои — Тейкдауны',
+                                                 data-unit='%'
+                                        "
+                                        th:text="${advancedStatistics.takedowns?.myTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1) : '0.0'}">0</span>%)</p>
                                 <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgMyTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgMyTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Точность: <span th:text="${advancedStatistics.takedowns?.opponentTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1) : '0.0'}">0</span>%</p>
+                                <p class="mb-1">Точность: (<span
+                                        class="cmp-tip"
+                                        th:attr="data-current=${advancedStatistics.takedowns?.opponentTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1) : '0.0'},
+                                                 data-compare=${compareAdvancedStatistics != null && compareAdvancedStatistics.takedowns?.opponentTakedownAccuracy != null ? #numbers.formatDecimal(compareAdvancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1) : '0.0'},
+                                                 data-current-count=${advancedStatistics.takedowns?.avgOpponentTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1) : '0.0'},
+                                                 data-compare-count=${compareAdvancedStatistics != null && compareAdvancedStatistics.takedowns?.avgOpponentTakedownsPerFight != null ? #numbers.formatDecimal(compareAdvancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1) : '0.0'},
+                                                 data-label='Соперник — Тейкдауны',
+                                                 data-unit='%'
+                                        "
+                                        th:text="${advancedStatistics.takedowns?.opponentTakedownAccuracy != null ? #numbers.formatDecimal(advancedStatistics.takedowns.opponentTakedownAccuracy, 1, 1) : '0.0'}">0</span>%)</p>
                                 <p class="mb-1">За бой: <span th:text="${advancedStatistics.takedowns?.avgOpponentTakedownsPerFight != null ? #numbers.formatDecimal(advancedStatistics.takedowns.avgOpponentTakedownsPerFight, 1, 1) : '0.0'}">0</span></p>
                             </div>
                         </div>
