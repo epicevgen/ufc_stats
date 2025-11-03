@@ -217,11 +217,7 @@
 
     <div class="container mt-4">
         <div class="row mb-4">
-            <div class="col-md-6">
-                <h1>📊 Статистика боев</h1>
-                <p class="lead">Анализ ваших результатов в UFC 5</p>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <form method="get" action="/statistics" id="filterForm">
                     <div class="row">
                         <div class="col-md-3">
@@ -246,25 +242,23 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label for="startDate" class="form-label">От даты</label>
-                            <input type="date" class="form-control" id="startDate" name="startDate" 
-                                   th:value="${selectedStartDate}" onchange="submitForm()">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="endDate" class="form-label">До даты</label>
-                            <input type="date" class="form-control" id="endDate" name="endDate" 
-                                   th:value="${selectedEndDate}" onchange="submitForm()">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
+                        <div class="col-md-2">
                             <label for="comparisonFilter" class="form-label"><strong>Сравнение</strong></label>
                             <select class="form-select" id="comparisonFilter" name="comparisonFilter" onchange="handleComparisonChange()">
                                 <option value="">Не выбрано</option>
                                 <option value="seasons" th:selected="${selectedComparison == 'seasons'}">Сезонов</option>
                                 <option value="periods" th:selected="${selectedComparison == 'periods'}">Периодов</option>
                             </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="startDate" class="form-label">От даты</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" 
+                                   th:value="${selectedStartDate}" onchange="submitForm()">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="endDate" class="form-label">До даты</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" 
+                                   th:value="${selectedEndDate}" onchange="submitForm()">
                         </div>
                     </div>
                     <!-- Поля для сравнения периодов -->
