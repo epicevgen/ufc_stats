@@ -898,19 +898,7 @@
             <!-- Время контроля -->
             <div class="col-md-6">
                 <div class="card" 
-                     th:if="${compareAdvancedStatistics != null}"
-                     data-bs-toggle="tooltip" 
-                     data-bs-placement="top"
-                     data-bs-html="true"
-                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + (advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00') + '</span></div>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + (compareAdvancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00') + '</span></div>' +
-                       '<hr>' +
-                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                       ((advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0) > (compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0) ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : ((advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0) < (compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0) ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                       '<span class=&quot;comparison-diff ' + ((advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0) > (compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0) ? 'diff-positive' : ((advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0) < (compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0) ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                       ((advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0) > (compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0) ? '+' : '') + ((advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0) - (compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0)) + ' сек' +
-                       '</span></div></div>'}">
+                     th:if="${compareAdvancedStatistics != null}">
                     <div class="card-header">
                         <h5 class="mb-0">⏱️ Время контроля</h5>
                     </div>
@@ -918,11 +906,27 @@
                         <div class="row">
                             <div class="col-6">
                                 <h6 class="text-success">Мое время</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'}">00:00</span></p>
+                                <p class="mb-1">Среднее: <span
+                                        class="time-tip"
+                                        th:attr="data-current-seconds=${advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0},
+                                                 data-compare-seconds=${compareAdvancedStatistics != null && compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0},
+                                                 data-current-formatted=${advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'},
+                                                 data-compare-formatted=${compareAdvancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'},
+                                                 data-label='Мое время'
+                                        "
+                                        th:text="${advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'}">00:00</span></p>
                             </div>
                             <div class="col-6">
                                 <h6 class="text-danger">Соперник</h6>
-                                <p class="mb-1">Среднее: <span th:text="${advancedStatistics.controlTime?.avgOpponentControlTimeFormatted != null ? advancedStatistics.controlTime.avgOpponentControlTimeFormatted : '00:00'}">00:00</span></p>
+                                <p class="mb-1">Среднее: <span
+                                        class="time-tip"
+                                        th:attr="data-current-seconds=${advancedStatistics.controlTime?.avgOpponentControlTimeSeconds != null ? advancedStatistics.controlTime.avgOpponentControlTimeSeconds : 0},
+                                                 data-compare-seconds=${compareAdvancedStatistics != null && compareAdvancedStatistics.controlTime?.avgOpponentControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgOpponentControlTimeSeconds : 0},
+                                                 data-current-formatted=${advancedStatistics.controlTime?.avgOpponentControlTimeFormatted != null ? advancedStatistics.controlTime.avgOpponentControlTimeFormatted : '00:00'},
+                                                 data-compare-formatted=${compareAdvancedStatistics.controlTime?.avgOpponentControlTimeFormatted != null ? compareAdvancedStatistics.controlTime.avgOpponentControlTimeFormatted : '00:00'},
+                                                 data-label='Соперник — время'
+                                        "
+                                        th:text="${advancedStatistics.controlTime?.avgOpponentControlTimeFormatted != null ? advancedStatistics.controlTime.avgOpponentControlTimeFormatted : '00:00'}">00:00</span></p>
                             </div>
                         </div>
                     </div>
@@ -3737,6 +3741,49 @@
                 }
                 new bootstrap.Tooltip(target, { html: true, title: title, placement: 'top' });
                 target.dataset.cmpTipInit = '1';
+            });
+        });
+
+        // Инициализация тултипов для времени контроля (целые секунды, формат мм:сс)
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
+            if (!compareOn || typeof bootstrap === 'undefined') {
+                return;
+            }
+            document.querySelectorAll('.time-tip').forEach(function(el) {
+                const currentSecondsRaw = parseFloat(el.getAttribute('data-current-seconds') || '0');
+                const compareSecondsRaw = parseFloat(el.getAttribute('data-compare-seconds') || '0');
+                const currentFormatted = el.getAttribute('data-current-formatted') || '00:00';
+                const compareFormatted = el.getAttribute('data-compare-formatted') || '00:00';
+                const label = el.getAttribute('data-label') || '';
+                
+                if (isNaN(currentSecondsRaw) || isNaN(compareSecondsRaw)) {
+                    return;
+                }
+                
+                // Округляем до целых секунд (формат мм:сс не поддерживает дроби)
+                const currentSeconds = Math.round(currentSecondsRaw);
+                const compareSeconds = Math.round(compareSecondsRaw);
+                const delta = currentSeconds - compareSeconds;
+                
+                const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
+                const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
+                
+                const title = `
+                    <div class="comparison-tooltip">
+                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentFormatted}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareFormatted}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${diffClass}">${sign}${Math.abs(delta)}с</span></div>
+                    </div>`;
+
+                const target = el.closest('p') || el;
+                if (target.dataset.timeTipInit === '1') {
+                    return;
+                }
+                new bootstrap.Tooltip(target, { html: true, title: title, placement: 'top' });
+                target.dataset.timeTipInit = '1';
             });
         });
     </script>
