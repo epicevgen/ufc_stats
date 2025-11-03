@@ -3695,29 +3695,33 @@
                 // Дельты
                 const deltaPct = currentPct - comparePct;
                 const pctSign = deltaPct > 0 ? '+' : (deltaPct < 0 ? '−' : '');
-                const pctArrow = deltaPct > 0 ? '<span class="comparison-arrow arrow-up">↑</span>' : (deltaPct < 0 ? '<span class="comparison-arrow arrow-down">↓</span>' : '<span class="comparison-arrow arrow-equal">=</span>');
                 const pctDiffClass = deltaPct > 0 ? 'diff-positive' : (deltaPct < 0 ? 'diff-negative' : 'diff-neutral');
 
-                let countBlock = '';
+                // Если есть количества, показываем компактный формат: количество (процент)
+                let currentValueStr = String(currentPctStr) + unit;
+                let compareValueStr = String(comparePctStr) + unit;
+                let deltaValueStr = `${pctSign}${fmt(Math.abs(deltaPct))}${unit}`;
+
                 if (hasCounts && currentCnt != null && compareCnt != null) {
                     const deltaCnt = currentCnt - compareCnt;
                     const cntSign = deltaCnt > 0 ? '+' : (deltaCnt < 0 ? '−' : '');
-                    const cntArrow = deltaCnt > 0 ? '<span class="comparison-arrow arrow-up">↑</span>' : (deltaCnt < 0 ? '<span class="comparison-arrow arrow-down">↓</span>' : '<span class="comparison-arrow arrow-equal">=</span>');
                     const cntDiffClass = deltaCnt > 0 ? 'diff-positive' : (deltaCnt < 0 ? 'diff-negative' : 'diff-neutral');
-                    countBlock = `
-                      <hr>
-                      <div class="comparison-row"><span class="comparison-label">Текущее (шт):</span><span class="comparison-value">${fmt(currentCnt)}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Сравнение (шт):</span><span class="comparison-value">${fmt(compareCnt)}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Δ (шт):</span>${cntArrow}<span class="comparison-diff ${cntDiffClass}">${cntSign}${fmt(Math.abs(deltaCnt))}</span></div>`;
+                    
+                    // Формат: количество (процент)
+                    currentValueStr = `${fmt(currentCnt)} (${String(currentPctStr)}${unit})`;
+                    compareValueStr = `${fmt(compareCnt)} (${String(comparePctStr)}${unit})`;
+                    
+                    // Дельта: дельта_количество, дельта_процент%
+                    const deltaCntStr = `${cntSign}${fmt(Math.abs(deltaCnt))}`;
+                    deltaValueStr = `${deltaCntStr}, ${pctSign}${fmt(Math.abs(deltaPct))}${unit}`;
                 }
 
                 const title = `
                     <div class="comparison-tooltip">
-                      ${label ? `<div class=\"comparison-row\"><span class=\"comparison-label\">${label}</span></div>` : ''}
-                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${String(currentPctStr)}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${String(comparePctStr)}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Δ:</span>${pctArrow}<span class="comparison-diff ${pctDiffClass}">${pctSign}${fmt(Math.abs(deltaPct))}${unit}</span></div>
-                      ${countBlock}
+                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentValueStr}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareValueStr}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${pctDiffClass}">${deltaValueStr}</span></div>
                     </div>`;
 
                 const target = el.closest('p') || el;
