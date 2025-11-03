@@ -3700,7 +3700,7 @@
                 // Если есть количества, показываем компактный формат: количество (процент)
                 let currentValueStr = String(currentPctStr) + unit;
                 let compareValueStr = String(comparePctStr) + unit;
-                let deltaValueStr = `${pctSign}${fmt(Math.abs(deltaPct))}${unit}`;
+                let deltaValueHtml = `<span class=\"comparison-diff ${pctDiffClass}\">${pctSign}${fmt(Math.abs(deltaPct))}${unit}</span>`;
 
                 if (hasCounts && currentCnt != null && compareCnt != null) {
                     const deltaCnt = currentCnt - compareCnt;
@@ -3711,9 +3711,10 @@
                     currentValueStr = `${fmt(currentCnt)} (${String(currentPctStr)}${unit})`;
                     compareValueStr = `${fmt(compareCnt)} (${String(comparePctStr)}${unit})`;
                     
-                    // Дельта: дельта_количество, дельта_процент%
-                    const deltaCntStr = `${cntSign}${fmt(Math.abs(deltaCnt))}`;
-                    deltaValueStr = `${deltaCntStr}, ${pctSign}${fmt(Math.abs(deltaPct))}${unit}`;
+                    // Дельта: дельта_количество, дельта_процент% (разные цвета)
+                    const deltaCntHtml = `<span class=\"comparison-diff ${cntDiffClass}\">${cntSign}${fmt(Math.abs(deltaCnt))}</span>`;
+                    const deltaPctHtml = `<span class=\"comparison-diff ${pctDiffClass}\">${pctSign}${fmt(Math.abs(deltaPct))}${unit}</span>`;
+                    deltaValueHtml = `${deltaCntHtml}, ${deltaPctHtml}`;
                 }
 
                 const title = `
@@ -3721,7 +3722,7 @@
                       ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
                       <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentValueStr}</span></div>
                       <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareValueStr}</span></div>
-                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${pctDiffClass}">${deltaValueStr}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span>${deltaValueHtml}</div>
                     </div>`;
 
                 const target = el.closest('p') || el;
