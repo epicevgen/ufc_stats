@@ -349,22 +349,14 @@
                         <div class="row mb-3">
                             <div class="col">
                                 <div class="card text-center" 
-                                     th:if="${compareStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + statistics.totalFights + '</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareStatistics.totalFights + '</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (statistics.totalFights > compareStatistics.totalFights ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.totalFights < compareStatistics.totalFights ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (statistics.totalFights > compareStatistics.totalFights ? 'diff-positive' : (statistics.totalFights < compareStatistics.totalFights ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (statistics.totalFights > compareStatistics.totalFights ? '+' : '') + (statistics.totalFights - compareStatistics.totalFights) +
-                                       '</span></div></div>'}">
+                                     th:if="${compareStatistics != null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-primary">Всего боев</h5>
-                                        <h2 class="card-text" th:text="${statistics.totalFights}">0</h2>
+                                        <h2 class="card-text basic-tip"
+                                            th:attr="data-current=${statistics.totalFights},
+                                                     data-compare=${compareStatistics.totalFights},
+                                                     data-label='Всего боев'"
+                                            th:text="${statistics.totalFights}">0</h2>
                                     </div>
                                 </div>
                                 <div class="card text-center" th:if="${compareStatistics == null}">
@@ -376,22 +368,14 @@
                             </div>
                             <div class="col">
                                 <div class="card text-center" 
-                                     th:if="${compareStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + statistics.wins + '</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareStatistics.wins + '</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (statistics.wins > compareStatistics.wins ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.wins < compareStatistics.wins ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (statistics.wins > compareStatistics.wins ? 'diff-positive' : (statistics.wins < compareStatistics.wins ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (statistics.wins > compareStatistics.wins ? '+' : '') + (statistics.wins - compareStatistics.wins) +
-                                       '</span></div></div>'}">
+                                     th:if="${compareStatistics != null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-success">Побед</h5>
-                                        <h2 class="card-text" th:text="${statistics.wins}">0</h2>
+                                        <h2 class="card-text basic-tip"
+                                            th:attr="data-current=${statistics.wins},
+                                                     data-compare=${compareStatistics.wins},
+                                                     data-label='Побед'"
+                                            th:text="${statistics.wins}">0</h2>
                                     </div>
                                 </div>
                                 <div class="card text-center" th:if="${compareStatistics == null}">
@@ -403,22 +387,14 @@
                             </div>
                             <div class="col">
                                 <div class="card text-center" 
-                                     th:if="${compareStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + statistics.losses + '</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareStatistics.losses + '</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (statistics.losses < compareStatistics.losses ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.losses > compareStatistics.losses ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (statistics.losses < compareStatistics.losses ? 'diff-positive' : (statistics.losses > compareStatistics.losses ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (statistics.losses < compareStatistics.losses ? '' : '+') + (statistics.losses - compareStatistics.losses) +
-                                       '</span></div></div>'}">
+                                     th:if="${compareStatistics != null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-danger">Поражений</h5>
-                                        <h2 class="card-text" th:text="${statistics.losses}">0</h2>
+                                        <h2 class="card-text basic-tip"
+                                            th:attr="data-current=${statistics.losses},
+                                                     data-compare=${compareStatistics.losses},
+                                                     data-label='Поражений'"
+                                            th:text="${statistics.losses}">0</h2>
                                     </div>
                                 </div>
                                 <div class="card text-center" th:if="${compareStatistics == null}">
@@ -430,22 +406,14 @@
                             </div>
                             <div class="col">
                                 <div class="card text-center" 
-                                     th:if="${compareStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + statistics.draws + '</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareStatistics.draws + '</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (statistics.draws > compareStatistics.draws ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.draws < compareStatistics.draws ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (statistics.draws > compareStatistics.draws ? 'diff-positive' : (statistics.draws < compareStatistics.draws ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (statistics.draws > compareStatistics.draws ? '+' : '') + (statistics.draws - compareStatistics.draws) +
-                                       '</span></div></div>'}">
+                                     th:if="${compareStatistics != null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-info">Ничьих</h5>
-                                        <h2 class="card-text" th:text="${statistics.draws}">0</h2>
+                                        <h2 class="card-text basic-tip"
+                                            th:attr="data-current=${statistics.draws},
+                                                     data-compare=${compareStatistics.draws},
+                                                     data-label='Ничьих'"
+                                            th:text="${statistics.draws}">0</h2>
                                     </div>
                                 </div>
                                 <div class="card text-center" th:if="${compareStatistics == null}">
@@ -457,22 +425,15 @@
                             </div>
                             <div class="col">
                                 <div class="card text-center" 
-                                     th:if="${compareStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(statistics.winRate, 1, 1) + '%</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareStatistics.winRate, 1, 1) + '%</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (statistics.winRate > compareStatistics.winRate ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (statistics.winRate < compareStatistics.winRate ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (statistics.winRate > compareStatistics.winRate ? 'diff-positive' : (statistics.winRate < compareStatistics.winRate ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (statistics.winRate > compareStatistics.winRate ? '+' : '') + #numbers.formatDecimal(statistics.winRate - compareStatistics.winRate, 1, 1) + '%' +
-                                       '</span></div></div>'}">
+                                     th:if="${compareStatistics != null}">
                                     <div class="card-body">
                                         <h5 class="card-title text-warning">Процент побед</h5>
-                                        <h2 class="card-text" th:text="${#numbers.formatDecimal(statistics.winRate, 1, 1)} + '%'">0%</h2>
+                                        <h2 class="card-text basic-tip basic-tip-pct"
+                                            th:attr="data-current=${#numbers.formatDecimal(statistics.winRate, 1, 1)},
+                                                     data-compare=${#numbers.formatDecimal(compareStatistics.winRate, 1, 1)},
+                                                     data-label='Процент побед',
+                                                     data-unit='%'"
+                                            th:text="${#numbers.formatDecimal(statistics.winRate, 1, 1)} + '%'">0%</h2>
                                     </div>
                                 </div>
                                 <div class="card text-center" th:if="${compareStatistics == null}">
@@ -489,25 +450,18 @@
                             <!-- Анализ эффективности общих ударов -->
                             <div class="col-md-3">
                                 <div class="card" 
-                                     th:if="${compareAdvancedStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) + '%</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAdvancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) + '%</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (advancedStatistics.strikes.myTotalStrikesAccuracy > compareAdvancedStatistics.strikes.myTotalStrikesAccuracy ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (advancedStatistics.strikes.myTotalStrikesAccuracy < compareAdvancedStatistics.strikes.myTotalStrikesAccuracy ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (advancedStatistics.strikes.myTotalStrikesAccuracy > compareAdvancedStatistics.strikes.myTotalStrikesAccuracy ? 'diff-positive' : (advancedStatistics.strikes.myTotalStrikesAccuracy < compareAdvancedStatistics.strikes.myTotalStrikesAccuracy ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (advancedStatistics.strikes.myTotalStrikesAccuracy > compareAdvancedStatistics.strikes.myTotalStrikesAccuracy ? '+' : '') + #numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy - compareAdvancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1) + '%' +
-                                       '</span></div></div>'}">
+                                     th:if="${compareAdvancedStatistics != null}">
                                     <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
                                         <h5 class="mb-0">🎯 Эффективность общих ударов</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="text-center">
-                                            <h4 class="text-primary" th:text="${#numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)}">0</h4>
+                                            <h4 class="text-primary basic-tip basic-tip-pct"
+                                                th:attr="data-current=${#numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)},
+                                                         data-compare=${#numbers.formatDecimal(compareAdvancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)},
+                                                         data-label='Эффективность общих ударов',
+                                                         data-unit='%'"
+                                                th:text="${#numbers.formatDecimal(advancedStatistics.strikes.myTotalStrikesAccuracy, 1, 1)}">0</h4>
                                             <p class="mb-1">% общих ударов</p>
                                             <div class="progress mb-2" style="height: 8px;">
                                                 <div class="progress-bar bg-primary" th:style="'width: ' + ${advancedStatistics.strikes.myTotalStrikesAccuracy} + '%'"></div>
@@ -534,25 +488,18 @@
                             <!-- Анализ эффективности значимых ударов -->
                             <div class="col-md-3">
                                 <div class="card" 
-                                     th:if="${compareAdvancedStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) + '%</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) + '%</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (advancedStatistics.strikes.mySignificantStrikesAccuracy > compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (advancedStatistics.strikes.mySignificantStrikesAccuracy < compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (advancedStatistics.strikes.mySignificantStrikesAccuracy > compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy ? 'diff-positive' : (advancedStatistics.strikes.mySignificantStrikesAccuracy < compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (advancedStatistics.strikes.mySignificantStrikesAccuracy > compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy ? '+' : '') + #numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy - compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1) + '%' +
-                                       '</span></div></div>'}">
+                                     th:if="${compareAdvancedStatistics != null}">
                                     <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
                                         <h5 class="mb-0">📊 Эффективность ударов</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="text-center">
-                                            <h4 class="text-success" th:text="${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)}">0</h4>
+                                            <h4 class="text-success basic-tip basic-tip-pct"
+                                                th:attr="data-current=${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)},
+                                                         data-compare=${#numbers.formatDecimal(compareAdvancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)},
+                                                         data-label='Эффективность значимых ударов',
+                                                         data-unit='%'"
+                                                th:text="${#numbers.formatDecimal(advancedStatistics.strikes.mySignificantStrikesAccuracy, 1, 1)}">0</h4>
                                             <p class="mb-1">% значимых ударов</p>
                                             <div class="progress mb-2" style="height: 8px;">
                                                 <div class="progress-bar bg-success" th:style="'width: ' + ${advancedStatistics.strikes.mySignificantStrikesAccuracy} + '%'"></div>
@@ -579,25 +526,18 @@
                             <!-- Анализ тейкдаунов -->
                             <div class="col-md-3">
                                 <div class="card" 
-                                     th:if="${compareAdvancedStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1) + '%</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + #numbers.formatDecimal(compareAdvancedStatistics.takedowns.myTakedownAccuracy, 1, 1) + '%</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (advancedStatistics.takedowns.myTakedownAccuracy > compareAdvancedStatistics.takedowns.myTakedownAccuracy ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (advancedStatistics.takedowns.myTakedownAccuracy < compareAdvancedStatistics.takedowns.myTakedownAccuracy ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (advancedStatistics.takedowns.myTakedownAccuracy > compareAdvancedStatistics.takedowns.myTakedownAccuracy ? 'diff-positive' : (advancedStatistics.takedowns.myTakedownAccuracy < compareAdvancedStatistics.takedowns.myTakedownAccuracy ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (advancedStatistics.takedowns.myTakedownAccuracy > compareAdvancedStatistics.takedowns.myTakedownAccuracy ? '+' : '') + #numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy - compareAdvancedStatistics.takedowns.myTakedownAccuracy, 1, 1) + '%' +
-                                       '</span></div></div>'}">
+                                     th:if="${compareAdvancedStatistics != null}">
                                     <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
                                         <h5 class="mb-0">🤼 Эффективность тейкдаунов (ММА)</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="text-center">
-                                            <h4 class="text-info" th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)}">0</h4>
+                                            <h4 class="text-info basic-tip basic-tip-pct"
+                                                th:attr="data-current=${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)},
+                                                         data-compare=${#numbers.formatDecimal(compareAdvancedStatistics.takedowns.myTakedownAccuracy, 1, 1)},
+                                                         data-label='Эффективность тейкдаунов',
+                                                         data-unit='%'"
+                                                th:text="${#numbers.formatDecimal(advancedStatistics.takedowns.myTakedownAccuracy, 1, 1)}">0</h4>
                                             <p class="mb-1">% успешных тейкдаунов</p>
                                             <div class="progress mb-2" style="height: 8px;">
                                                 <div class="progress-bar bg-info" th:style="'width: ' + ${advancedStatistics.takedowns.myTakedownAccuracy} + '%'"></div>
@@ -624,25 +564,21 @@
                             <!-- Анализ времени контроля -->
                             <div class="col-md-3">
                                 <div class="card" 
-                                     th:if="${compareAdvancedStatistics != null}"
-                                     data-bs-toggle="tooltip" 
-                                     data-bs-placement="top"
-                                     data-bs-html="true"
-                                     th:data-bs-title="${'<div class=&quot;comparison-tooltip&quot;>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Текущее:</span><span class=&quot;comparison-value&quot;>' + advancedStatistics.controlTime.avgMyControlTimeFormatted + '</span></div>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Для сравнения:</span><span class=&quot;comparison-value&quot;>' + compareAdvancedStatistics.controlTime.avgMyControlTimeFormatted + '</span></div>' +
-                                       '<hr>' +
-                                       '<div class=&quot;comparison-row&quot;><span class=&quot;comparison-label&quot;>Разница:</span>' +
-                                       (advancedStatistics.controlTime.avgMyControlTimeSeconds > compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds ? '<span class=&quot;comparison-arrow arrow-up&quot;>↑</span>' : (advancedStatistics.controlTime.avgMyControlTimeSeconds < compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds ? '<span class=&quot;comparison-arrow arrow-down&quot;>↓</span>' : '<span class=&quot;comparison-arrow arrow-equal&quot;>=</span>')) +
-                                       '<span class=&quot;comparison-diff ' + (advancedStatistics.controlTime.avgMyControlTimeSeconds > compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds ? 'diff-positive' : (advancedStatistics.controlTime.avgMyControlTimeSeconds < compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds ? 'diff-negative' : 'diff-neutral')) + '&quot;>' +
-                                       (advancedStatistics.controlTime.avgMyControlTimeSeconds > compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds ? '+' : '') + (advancedStatistics.controlTime.avgMyControlTimeSeconds - compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds) + ' сек' +
-                                       '</span></div></div>'}">
+                                     th:if="${compareAdvancedStatistics != null}">
                                     <div class="card-header" style="min-height: 60px; display: flex; align-items: center;">
                                         <h5 class="mb-0">⏱️ Контроль боя</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="text-center">
-                                            <h4 class="text-warning" th:text="${advancedStatistics.controlTime.avgMyControlTimeFormatted}">00:00</h4>
+                                            <h4 class="text-warning"><span
+                                                class="time-tip"
+                                                th:attr="data-current-seconds=${advancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? advancedStatistics.controlTime.avgMyControlTimeSeconds : 0},
+                                                         data-compare-seconds=${compareAdvancedStatistics != null && compareAdvancedStatistics.controlTime?.avgMyControlTimeSeconds != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeSeconds : 0},
+                                                         data-current-formatted=${advancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? advancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'},
+                                                         data-compare-formatted=${compareAdvancedStatistics.controlTime?.avgMyControlTimeFormatted != null ? compareAdvancedStatistics.controlTime.avgMyControlTimeFormatted : '00:00'},
+                                                         data-label='Контроль боя'
+                                                "
+                                                th:text="${advancedStatistics.controlTime.avgMyControlTimeFormatted}">00:00</span></h4>
                                             <p class="mb-1">Среднее время контроля</p>
                                             <div class="progress mb-2" style="height: 8px;">
                                                 <div class="progress-bar bg-warning" style="width: 100%"></div>
@@ -3813,35 +3749,35 @@
             });
         });
 
-        // Инициализация тултипов для времени контроля (целые секунды, формат мм:сс)
+        // Инициализация тултипов для времени контроля (дельта из отображаемых мм:сс)
         document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams(window.location.search);
             const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
             if (!compareOn || typeof bootstrap === 'undefined') {
                 return;
             }
+            const parseMmSs = (mmss) => {
+                const p = (mmss || '0:0').split(':');
+                const mm = parseInt(p[0] || '0', 10);
+                const ss = parseInt(p[1] || '0', 10);
+                if (isNaN(mm) || isNaN(ss)) return 0;
+                return mm * 60 + ss;
+            };
             document.querySelectorAll('.time-tip').forEach(function(el) {
-                const currentSecondsRaw = parseFloat(el.getAttribute('data-current-seconds') || '0');
-                const compareSecondsRaw = parseFloat(el.getAttribute('data-compare-seconds') || '0');
                 const currentFormatted = el.getAttribute('data-current-formatted') || '00:00';
                 const compareFormatted = el.getAttribute('data-compare-formatted') || '00:00';
                 const label = el.getAttribute('data-label') || '';
-                
-                if (isNaN(currentSecondsRaw) || isNaN(compareSecondsRaw)) {
-                    return;
-                }
-                
-                // Округляем до целых секунд (формат мм:сс не поддерживает дроби)
-                const currentSeconds = Math.round(currentSecondsRaw);
-                const compareSeconds = Math.round(compareSecondsRaw);
+
+                const currentSeconds = parseMmSs(currentFormatted);
+                const compareSeconds = parseMmSs(compareFormatted);
                 const delta = currentSeconds - compareSeconds;
-                
+
                 const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
                 const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
-                
+
                 const title = `
                     <div class="comparison-tooltip">
-                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                      ${label ? `<div class=\"comparison-row\"><span class=\"comparison-label\">${label}:</span></div>` : ''}
                       <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentFormatted}</span></div>
                       <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareFormatted}</span></div>
                       <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${diffClass}">${sign}${Math.abs(delta)}с</span></div>
@@ -3853,6 +3789,60 @@
                 }
                 new bootstrap.Tooltip(target, { html: true, title: title, placement: 'top' });
                 target.dataset.timeTipInit = '1';
+            });
+        });
+
+        // Инициализация тултипов для основных показателей (дельта из отображаемых значений)
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const compareOn = params.has('comparisonFilter') && params.get('comparisonFilter') !== '';
+            if (!compareOn || typeof bootstrap === 'undefined') {
+                return;
+            }
+            const parseNum = (val) => {
+                const s = (val == null ? '0' : String(val)).trim().replace(',', '.');
+                const n = parseFloat(s);
+                return isNaN(n) ? 0 : n;
+            };
+            const fmt1 = (num) => {
+                const v = Math.round(num * 10) / 10;
+                return String(v).replace('.', ',');
+            };
+            document.querySelectorAll('.basic-tip').forEach(function(el) {
+                const currentStr = el.getAttribute('data-current') || '0';
+                const compareStr = el.getAttribute('data-compare') || '0';
+                const label = el.getAttribute('data-label') || '';
+                const unit = el.getAttribute('data-unit') || '';
+                const isPct = el.classList.contains('basic-tip-pct');
+                
+                const current = parseNum(currentStr);
+                const compare = parseNum(compareStr);
+                
+                if (isNaN(current) || isNaN(compare)) {
+                    return;
+                }
+                
+                const delta = current - compare;
+                const sign = delta > 0 ? '+' : (delta < 0 ? '−' : '');
+                const diffClass = delta > 0 ? 'diff-positive' : (delta < 0 ? 'diff-negative' : 'diff-neutral');
+                
+                const currentDisplay = isPct ? (currentStr + unit) : currentStr;
+                const compareDisplay = isPct ? (compareStr + unit) : compareStr;
+                const deltaDisplay = isPct ? (fmt1(Math.abs(delta)) + unit) : String(Math.abs(delta));
+                
+                const title = `
+                    <div class="comparison-tooltip">
+                      ${label ? `<div class="comparison-row"><span class="comparison-label">${label}:</span></div>` : ''}
+                      <div class="comparison-row"><span class="comparison-label">Текущее:</span><span class="comparison-value">${currentDisplay}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Сравнение:</span><span class="comparison-value">${compareDisplay}</span></div>
+                      <div class="comparison-row"><span class="comparison-label">Дельта:</span><span class="comparison-diff ${diffClass}">${sign}${deltaDisplay}</span></div>
+                    </div>`;
+
+                if (el.dataset.basicTipInit === '1') {
+                    return;
+                }
+                new bootstrap.Tooltip(el, { html: true, title: title, placement: 'top' });
+                el.dataset.basicTipInit = '1';
             });
         });
     </script>
