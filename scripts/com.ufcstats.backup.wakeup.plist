@@ -8,7 +8,8 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/evgenijstolarov/Documents/JavaProjects/ufc_stats/scripts/backup-on-wake.sh</string>
+        <string>-c</string>
+        <string>cd /Users/evgenijstolarov/Documents/JavaProjects/ufc_stats && /bin/bash scripts/backup-on-wake.sh</string>
     </array>
     
     <!-- Запускаем при подключении дисков/сети (происходит при пробуждении) -->
@@ -31,6 +32,21 @@
     
     <key>KeepAlive</key>
     <false/>
+    
+    <!-- Разрешения для работы с файловой системой -->
+    <key>EnableGlobbing</key>
+    <true/>
+    
+    <!-- Рабочая директория -->
+    <key>WorkingDirectory</key>
+    <string>/Users/evgenijstolarov/Documents/JavaProjects/ufc_stats</string>
+    
+    <!-- Переменные окружения -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
 </dict>
 </plist>
 

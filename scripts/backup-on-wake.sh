@@ -4,10 +4,16 @@
 # Создает бэкап один раз в сутки при первом пробуждении
 # Если в течение дня ноутбук открывается повторно - проверяет наличие сегодняшнего бэкапа
 
+# Переходим в директорию проекта
+cd /Users/evgenijstolarov/Documents/JavaProjects/ufc_stats || exit 1
+
 PROJECT_DIR="/Users/evgenijstolarov/Documents/JavaProjects/ufc_stats"
 BACKUP_SCRIPT="$PROJECT_DIR/scripts/backup-db.sh"
 BACKUP_DIR="$PROJECT_DIR/backups"
 LOG_FILE="$BACKUP_DIR/wake-backup.log"
+
+# Создаем директорию для логов, если её нет
+mkdir -p "$BACKUP_DIR"
 
 # Функция для логирования
 log() {
